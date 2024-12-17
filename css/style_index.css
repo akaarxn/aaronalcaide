@@ -26,7 +26,7 @@ h1 {
   overflow: hidden;
   border-right: 2px solid #161616;
   animation: typing 2s steps(30, end) forwards, removeCursor 0s 2s forwards;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
 }
 
 .content {
@@ -58,11 +58,31 @@ a {
   transition: opacity 1s ease;
 }
 
+.arrow-container {
+  display: inline-block;
+  position: relative;
+}
+
 .arrow {
-  font-size: 20px;
+  width: 30px; /* Ajusta el tamaño según necesites */
   opacity: 0;
   margin-left: 10px;
-  animation: fadeInArrow 0.6s ease forwards 4.3s, blinkArrow 1.5s infinite 4.9s;
+  animation: fadeInArrow 0.6s ease forwards 4.3s, blinkArrow 5s infinite 4.9s;
+}
+
+@keyframes fadeInArrow {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes blinkArrow {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
 }
 
 @keyframes typing {
@@ -74,19 +94,11 @@ a {
   to { opacity: 1; }
 }
 
-@keyframes fadeInArrow {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 
 @keyframes removeCursor {
   to { border-right: none; }
 }
 
-@keyframes blinkArrow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
 
 @keyframes fadeInLogo {
   0% {
