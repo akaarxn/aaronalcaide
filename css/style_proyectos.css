@@ -38,18 +38,6 @@ body {
   width: 30%;
 }
 
-.left {
-  background-image: url('/img/alma_irreal_portada.jpg');
-}
-
-.middle {
-  background-image: url('/img/mejor_sin_mi_img.jpg');
-}
-
-.right {
-  background-image: url('/img/mala_suerte_portada.jpg');
-}
-
 .third a {
   display: block;
   width: 100%;
@@ -57,3 +45,19 @@ body {
   text-decoration: none;
 }
 
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .third {
+    width: 100%;
+    height: 33.33%;
+    transition: height 0.5s ease;
+  }
+
+  .third:hover {
+    height: 40%;
+  }
+
+  .third:hover ~ .third {
+    height: 30%;
+  }
+}
