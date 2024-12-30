@@ -49,15 +49,17 @@ body {
 @media (max-width: 768px) {
   .third {
     width: 100%;
-    height: 33.33%;
-    transition: height 0.5s ease;
+    height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+    background-size: cover; /* Llena el espacio sin distorsión */
+    background-position: center; /* Centra la imagen */
+    transition: none; /* Opcional: Desactiva la animación en pantallas pequeñas */
   }
 
   .third:hover {
-    height: 40%;
+    height: 100vh; /* Evita ajustes en la altura al pasar el mouse */
   }
 
   .third:hover ~ .third {
-    height: 30%;
+    height: 100vh; /* Evita interferencias con otras imágenes */
   }
 }
