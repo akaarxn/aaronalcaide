@@ -48,13 +48,13 @@
         }
 
         .project:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
             z-index: 10;
         }
 
         .project:hover img {
             filter: brightness(0.8);
-            transform: scale(1.1);
+            transform: scale(1.03);
         }
 
         .project:hover .description {
@@ -73,9 +73,9 @@
 
         .project .description {
             position: absolute;
-            top: 50%;
+            bottom: 10%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%); 
             font-size: 1.5rem;
             text-align: center;
             font-family: 'Helvetica', sans-serif;
@@ -103,12 +103,12 @@
         </div>
         <div class="project">
             <a href="https://www.youtube.com/@casal.mp3" target="_blank" onclick="delayedRedirect(event, this.href)">Casal.mp3</a>
-            <img src="/img/mejor_sin_mi_img.webp" alt="Imagen del grupo musical">
+            <img src="/img/mala_suerte_portada.webp" alt="Imagen del grupo musical">
             <div class="description">CASAL</div>
         </div>
         <div class="project">
             <a href="https://www.youtube.com/@aaronalcaide" target="_blank" onclick="delayedRedirect(event, this.href)">Aaron Alcaide</a>
-            <img src="/img/mala_suerte_portada.webp" alt="Portada del canal personal de música">
+            <img src="/img/mejor_sin_mi_img.webp" alt="Portada del canal personal de música">
             <div class="description">MÚSICA</div>
         </div>
     </div>
@@ -118,7 +118,7 @@
             event.preventDefault();
             setTimeout(() => {
                 window.open(url, "_blank");
-            }, 500); // 500 ms de pausa
+            }, 500);
         }
     </script>
 </body>
