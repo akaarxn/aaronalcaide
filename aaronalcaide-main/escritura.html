@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aarón Alcaide</title>
+  <link rel="icon" href="img/favicon.png" type="image/png" />
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-left: 10vw;
+      background: linear-gradient(135deg, #111, #000000); /* degradado gris */
+      background-size: cover;
+      background-repeat: no-repeat;
+      font-family: sans-serif;
+      font-size: 6vw;
+      font-weight: bold;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .background-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: grayscale(1) contrast(1.2) brightness(0.9);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease, filter 2s ease;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      line-height: 0.8;
+      letter-spacing: -0.13em;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+      display: block;
+      mix-blend-mode: normal;
+      transition: transform 0.2s ease-out, mix-blend-mode 0.2s ease;
+    }
+
+    a:hover {
+      transform: translateY(-5px);
+      mix-blend-mode: difference;
+    }
+
+    .back-arrow {
+      position: fixed;
+      right: 100px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 4vw;
+      text-decoration: none;
+      color: white;
+      z-index: 2;
+      transition: transform 0.2s ease-out;
+    }
+
+    .back-arrow:hover {
+      transform: translate(-10px, -50%);
+    }
+  </style>
+</head>
+<body>
+
+    <div class="background-overlay" id="bg-overlay"></div>
+
+  <div class="container">
+    <a href="https://www.amazon.es/Alma-Irreal-Aar%C3%B3n-Alcaide/dp/8419796700"
+       target="_blank"
+       data-bgimg="img/img_alma_irreal.webp">ALMA IRREAL</a>
+
+    <a href="proximamente.html"
+       target="_self"
+       data-bgimg="img/fondo3.jpg">MI VIDA FUERA</a>
+
+    <a href="proximamente.html"
+       target="_self"
+       data-bgimg="img/fondo2.jpg">M¿¿C?*A--A</a>   
+  </div>
+
+  <a href="proyectos.html" class="back-arrow">←</a>
+
+  <script>
+    const overlay = document.getElementById("bg-overlay");
+    const links = document.querySelectorAll("a[data-bgimg]");
+
+    links.forEach(link => {
+      link.addEventListener("mouseenter", () => {
+        overlay.style.backgroundImage = `url('${link.dataset.bgimg}')`;
+        overlay.style.opacity = 1;
+      });
+
+      link.addEventListener("mouseleave", () => {
+        overlay.style.opacity = 0;
+      });
+    });
+  </script>
+</body>
+</html>
