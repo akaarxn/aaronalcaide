@@ -1,44 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aarón Alcaide</title>
-  <link rel="icon" href="img/favicon.png" type="image/png">
-  <link rel="stylesheet" href="/css/style_index.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <title>äA_rxñ älCäïdë</title>
+  <style>
+    @font-face {
+      font-family: 'ArialCustomBold';
+      src: url('font/arial-bold.ttf') format('truetype');
+      font-weight: bold;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: rgb(15, 15, 15);
+      color: white;
+      font-family: 'ArialCustomBold', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.8rem;
+      letter-spacing: -0.09em;
+      text-align: center;
+      transition: background-color 0.05s, color 0.05s;
+    }
+
+    .invert {
+      background-color: white !important;
+      color: black !important;
+    }
+  </style>
 </head>
 <body>
-  <div>
-    <h1>Aarón Alcaide.</h1>
-    <div class="content">
-      <p><a href="proyectos.html" id="link">Creador Audiovisual.</a></p>
-      <span class="arrow-container">
-        <img src="img/arrow.png" class="arrow" alt="Arrow">
-      </span>    
-    </div>
-  </div>
-  <div class="icons" id="icons">
-    <a href="https://www.instagram.com/akaarxn_/" target="_blank">
-      <img src="/logos redes/instagram.png" class="icon1" alt="Instagram">
-    </a>
-    <a href="https://open.spotify.com/intl-es/artist/39lU3iP6cdlue5qfr7IrMB" target="_blank">
-      <img src="/logos redes/spotify.png" class="icon2" alt="Spotify">
-    </a>
-    <a href="https://www.youtube.com/channel/UCTkRzO_JGHC0EQWZyx2TE4Q" target="_blank">
-      <img src="/logos redes/youtube.png" class="icon3" alt="YouTube">
-    </a>
-  </div>
-
+  <div id="text">???</div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      setTimeout(function() {
-        document.getElementById('icons').style.opacity = 1;
-        document.getElementById('icons').style.visibility = 'visible';
-      }, 3000);
-    });
-  </script>
+    const frases = [
+    "todo lo que ves... lo es, ¿o no?",
+    "nada de esto debía pasar... y sin embargo pasó",
+    "¿cómo huyes... de algo que ya eres?",
+    "la batalla... siempre fue contra mí"
+    ];
 
- 
+    let index = 0;
+    const textElement = document.getElementById("text");
+    const body = document.body;
+
+    setInterval(() => {
+      body.classList.add("invert");
+      setTimeout(() => {
+        body.classList.remove("invert");
+      }, 60);
+
+      index = (index + 1) % frases.length;
+      textElement.textContent = frases[index];
+    }, 4500);
+  </script>
 </body>
 </html>
