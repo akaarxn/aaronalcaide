@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>DEVENIR — El diario del Pianista</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f3f0;
+  --text: #2b2b2b;
+  --muted: #9a9a9a;
+  --line: #d8d5d1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  animation: pageIn 0.45s ease both;
+}
+
+/* HERO */
+
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero .small {
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 11px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(52px, 10vw, 110px);
+  font-weight: 200;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+}
+
+.hero .line {
+  width: 60px;
+  height: 1px;
+  background: var(--line);
+  margin: 30px 0;
+}
+
+.hero .subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: #7a7a7a;
+  letter-spacing: 0.04em;
+}
+
+/* CONTENT */
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 100px 20px;
+}
+
+.entry {
+  margin-bottom: 160px;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+  will-change: opacity, transform;
+}
+
+.entry.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.day {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.text {
+  font-size: 19px;
+  line-height: 1.85;
+  color: #555;
+  white-space: pre-line;
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  padding: 120px 20px;
+}
+
+footer .line {
+  width: 40px;
+  height: 1px;
+  background: var(--line);
+  margin: 0 auto 40px;
+}
+
+footer p {
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+footer span {
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--muted);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .text {
+    font-size: 18px;
+  }
+
+  .day {
+    font-size: 24px;
+  }
+}
+
+/* ALBUM SECTION */
+
+.album{
+  margin-bottom:120px;
+  padding-bottom:80px;
+  border-bottom:1px solid var(--line);
+}
+
+.album h2{
+  font-family:'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom:20px;
+}
+
+.album-desc{
+  color:#666;
+  font-size:18px;
+  line-height:1.6;
+  margin-bottom:25px;
+}
+
+.album-link{
+  display:inline-block;
+  margin-bottom:40px;
+  text-decoration:none;
+  color:var(--text);
+  border-bottom:1px solid var(--text);
+  padding-bottom:2px;
+  transition:opacity .3s ease;
+}
+
+.album-link:hover{
+  opacity:0.6;
+}
+
+.album-list{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.album-item{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.album-item strong{
+  font-size:18px;
+  font-family:'Cormorant Garamond', serif;
+  font-weight: 400;
+}
+
+.album-item span{
+  font-size:16px;
+  color:#777;
+}
+</style>
+<style>
+.back {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  opacity: 0.45;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 20;
+}
+
+.back:hover {
+  opacity: 1;
+  transform: translateX(-4px);
+}
+</style>
+</head>
+
+<body>
+<a href="index.html" class="back">← Volver</a>
+
+<section class="hero">
+  <div class="small">UN RELATO</div>
+  <h1>DEVENIR</h1>
+  <div class="line"></div>
+  <div class="subtitle">El diario del Pianista</div>
+</section>
+
+<section class="container">
+
+  <div class="album">
+    <p class="album-desc">Seis piezas que recorren el mismo proceso que el diario. Cada una corresponde a un tramo concreto del relato; los números indican los días en los que se sitúa cada fragmento.</p>
+
+
+    <div class="album-list">
+      <div class="album-item">
+        <strong>1. Umbral (Días 1–4)</strong>
+        <span>El inicio. El peso del pasado paraliza.</span>
+      </div>
+      <div class="album-item">
+        <strong>2. Tensión Interna (Días 5–8)</strong>
+        <span>Comparación constante con lo que fue.</span>
+      </div>
+      <div class="album-item">
+        <strong>3. Fractura y Desfase (Días 9–16)</strong>
+        <span>El sonido y la identidad dejan de coincidir.</span>
+      </div>
+      <div class="album-item">
+        <strong>4. Inercia (Días 17–21)</strong>
+        <span>Repetición, esfuerzo, desgaste.</span>
+      </div>
+      <div class="album-item">
+        <strong>5. Cese de la Resistencia (Días 22–27)</strong>
+        <span>Abandono de la exigencia.</span>
+      </div>
+      <div class="album-item">
+        <strong>6. Autorreconfiguración (Días 28–30)</strong>
+        <span>Lo nuevo aparece. Y es propio.</span>
+      </div>
+
+     <a href="https://podcasts.apple.com/es/podcast/devenir/id1887480447" class="album-link">Escuchar el podcast completo →</a>
+
+    </div>
+  </div>
+
+    <div class="entry">
+    <div class="day">Día 1.</div>
+    <div class="text">
+Me siento frente al piano.
+No toco, solo observo.
+Lo veo.
+Él sabe que estoy aquí.
+Lo percibo, me percibe.
+Solo hay silencio.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 2.</div>
+    <div class="text">
+Aún no me atrevo.
+Es tan… ¿poderoso?
+No estoy hecho para él.
+No para sacar su potencial.
+—Puedo hacerlo— pienso.
+No lo sé.
+No sé nada.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 3.</div>
+    <div class="text">
+Creo que me juzga.
+¿Me intentas provocar?
+No quiero odiarte…
+Me estás obligando.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 4.</div>
+    <div class="text">
+Me siento de nuevo.
+Rozo con mis manos su madera.
+No llego a tocar nada.
+Solo acaricio desde lo lejano.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 5.</div>
+    <div class="text">
+Añoro su sonido bello.
+Siento mucho miedo.
+Mucho.
+No soy aquella persona que dominó ese arte.
+Aunque no soy persona sin dominar ese arte.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 6.</div>
+    <div class="text">
+No quiero entrar al salón.
+Él me observa.
+Está ahí.
+Estoy seguro de que me juzga.
+Quiero enfrentarme a él.
+Lo voy a hacer…
+Pronto.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 7.</div>
+    <div class="text">
+Recuerdo su hermoso tacto.
+Tan liso, suave…
+Es perfecto.
+Somos perfectos.
+Éramos…
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 8.</div>
+    <div class="text">
+Atravieso la puerta del salón.
+—Estoy convencido —le digo.
+Percibo su mirada.
+No sé qué pensar.
+Oigo el juicio en el silencio.
+El silencio yace eterno en el salón durante la noche.
+Solo hay pensamientos y silencio.
+Mucho silencio.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 9.</div>
+    <div class="text">
+Me tiemblan las manos.
+Entro al salón.
+Lo recorro.
+Lo observo de cerca.
+Lo rodeo.
+Sé exactamente lo que piensa de mí.
+Aprecio su forma,
+su estilo,
+cada una de sus imperfecciones.
+Lo aborrezco.
+Lo odio.
+Lo quiero.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 10.</div>
+    <div class="text">
+Me siento de nuevo.
+Noto el frescor del asiento.
+Desierto.
+Solitario.
+Respiro,
+cierro los ojos,
+alzo las manos y…
+Mis huellas se impregnan en sus teclas.
+Frías como el asiento,
+Solitarias como el desierto.
+Un simple fa, un simple do…
+Siento alivio
+o vértigo
+o miedo.
+El eco de las notas resuena en el salón.
+Largas.
+Pesadas.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 11.</div>
+    <div class="text">
+Me llamas mientras cocino.
+Puedo escuchar el eco de tus notas rebotando en las paredes.
+Puedo sentirte,
+estamos conectados.
+Tu sonido me cautivó una vez más.
+Te sigo teniendo miedo.
+—¿Puedo confiar en ti? —le pregunto.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 12.</div>
+    <div class="text">
+Me acerco.
+Me tenso más con cada paso.
+Estás delante.
+No siento lo mismo.
+No es miedo, ¿o sí?
+Te noto cerca,
+no literalmente.
+El silencio no está vacío entre nosotros.
+Hay conexión.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 13.</div>
+    <div class="text">
+¿Es el día?
+¿Puedo?
+Te siento cerca.
+Cada vez más cerca.
+El eco terminó por cesar…
+Necesito uno nuevo.
+Más de tu poesía.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 14.</div>
+    <div class="text">
+Finalmente cierro los ojos.
+Sonrío.
+Alzo los brazos.
+Coloco las manos.
+El salón espera.
+Las paredes desean ese sonido.
+Toco.
+Toco un recuerdo.
+Varios recuerdos.
+Se tensan mis dedos,
+se acelera mi corazón.
+Es… diferente.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 15.</div>
+    <div class="text">
+No era miedo.
+No era el mismo temor.
+Un océano de sentimientos…
+Ráfagas de recuerdos.
+Imágenes.
+El escenario.
+El teatro.
+La tensión.
+El ambiente.
+Todo a la vez.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 16.</div>
+    <div class="text">
+Te has alejado.
+Ya no respondes de la misma forma.
+Nos hemos alejado.
+Pierdes nitidez.
+Tu textura raspa.
+El eco resuena en mi mente.
+Son recuerdos oscuros.
+Deformes.
+El miedo me abraza.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 17.</div>
+    <div class="text">
+No respondes igual.
+—¿Hemos cambiado? —pregunto.
+—¿Por qué no respondes? —vuelvo a preguntar.
+Está mal.
+No hemos cambiado.
+No podemos haber cambiado.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 18.</div>
+    <div class="text">
+Me alejo.
+Rebusco entre mis recuerdos
+y desempolvo nuestras poesías más famosas.
+Eran preciosas.
+Cargadas de belleza.
+Portadoras de arte.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 19.</div>
+    <div class="text">
+Frente a ti te contemplo.
+Empiezo a recitar…
+El comienzo es bueno.
+Agradable.
+Contagioso.
+Continuo.
+Algo no encaja.
+No quiero pensarlo.
+Continúo.
+Noto la fisura quebrar.
+Las notas pesan demasiado.
+El tempo se descompensa.
+Siento rabia.
+Temor.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 20.</div>
+    <div class="text">
+Vuelvo.
+Lleno de rabia.
+Con un insomnio solemne.
+Toco.
+Toco una vez más.
+No funciona.
+Las notas no bailan igual.
+Ya nada baila igual.
+¿Yo bailo igual?
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 21.</div>
+    <div class="text">
+Cesa cualquier sonido en el salón.
+Se puede respirar el espeso silencio.
+—¿Lo intento?
+Me agota intentarlo.
+—¿Soy yo? —pregunto.
+No lo soy.
+Creo que no lo soy…
+Tal vez nunca fuiste tú.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 22.</div>
+    <div class="text">
+Te miro de lejos.
+No pregunto.
+No respondes.
+Tal vez deba ser así.
+El silencio dejó de pesar.
+Simplemente existe.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 23.</div>
+    <div class="text">
+Hay distancia.
+Lejanía.
+No cruzo por delante.
+Ya no toco.
+Solo te miro de reojo.
+No intento llamar tu atención.
+El salón es neutro.
+No huyo.
+No busco.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 24.</div>
+    <div class="text">
+Me acerco.
+Sin intención.
+Desganado.
+Me siento.
+Apoyo los dedos.
+Cierro los ojos.
+No recuerdo nada.
+Presiono.
+No pesa…
+No raspa.
+Solo suena.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 25.</div>
+    <div class="text">
+Toco.
+No busco armonía.
+No aparece.
+Toco otra tecla.
+No se unen,
+Solo las escucho.
+Es… distinto.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 26.</div>
+    <div class="text">
+Dejo que suenen.
+No se buscan.
+Tampoco se rechazan.
+Las escucho nacer y morir.
+El silencio no las contradice.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 27.</div>
+    <div class="text">
+Vuelvo.
+Sin pensarlo.
+Repito el gesto.
+El tiempo pasa…
+No corrijo.
+No ajusto.
+Sigo.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 28.</div>
+    <div class="text">
+Toco.
+No pienso.
+Las notas se rozan.
+Chocan.
+Algo se mueve…
+No pesa.
+Permanece.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 29.</div>
+    <div class="text">
+Toco más.
+Hay algo claro.
+No se parece a lo que fue.
+No intento que vuelva.
+Me quedo.
+No me incomoda…
+Sigo aquí.
+    </div>
+</div>
+
+<div class="entry">
+    <div class="day">Día 30.</div>
+    <div class="text">
+Toco.
+No busco al que fui.
+No lo necesito.
+Las notas no intentan parecerse a nada.
+Nacen.
+Se encadenan.
+Mueren.
+No son aquellas poesías.
+No intento que lo sean.
+Son estas.
+Y son mías.
+    </div>
+</div>
+
+</section>
+
+<footer>
+  <div class="line"></div>
+  <p>Fin</p>
+  <span>DEVENIR</span>
+</footer>
+
+<script>
+const items = document.querySelectorAll('.entry');
+
+const observer = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  }
+}, {
+  rootMargin: '0px 0px -10% 0px',
+  threshold: 0.1
+});
+
+items.forEach(el => observer.observe(el));
+
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('http') || href.startsWith('#') || a.target === '_blank') return;
+    e.preventDefault();
+    document.body.style.transition = 'opacity 0.3s ease';
+    document.body.style.opacity = '0';
+    setTimeout(() => { window.location.href = href; }, 300);
+  });
+</script>
+
+</body>
+</html>

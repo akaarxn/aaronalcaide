@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fotografía — Aarón Alcaide</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="thumbs/IMG_0722.webp" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream:  #f5f2ee;
+      --dark:   #1a1814;
+      --mid:    #2a2820;
+      --muted:  #b0aa9e;
+      --accent: #9a7a50;
+      --border: #ddd9d3;
+    }
+
+    html, body {
+      width: 100%;
+      background: var(--cream);
+      color: var(--mid);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 1.3rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(245, 242, 238, 0.93);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-name {
+      font-family: 'Jost', sans-serif;
+      font-weight: 100;
+      font-size: 0.7rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--dark);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .header-name:hover { color: var(--accent); }
+
+    .view-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 200;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      padding: 0.55rem 1.3rem;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .toggle-btn + .toggle-btn { border-left: 1px solid var(--border); }
+    .toggle-btn.active {
+      background: var(--dark);
+      color: var(--cream);
+    }
+    .toggle-btn:not(.active):hover { color: var(--dark); }
+
+    /* ── VIEWS ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    #room-view.active { display: flex; }
+
+    /* ══════════════════════════════════════
+       GALERÍA
+    ══════════════════════════════════════ */
+    #gallery-view {
+      min-height: 100vh;
+      padding-top: 64px;
+    }
+
+    .gallery-header {
+      padding: 5rem 6vw 2.8rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gallery-tag {
+      font-family: 'Jost', sans-serif;
+      font-weight: 100;
+      font-size: 0.58rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .gallery-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(2.6rem, 6vw, 4rem);
+      letter-spacing: 0.02em;
+      color: var(--dark);
+      line-height: 1;
+    }
+
+    .gallery-count {
+      font-family: 'Jost', sans-serif;
+      font-weight: 100;
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      margin-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.2rem;
+      align-self: flex-start;
+    }
+
+    /* ── Masonry columns ── */
+    .gallery-grid {
+      columns: 3;
+      column-gap: 6px;
+      padding: 6px 6px 0;
+    }
+
+    @keyframes itemFadeUp {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 6px;
+      background: var(--border);
+      opacity: 0;
+      animation: itemFadeUp 0.55s ease both;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: filter 0.65s ease;
+      filter: grayscale(100%) brightness(0.95) contrast(1.04);
+    }
+
+    .gallery-item:hover img {
+      filter: grayscale(0%) brightness(1) contrast(1);
+    }
+
+    .gallery-item-veil {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+    }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(10, 8, 6, 0.97);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+    #lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #lb-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      max-width: 92vw;
+    }
+    #lightbox.open #lb-inner {
+      transform: translateY(0) scale(1);
+    }
+
+    #lb-img {
+      max-width: min(85vw, 115vh);
+      max-height: 68vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      filter: sepia(5%) saturate(92%);
+      pointer-events: none;
+    }
+
+    #lb-info {
+      margin-top: 1.8rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease 0.18s, transform 0.4s ease 0.18s;
+    }
+    #lightbox.open #lb-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #lb-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      color: var(--cream);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.55rem;
+    }
+
+    #lb-meta {
+      font-family: 'Jost', sans-serif;
+      font-weight: 100;
+      font-size: 0.57rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.3);
+      margin-bottom: 0.7rem;
+    }
+
+    #lb-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: rgba(245,242,238,0.38);
+      letter-spacing: 0.02em;
+      line-height: 1.7;
+    }
+
+    .lb-close {
+      position: absolute;
+      top: 1.8rem; right: 2.2rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.25);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: color 0.3s;
+    }
+    .lb-close:hover { color: rgba(245,242,238,0.7); }
+
+    #lb-counter {
+      position: absolute;
+      top: 1.95rem; left: 2.2rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: rgba(245,242,238,0.2);
+    }
+
+    .lb-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem;
+      color: rgba(245,242,238,0.2);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 1.5rem;
+      transition: color 0.3s;
+      line-height: 1;
+    }
+    .lb-nav:hover { color: rgba(245,242,238,0.65); }
+    #lb-prev { left: 0.5rem; }
+    #lb-next { right: 0.5rem; }
+
+    /* ══════════════════════════════════════
+       SALA 3D
+    ══════════════════════════════════════ */
+    #room-view {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    #three-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Entry overlay */
+    #room-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(12, 10, 8, 0.75);
+      backdrop-filter: blur(4px);
+      pointer-events: all;
+      transition: opacity 0.6s;
+    }
+
+    #room-overlay h3 {
+      font-family: 'Jost', sans-serif;
+      font-weight: 100;
+      font-size: 0.65rem;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.35);
+      margin-bottom: 1.6rem;
+    }
+
+    #room-overlay .overlay-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.4rem;
+    }
+
+    #room-overlay p {
+      font-family: 'Jost', sans-serif;
+      font-weight: 100;
+      font-style: normal;
+      color: rgba(245,242,238,0.32);
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 2.2;
+      margin-bottom: 3rem;
+    }
+
+    #enter-btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 200;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--cream);
+      border: 1px solid rgba(245,242,238,0.3);
+      background: none;
+      padding: 0.95rem 2.8rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    #enter-btn:hover {
+      background: rgba(245,242,238,0.08);
+      border-color: rgba(245,242,238,0.55);
+    }
+
+    /* HUD elements (visible when locked) */
+    #crosshair {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px; height: 14px;
+      z-index: 20;
+      pointer-events: none;
+      display: none;
+    }
+    #crosshair::before, #crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(245,242,238,0.35);
+    }
+    #crosshair::before { width: 1px; height: 14px; left: 6.5px; top: 0; }
+    #crosshair::after  { width: 14px; height: 1px; top: 6.5px; left: 0; }
+
+    #hud-controls {
+      position: absolute;
+      bottom: 2.2rem; right: 2.5rem;
+      z-index: 20;
+      text-align: right;
+      display: none;
+      pointer-events: none;
+    }
+    #hud-controls span {
+      display: block;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.22);
+      line-height: 2.2;
+    }
+
+    #hud-esc {
+      position: absolute;
+      bottom: 2.2rem; left: 2.5rem;
+      z-index: 20;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.22);
+      display: none;
+      pointer-events: none;
+    }
+
+    /* in-room: se pone al entrar y nunca se quita — oculta el overlay de entrada */
+    #room-view.in-room #room-overlay  { opacity: 0; pointer-events: none; }
+
+    /* locked: solo controla el HUD (ratón capturado) */
+    #room-view.locked #crosshair,
+    #room-view.locked #hud-controls,
+    #room-view.locked #hud-esc       { display: block; }
+
+    /* ── EXAMINE MODE ── */
+    #hud-examine {
+      position: absolute;
+      bottom: 5rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.45s;
+      display: none;
+    }
+    #room-view.locked #hud-examine { display: block; }
+
+    #examine-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      background: rgba(4, 3, 10, 0.94);
+      backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: 3rem 5vw;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s;
+    }
+    #examine-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #examine-img {
+      max-height: 76vh;
+      max-width: 54vw;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: sepia(6%) saturate(88%);
+      flex-shrink: 0;
+    }
+    #examine-info {
+      max-width: 260px;
+      min-width: 180px;
+      color: var(--cream);
+    }
+    #examine-num {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.48rem;
+      letter-spacing: 0.38em;
+      color: rgba(245,242,238,0.22);
+      margin-bottom: 1.6rem;
+    }
+    #examine-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 0.7rem;
+    }
+    #examine-meta {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.5rem;
+      font-weight: 200;
+      letter-spacing: 0.26em;
+      color: rgba(245,242,238,0.36);
+      line-height: 2.4;
+      margin-bottom: 1.2rem;
+    }
+    .examine-sep {
+      width: 36px;
+      height: 1px;
+      background: rgba(245,242,238,0.15);
+      margin-bottom: 1.3rem;
+    }
+    #examine-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(245,242,238,0.48);
+      line-height: 1.85;
+      margin-bottom: 2.8rem;
+    }
+    .examine-back {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.46rem;
+      letter-spacing: 0.38em;
+      color: rgba(245,242,238,0.18);
+    }
+
+    /* ── END-OF-HALL MESSAGE ── */
+    #hud-end {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 3.5rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    #hud-end span {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
+      color: rgba(245,242,238,0.28);
+      line-height: 2;
+      letter-spacing: 0.04em;
+    }
+
+
+    /* ── JOYSTICK MÓVIL ── */
+    #mobile-joy {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(245,242,238,0.22);
+      background: rgba(245,242,238,0.04);
+      display: none;
+      pointer-events: none;
+      z-index: 25;
+    }
+    #joy-thumb {
+      position: absolute;
+      width: 44px; height: 44px;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      border-radius: 50%;
+      background: rgba(245,242,238,0.28);
+      border: 1.5px solid rgba(245,242,238,0.55);
+    }
+
+    /* ── BOTÓN EXAMINAR MÓVIL ── */
+    #mobile-examine-btn {
+      position: absolute;
+      bottom: 5.5rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(245,242,238,0.85);
+      background: rgba(20,16,12,0.55);
+      border: 1px solid rgba(245,242,238,0.28);
+      padding: 0.75rem 1.6rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.4s;
+      display: none;
+      z-index: 25;
+      pointer-events: auto;
+    }
+    #room-view.locked #mobile-examine-btn { display: block; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      header { padding: 1.1rem 1.5rem; }
+      .gallery-grid { columns: 2; }
+      .gallery-header { padding: 3.5rem 5vw 2rem; }
+    }
+    @media (max-width: 480px) {
+      .gallery-grid { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="header-name">Aarón Alcaide</a>
+  <div class="view-toggle">
+    <button class="toggle-btn active" id="btn-gallery" onclick="showView('gallery')">Galería</button>
+    <button class="toggle-btn"        id="btn-room"    onclick="showView('room')">Sala</button>
+  </div>
+</header>
+
+<!-- ══ GALERÍA ══ -->
+<div class="view active" id="gallery-view">
+  <div class="gallery-header">
+    <p class="gallery-tag">Colección</p>
+    <h2>Fotografía</h2>
+    <p class="gallery-count" id="gallery-count"></p>
+  </div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</div>
+
+<!-- ══ SALA 3D ══ -->
+<div class="view" id="room-view">
+  <canvas id="three-canvas"></canvas>
+
+  <!-- joystick táctil (solo móvil) -->
+  <div id="mobile-joy"><div id="joy-thumb"></div></div>
+  <button id="mobile-examine-btn">Examinar</button>
+
+  <div id="room-overlay">
+    <h3>Exposición</h3>
+    <div class="overlay-title">La Sala</div>
+    <p id="overlay-hint">W A S D &nbsp;·&nbsp; Ratón &nbsp;·&nbsp; E para examinar</p>
+    <button id="enter-btn">Entrar a la sala</button>
+  </div>
+
+  <div id="crosshair"></div>
+
+  <div id="hud-controls">
+    <span>W A S D — Moverse</span>
+    <span>Ratón — Mirar</span>
+    <span>E — Examinar</span>
+    <span>ESC — Salir</span>
+  </div>
+  <div id="hud-esc">ESC para salir</div>
+  <div id="hud-examine">[ E ] Examinar</div>
+  <div id="hud-end">
+    <span>La sala sigue creciendo.</span>
+    <span>Pronto habrá más.</span>
+  </div>
+
+  <div id="examine-overlay">
+    <img id="examine-img" src="" alt="" />
+    <div id="examine-info">
+      <p id="examine-num"></p>
+      <h3 id="examine-title"></h3>
+      <p id="examine-meta"></p>
+      <div class="examine-sep"></div>
+      <p id="examine-desc"></p>
+      <p class="examine-back">[ E ] Volver</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX ══ -->
+<div id="lightbox">
+  <div id="lb-inner">
+    <img id="lb-img" src="" alt="" />
+    <div id="lb-info">
+      <p id="lb-title"></p>
+      <p id="lb-meta"></p>
+      <p id="lb-desc"></p>
+    </div>
+  </div>
+  <span id="lb-counter"></span>
+  <button class="lb-close" id="lb-close">Cerrar</button>
+  <button class="lb-nav" id="lb-prev">&#8592;</button>
+  <button class="lb-nav" id="lb-next">&#8594;</button>
+</div>
+
+<style>
+  @keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+  body { animation: pageIn 0.45s ease both; }
+</style>
+<script>
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('http') || href.startsWith('#') || a.target === '_blank') return;
+    e.preventDefault();
+    document.body.style.transition = 'opacity 0.3s ease';
+    document.body.style.opacity = '0';
+    setTimeout(() => { window.location.href = href; }, 300);
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+// PHOTO METADATA (shared by gallery + 3D room)
+// ═══════════════════════════════════════════
+const PHOTO_META = [
+  { title: 'La espera',    year: '2024', camera: 'Canon EOS 2000D', desc: 'El tiempo suspendido entre un instante y el siguiente.' },
+  { title: 'Umbral',       year: '2024', camera: 'Canon EOS 2000D', desc: 'Donde termina lo conocido y empieza lo posible.' },
+  { title: 'Deriva',       year: '2023', camera: 'Canon EOS 2000D', desc: 'Sin rumbo fijo, solo la luz como guía.' },
+  { title: 'Ceniza y luz', year: '2024', camera: 'Canon EOS 2000D', desc: 'Lo que queda después de que todo arde.' },
+  { title: 'Persistencia', year: '2023', camera: 'Canon EOS 2000D', desc: 'Algunas cosas permanecen cuando el resto desaparece.' },
+  { title: 'Hora quieta',  year: '2024', camera: 'Canon EOS 2000D', desc: 'El instante exacto antes de que todo cambie.' },
+];
+
+// ═══════════════════════════════════════════
+const PHOTOS = [
+  'IMG_0722.webp',
+  'IMG_1021.webp',
+  'IMG_1025.webp',
+  'IMG_1045.webp',
+  'IMG_1108.webp',
+  'IMG_4569.webp',
+];
+
+const THUMBS = PHOTOS.map(p => 'thumbs/' + p);
+const ROOM_PHOTOS = PHOTOS.map(p => 'room/' + p);
+
+// ═══════════════════════════════════════════
+// VIEW SWITCH
+// ═══════════════════════════════════════════
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+
+  if (name === 'gallery') {
+    document.getElementById('gallery-view').classList.add('active');
+    document.getElementById('btn-gallery').classList.add('active');
+    document.body.style.overflow = '';
+    if (isLocked) document.exitPointerLock();
+  } else {
+    document.getElementById('room-view').classList.add('active');
+    document.getElementById('btn-room').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    initRoom();
+    setTimeout(handleResize, 60);
+  }
+}
+
+// ═══════════════════════════════════════════
+// GALLERY
+// ═══════════════════════════════════════════
+const grid = document.getElementById('gallery-grid');
+let lbIndex = 0;
+
+PHOTOS.forEach((src, i) => {
+  const item = document.createElement('div');
+  item.className = 'gallery-item';
+  item.style.animationDelay = `${0.05 + i * 0.07}s`;
+  item.innerHTML = `<img src="${THUMBS[i]}" alt="Fotografía ${i+1}" loading="lazy" decoding="async"><div class="gallery-item-veil"></div>`;
+  item.addEventListener('click', () => openLightbox(i));
+  grid.appendChild(item);
+});
+
+document.getElementById('gallery-count').textContent =
+  `${PHOTOS.length} ${PHOTOS.length === 1 ? 'imagen' : 'imágenes'}`;
+
+
+function openLightbox(i) {
+  lbIndex = i;
+  // Reset animación para que vuelva a dispararse al cambiar foto
+  const inner = document.getElementById('lb-inner');
+  const info  = document.getElementById('lb-info');
+  inner.style.transition = 'none';
+  info.style.transition  = 'none';
+  document.getElementById('lightbox').classList.remove('open');
+  updateLightbox();
+  requestAnimationFrame(() => {
+    inner.style.transition = '';
+    info.style.transition  = '';
+    document.getElementById('lightbox').classList.add('open');
+  });
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+function updateLightbox() {
+  const m = PHOTO_META[lbIndex] || {};
+  document.getElementById('lb-img').src      = PHOTOS[lbIndex];
+  document.getElementById('lb-img').alt      = m.title || '';
+  document.getElementById('lb-title').textContent = '';
+  document.getElementById('lb-meta').textContent  = m.year && m.camera ? `${m.year} · ${m.camera}` : '';
+  document.getElementById('lb-desc').textContent  = m.desc   || '';
+  document.getElementById('lb-counter').textContent = `${String(lbIndex+1).padStart(2,'0')} / ${String(PHOTOS.length).padStart(2,'0')}`;
+}
+
+document.getElementById('lightbox').addEventListener('click', closeLightbox);
+document.getElementById('lb-inner').addEventListener('click', e => e.stopPropagation());
+
+document.getElementById('lb-close').addEventListener('click', e => {
+  e.stopPropagation();
+  closeLightbox();
+});
+
+document.getElementById('lb-prev').addEventListener('click', e => {
+  e.stopPropagation();
+  lbIndex = (lbIndex - 1 + PHOTOS.length) % PHOTOS.length;
+  openLightbox(lbIndex);
+});
+
+document.getElementById('lb-next').addEventListener('click', e => {
+  e.stopPropagation();
+  lbIndex = (lbIndex + 1) % PHOTOS.length;
+  openLightbox(lbIndex);
+});
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape')      document.getElementById('lightbox').classList.remove('open');
+  if (e.key === 'ArrowLeft')  { lbIndex = (lbIndex - 1 + PHOTOS.length) % PHOTOS.length; updateLightbox(); }
+  if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % PHOTOS.length; updateLightbox(); }
+});
+
+// ═══════════════════════════════════════════
+// 3D ROOM
+// ═══════════════════════════════════════════
+let renderer, scene, camera, animId, skyMaterial, skyMesh;
+let roomReady = false;
+let isLocked = false;
+let yaw = 0, pitch = 0;
+const keys = {};
+
+// ── Detección móvil ──
+const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+// ── Estado del joystick táctil ──
+let joyTouchId = null, joyBaseX = 0, joyBaseY = 0, joyDX = 0, joyDY = 0;
+let lookTouchId = null, lookLastX = 0, lookLastY = 0;
+const JOY_RADIUS = 48;
+const SPEED = 2.6;
+const examTargets = [];
+let nearTarget  = null;
+let examineOpen = false;
+
+function initRoom() {
+  if (roomReady) return;
+  roomReady = true;
+
+  const canvas = document.getElementById('three-canvas');
+
+  // ── Renderer ──
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // cap at 1.5× — saves ~44% GPU fill
+  renderer.shadowMap.enabled = false;  // no shadows — biggest single perf win
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  handleResize();
+
+  // ── Scene ──
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000); // pure black
+  scene.fog = new THREE.Fog(0x000000, 5, 22);  // pure black fog
+
+  // ── Camera ──
+  camera = new THREE.PerspectiveCamera(68, canvas.clientWidth / canvas.clientHeight, 0.05, 200);
+  camera.position.set(0, 1.65, 12.0);
+  camera.rotation.order = 'YXZ';
+
+  // ── Hallway dims ──
+  const HW = 2.0;   // half-width  → 4m total (narrower)
+  const HL = 20;    // half-length → 40m total (more darkness at ends)
+  const RH = 3.6;   // height
+
+  // ── Floor: gray parquet ──
+  const floorTex = makeParquetTexture();
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(HW*2, HL*2),
+    new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.88, metalness: 0.0 })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  scene.add(floor);
+
+  // ── Starry sky (no ceiling) ──
+  skyMaterial = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    fog:  false,
+    uniforms: { uTime: { value: 0 } },
+
+    vertexShader: `
+      varying vec3 vDir;
+      void main() {
+        vDir = normalize(position);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+
+    fragmentShader: `
+      precision highp float;
+      uniform float uTime;
+      varying vec3 vDir;
+
+      float h1(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+      vec2  h2(vec2 p){ return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453); }
+
+      // Blackbody palette: M-red → K-orange → G-yellow → A-white → OB-blue
+      vec3 bbCol(float t){
+        if(t<0.25) return mix(vec3(1.0,0.42,0.18),vec3(1.0,0.68,0.38),t*4.0);
+        if(t<0.50) return mix(vec3(1.0,0.68,0.38),vec3(1.0,0.92,0.68),(t-0.25)*4.0);
+        if(t<0.75) return mix(vec3(1.0,0.92,0.68),vec3(0.96,0.97,1.00),(t-0.50)*4.0);
+        return mix(vec3(0.96,0.97,1.00),vec3(0.68,0.82,1.00),(t-0.75)*4.0);
+      }
+
+      // Returns vec4(coloredBrightness.rgb, scalarBrightness)
+      // — no inout, fully compatible with all WebGL drivers
+      vec4 starField(vec2 uv, float sc, float dens, float minSz, float maxSz){
+        vec2 g=floor(uv*sc), f=fract(uv*sc);
+        vec3 col=vec3(0.0); float v=0.0;
+        for(int i=-1;i<=1;i++) for(int j=-1;j<=1;j++){
+          vec2  nb = g+vec2(float(i),float(j));
+          if(h1(nb)>dens) continue;
+          vec2  pos = h2(nb+3.1)*0.80+0.10;
+          float sz  = minSz + h1(nb+23.1)*(maxSz-minSz);
+          float brt = pow(h1(nb+77.3),2.0)*0.80+0.20;
+          float twk = 0.92+0.08*sin(uTime*(0.10+h1(nb+91.1)*0.55)+h1(nb)*6.28);
+          vec2  dv  = f-vec2(float(i),float(j))-pos;
+          float r   = length(dv);
+          float core= exp(-r*r/max(sz*sz*0.12,1e-7));
+          float halo= exp(-r*r/max(sz*sz*(4.0+brt*8.0),1e-6))*0.20*brt;
+          float spk = 0.0;
+          if(brt>0.72){
+            float s=(brt-0.72)/0.28;
+            spk=(exp(-dv.y*dv.y/max(sz*sz*0.04,1e-7))*exp(-abs(dv.x)/max(sz*1.6,1e-5))
+                +exp(-dv.x*dv.x/max(sz*sz*0.04,1e-7))*exp(-abs(dv.y)/max(sz*1.6,1e-5)))*0.05*s;
+          }
+          float c=(core+halo+spk)*brt*twk;
+          col+=bbCol(h1(nb+44.9))*c; v+=c;
+        }
+        return vec4(col,v);
+      }
+
+      void main(){
+        vec3 d=normalize(vDir);
+        float above=smoothstep(-0.10,0.06,d.y);
+        vec3 sky=vec3(0.0,0.0,0.004)*clamp(d.y*0.5+0.5,0.0,1.0);
+
+        // ── Each star layer gets its own rotated phi so seams never overlap ──
+        // Rotating d around Y before atan() shifts the wrap-seam to a
+        // different azimuth per layer — no single seam is ever dominant.
+        float ey=d.y*0.5+0.5;
+
+        // phi0: original (+z seam)
+        float phi0=atan(d.x,d.z)*0.15915+0.5;
+        // phi1: rotated 72° around Y
+        float phi1=atan( 0.951*d.x+0.309*d.z,-0.309*d.x+0.951*d.z)*0.15915+0.5;
+        // phi2: rotated 144°
+        float phi2=atan( 0.588*d.x-0.809*d.z, 0.809*d.x+0.588*d.z)*0.15915+0.5;
+        // phi3: rotated 216°
+        float phi3=atan(-0.588*d.x-0.809*d.z, 0.809*d.x-0.588*d.z)*0.15915+0.5;
+        // phi4: rotated 288°
+        float phi4=atan(-0.951*d.x+0.309*d.z,-0.309*d.x-0.951*d.z)*0.15915+0.5;
+
+        vec4 s1=starField(vec2(phi0,ey),        9.0,0.030,0.030,0.052);
+        vec4 s2=starField(vec2(phi1,ey)*1.9,   22.0,0.060,0.016,0.028);
+        vec4 s3=starField(vec2(phi2,ey)*3.6,   55.0,0.110,0.009,0.016);
+        vec4 s4=starField(vec2(phi3,ey)*6.5,  115.0,0.160,0.005,0.009);
+        vec4 s5=starField(vec2(phi4,ey)*11.0, 240.0,0.200,0.002,0.005);
+        vec3 starCol=(s1.rgb*3.0+s2.rgb*1.5+s3.rgb*0.8+s4.rgb*0.4+s5.rgb*0.15)*above;
+
+        // ── Milky Way — seam-free: use sinP/cosP from d.xz directly ──
+        // sin(φ)=d.x/r and cos(φ)=d.z/r are continuous everywhere (no atan jump)
+        float r2d=max(sqrt(d.x*d.x+d.z*d.z),0.001);
+        float sinP=d.x/r2d;  float cosP=d.z/r2d;
+        // double-angle identities for freq-2 terms
+        float sin2P=2.0*sinP*cosP;
+        float cos2P=cosP*cosP-sinP*sinP;
+        // freq-4 from freq-2
+        float sin4P=2.0*sin2P*cos2P;
+        float cos4P=cos2P*cos2P-sin2P*sin2P;
+
+        float gl=d.y-0.18*sinP+0.06*cosP;
+        float mwC=exp(-gl*gl*18.0)*0.14;
+        float mwH=exp(-gl*gl*2.8)*0.024;
+        float dust=exp(-gl*gl*280.0)*0.65;
+        float mwV=(mwC*(0.45+0.55*(0.5+0.5*sin2P))+
+                   mwH*(0.5+0.5*sin4P))*
+                  (1.0-dust*0.60)*(0.5+0.5*cos4P+0.3*d.y);
+        mwV*=above*smoothstep(-0.15,0.12,d.y);
+        vec3 mwCol=mix(vec3(0.48,0.44,0.72),vec3(1.00,0.88,0.62),smoothstep(0.0,0.10,mwC))*mwV;
+
+        // Nebulae (use phi0 — Gaussians are far from the seam so no visible jump)
+        vec3 neb=vec3(0.10,0.04,0.30)*exp(-pow(length(vec2(phi0-0.20,d.y-0.40))*3.8,2.0))*0.014*above
+               + vec3(0.04,0.14,0.28)*exp(-pow(length(vec2(phi0-0.68,d.y-0.58))*4.5,2.0))*0.009*above;
+
+        gl_FragColor=vec4(sky+starCol+mwCol+neb,1.0);
+      }
+    `
+  });
+
+  skyMaterial.depthWrite = false;
+  skyMesh = new THREE.Mesh(new THREE.SphereGeometry(120, 32, 32), skyMaterial);
+  skyMesh.renderOrder = -1;
+  scene.add(skyMesh);
+
+  // ── Walls — gradient texture fades top edge to black (no overlay planes) ──
+  function makeWallTex() {
+    const cv = document.createElement('canvas');
+    cv.width = 4; cv.height = 256;
+    const ctx = cv.getContext('2d');
+    // top-to-bottom: black → wall colour (blends wall top into sky)
+    const g = ctx.createLinearGradient(0, 0, 0, 256);
+    g.addColorStop(0,    '#000000');
+    g.addColorStop(0.13, '#e0e0de');
+    g.addColorStop(1,    '#e4e4e2');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 4, 256);
+    const t = new THREE.CanvasTexture(cv); t.needsUpdate = true; return t;
+  }
+  const wallMat = new THREE.MeshStandardMaterial({ map: makeWallTex(), roughness: 0.95 });
+  [
+    { pos: [-HW, RH/2, 0], ry:  Math.PI/2 },
+    { pos: [ HW, RH/2, 0], ry: -Math.PI/2 },
+  ].forEach(({ pos, ry }) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(HL*2, RH), wallMat);
+    m.position.set(...pos);
+    m.rotation.y = ry;
+    scene.add(m);
+  });
+
+  // ── Baseboard ──
+  const trimMat = new THREE.MeshStandardMaterial({ color: 0xc8c8c6, roughness: 0.8 });
+  const TH = 0.09, TD = 0.028;
+  [[-HW + TD/2, 0], [HW - TD/2, 0]].forEach(([x, z]) => {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(TD, TH, HL*2), trimMat);
+    b.position.set(x, TH/2, z);
+    scene.add(b);
+  });
+
+  // ── Moonlight: cool blue-white from above, very dim ──
+  scene.add(new THREE.AmbientLight(0xb8c8e0, 0.06));
+  const moon = new THREE.DirectionalLight(0xccddef, 0.18);
+  moon.position.set(2, 10, -4);
+  scene.add(moon);
+
+  // ── Photos: 3 left, 3 right ──
+  const photoZs = [-8, -1.5, 5];
+  const PW = 2.1, PH = 1.40;  // 3:2
+
+  const frameLayout = [
+    ...photoZs.map((z, i) => ({ src: ROOM_PHOTOS[i],   x: -HW+0.05, y: 1.72, z, ry:  Math.PI/2 })),
+    ...photoZs.map((z, i) => ({ src: ROOM_PHOTOS[i+3], x:  HW-0.05, y: 1.72, z, ry: -Math.PI/2 })),
+  ];
+
+  // Load + downsample to 1024px max before GPU upload
+  // Saves ~97% GPU texture memory vs full 6000×4000 originals
+  function loadTex(src, cb) {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1024;
+      const sw = img.naturalWidth, sh = img.naturalHeight;
+      if (sw > MAX || sh > MAX) {
+        const scale = Math.min(MAX / sw, MAX / sh);
+        const cv = document.createElement('canvas');
+        cv.width  = Math.round(sw * scale);
+        cv.height = Math.round(sh * scale);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        const tex = new THREE.CanvasTexture(cv);
+        tex.encoding = THREE.sRGBEncoding;
+        cb(tex);
+      } else {
+        const tex = new THREE.Texture(img);
+        tex.encoding = THREE.sRGBEncoding;
+        tex.needsUpdate = true;
+        cb(tex);
+      }
+    };
+    img.src = src;
+  }
+
+  const plaqueData = PHOTO_META;
+
+  function makePlaqueTexture({ title, year, camera, desc }) {
+    const W = 560, H = 360;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    // Background card — off-white, rounded corners
+    const R = 18;
+    ctx.fillStyle = '#f2ede8';
+    ctx.beginPath();
+    ctx.moveTo(R, 0);
+    ctx.lineTo(W - R, 0); ctx.quadraticCurveTo(W, 0, W, R);
+    ctx.lineTo(W, H - R); ctx.quadraticCurveTo(W, H, W - R, H);
+    ctx.lineTo(R, H);     ctx.quadraticCurveTo(0, H, 0, H - R);
+    ctx.lineTo(0, R);     ctx.quadraticCurveTo(0, 0, R, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    const PAD = 36;
+
+    // Year
+    ctx.font = '200 24px Arial, sans-serif';
+    ctx.fillStyle = '#4a4642';
+    ctx.fillText(year, PAD, PAD + 48);
+
+    // Camera
+    ctx.font = '300 20px Arial, sans-serif';
+    ctx.fillStyle = '#9a9690';
+    ctx.fillText(camera, PAD, PAD + 80);
+
+    // Separator line
+    ctx.strokeStyle = '#ccc9c4';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PAD, PAD + 104); ctx.lineTo(W - PAD, PAD + 104);
+    ctx.stroke();
+
+    // Description — italic, small
+    ctx.font = 'italic 21px Georgia, serif';
+    ctx.fillStyle = '#5a5652';
+    const lines = desc.split('\n');
+    lines.forEach((line, i) => ctx.fillText(line, PAD, PAD + 142 + i * 32));
+
+    const tex = new THREE.CanvasTexture(cv);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  frameLayout.forEach(({ src, x, y, z, ry }, frameIdx) => {
+    const euler  = new THREE.Euler(0, ry, 0);
+    const isLeft = ry > 0;
+    const inward = isLeft ? 1 : -1;
+
+    // ── Minimalist frame: 4 thin bars, no chunky box ──
+    const FT = 0.016;  // frame thickness (very thin)
+    const FD = 0.014;  // frame depth  (almost flat)
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0x1a1714, roughness: 0.78, metalness: 0.08 });
+
+    // top, bottom, left, right bars
+    [
+      [PW + FT*2,  FT,        FD,  0,            y + PH/2 + FT/2, z],  // top
+      [PW + FT*2,  FT,        FD,  0,            y - PH/2 - FT/2, z],  // bottom
+      [FT,         PH + FT*2, FD,  -PW/2 - FT/2, y,               z],  // left
+      [FT,         PH + FT*2, FD,   PW/2 + FT/2, y,               z],  // right
+    ].forEach(([bw, bh, bd, dx, by, bz]) => {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), frameMat);
+      // transform from local plane space to world space
+      const wp = new THREE.Vector3(dx, by - y, bd/2 + 0.01).applyEuler(euler);
+      bar.position.set(x + wp.x, y + wp.y, z + wp.z);
+      bar.rotation.y = ry;
+      scene.add(bar);
+    });
+
+    // ── Photo (no separate matte — frame is thin enough to show wall) ──
+    loadTex(src, tex => {
+      const photoOff = new THREE.Vector3(0, 0, 0.022).applyEuler(euler);
+      const photo = new THREE.Mesh(
+        new THREE.PlaneGeometry(PW, PH),
+        new THREE.MeshStandardMaterial({ map: tex, roughness: 0.80, metalness: 0.0 })
+      );
+      photo.position.set(x + photoOff.x, y + photoOff.y, z + photoOff.z);
+      photo.rotation.y = ry;
+      scene.add(photo);
+    });
+
+    // ── Museum plaque — to the RIGHT of the photo ──
+    const PQW = 0.50, PQH = 0.34;
+    // "right" from the viewer's POV:
+    //   left  wall (ry= PI/2, viewer faces –x): viewer right = –z → plaque shifts –z
+    //   right wall (ry=–PI/2, viewer faces +x): viewer right = +z → plaque shifts +z
+    const zShift = isLeft
+      ? -(PW/2 + 0.07 + PQW/2)
+      :  (PW/2 + 0.07 + PQW/2);
+    // Push plaque off wall surface along its normal (left wall: +x, right wall: –x)
+    const wallNudge = new THREE.Vector3(0, 0, 0.02).applyEuler(euler);
+    const pqY = 1.48; // comfortable reading height
+
+    const plaque = new THREE.Mesh(
+      new THREE.PlaneGeometry(PQW, PQH),
+      new THREE.MeshBasicMaterial({
+        map: makePlaqueTexture(plaqueData[frameIdx]),
+        transparent: true,
+        depthWrite: false,
+        side: THREE.FrontSide,
+      })
+    );
+    plaque.position.set(
+      x + wallNudge.x,
+      pqY,
+      z + zShift + wallNudge.z
+    );
+    plaque.rotation.y = ry;
+    scene.add(plaque);
+
+    // Register for examine mode (use original for examine overlay)
+    examTargets.push({ src: PHOTOS[frameIdx], px: x, pz: z, idx: frameIdx, ...plaqueData[frameIdx] });
+
+    // ════════════════════════════════════════════
+    // 2-LIGHT RIG — same quality, half the GPU cost
+    // ════════════════════════════════════════════
+
+    const spX = x + inward * 1.05;
+    const spY = RH - 0.1;
+
+    // ── KEY + WASH in one ──
+    const key = new THREE.SpotLight(0xffbf6a, 3.8);
+    key.position.set(spX, spY, z);
+    key.target.position.set(x + inward * 0.04, y, z);
+    key.angle    = 0.62;
+    key.penumbra = 1.0;
+    key.decay    = 1.3;
+    key.distance = 11;
+    scene.add(key, key.target);
+
+    // ── BOUNCE POINT ──
+    const bounce = new THREE.PointLight(0xffa040, 0.55, 4.2, 0.8);
+    bounce.position.set(x + inward * 0.26, y, z);
+    scene.add(bounce);
+  });
+
+  // No end walls — the hallway fades into darkness
+
+  // ── Adaptar texto de bienvenida en móvil ──
+  if (isMobile) {
+    document.getElementById('overlay-hint').textContent =
+      'Izquierda — moverse  ·  Derecha — mirar';
+    const hud = document.getElementById('hud-controls');
+    hud.innerHTML = '<span>Izquierda — Moverse</span><span>Derecha — Mirar</span><span>Botón — Examinar</span>';
+    document.getElementById('hud-esc').style.display = 'none';
+  }
+
+  // ── Pointer lock / entrada móvil ──
+  document.getElementById('enter-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    if (isMobile) {
+      isLocked = true;
+      document.getElementById('room-view').classList.add('in-room', 'locked');
+      setupTouchControls(canvas);
+    } else {
+      canvas.requestPointerLock();
+    }
+  });
+
+  document.addEventListener('pointerlockchange', () => {
+    if (isMobile) return;  // en móvil gestionamos isLocked manualmente
+    const wasLocked = isLocked;
+    isLocked = document.pointerLockElement === canvas;
+    const rv = document.getElementById('room-view');
+    rv.classList.toggle('locked', isLocked);
+    if (isLocked && !wasLocked) {
+      rv.classList.add('in-room');  // permanente — oculta el overlay para siempre
+    }
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!isLocked) return;
+    yaw   -= e.movementX * 0.0022;
+    pitch -= e.movementY * 0.0022;
+    pitch = Math.max(-1.3, Math.min(1.3, pitch));
+  });
+
+  window.addEventListener('keydown', e => {
+    keys[e.code] = true;
+    if (e.code === 'KeyE') {
+      if (isLocked && nearTarget && !examineOpen) openExamine(nearTarget);
+      else if (examineOpen) closeExamine();
+    }
+    if (e.code === 'Escape' && examineOpen) closeExamine();
+  });
+  window.addEventListener('keyup',   e => { keys[e.code] = false; });
+  window.addEventListener('resize', handleResize);
+
+  animate();
+}
+
+function openExamine(t) {
+  examineOpen = true;
+  document.exitPointerLock();
+  document.getElementById('examine-img').src = t.src;
+  document.getElementById('examine-num').textContent =
+    `${String(t.idx + 1).padStart(2, '0')} / ${String(examTargets.length).padStart(2, '0')}`;
+  document.getElementById('examine-title').textContent = '';
+  document.getElementById('examine-meta').innerHTML =
+    `${t.year}<br>${t.camera.toUpperCase()}`;
+  document.getElementById('examine-desc').innerHTML = t.desc.replace('\n', '<br>');
+  document.getElementById('examine-overlay').classList.add('open');
+}
+
+function closeExamine() {
+  document.getElementById('examine-overlay').classList.remove('open');
+  setTimeout(() => {
+    examineOpen = false;
+    if (!isMobile && document.getElementById('room-view').classList.contains('active')) {
+      document.getElementById('three-canvas').requestPointerLock();
+    }
+  }, 460);
+}
+
+function setupTouchControls(canvas) {
+  canvas.addEventListener('touchstart', e => {
+    if (!isLocked) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    for (const touch of e.changedTouches) {
+      const cx = touch.clientX - rect.left;
+      if (cx < rect.width * 0.45 && joyTouchId === null) {
+        // Joystick izquierdo — aparece donde posa el dedo
+        joyTouchId = touch.identifier;
+        joyBaseX = touch.clientX; joyBaseY = touch.clientY;
+        joyDX = joyDY = 0;
+        const joy = document.getElementById('mobile-joy');
+        joy.style.left = (cx - 55) + 'px';
+        joy.style.top  = (touch.clientY - rect.top - 55) + 'px';
+        joy.style.display = 'block';
+        document.getElementById('joy-thumb').style.transform = 'translate(-50%,-50%)';
+      } else if (cx >= rect.width * 0.45 && lookTouchId === null) {
+        // Zona derecha → mirar
+        lookTouchId = touch.identifier;
+        lookLastX = touch.clientX; lookLastY = touch.clientY;
+      }
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', e => {
+    if (!isLocked) return;
+    e.preventDefault();
+    for (const touch of e.changedTouches) {
+      if (touch.identifier === joyTouchId) {
+        const dx = touch.clientX - joyBaseX;
+        const dy = touch.clientY - joyBaseY;
+        const len = Math.sqrt(dx*dx + dy*dy);
+        const cap = Math.min(len, JOY_RADIUS);
+        const nx = len > 0 ? dx/len*cap : 0;
+        const ny = len > 0 ? dy/len*cap : 0;
+        joyDX = nx / JOY_RADIUS;
+        joyDY = ny / JOY_RADIUS;
+        document.getElementById('joy-thumb').style.transform =
+          `translate(calc(-50% + ${nx}px), calc(-50% + ${ny}px))`;
+      } else if (touch.identifier === lookTouchId) {
+        const dx = touch.clientX - lookLastX;
+        const dy = touch.clientY - lookLastY;
+        yaw   -= dx * 0.004;
+        pitch -= dy * 0.004;
+        pitch = Math.max(-1.3, Math.min(1.3, pitch));
+        lookLastX = touch.clientX; lookLastY = touch.clientY;
+      }
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', e => {
+    for (const touch of e.changedTouches) {
+      if (touch.identifier === joyTouchId) {
+        joyTouchId = null; joyDX = joyDY = 0;
+        document.getElementById('mobile-joy').style.display = 'none';
+      } else if (touch.identifier === lookTouchId) {
+        lookTouchId = null;
+      }
+    }
+  });
+
+  // Botón examinar táctil
+  document.getElementById('mobile-examine-btn').addEventListener('click', () => {
+    if (nearTarget && !examineOpen) openExamine(nearTarget);
+    else if (examineOpen) closeExamine();
+  });
+}
+
+function handleResize() {
+  if (!renderer) return;
+  const canvas = document.getElementById('three-canvas');
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  renderer.setSize(W, H);
+  if (camera) { camera.aspect = W / H; camera.updateProjectionMatrix(); }
+}
+
+// Pre-allocate — never create objects inside the render loop
+const _moveDir   = new THREE.Vector3();
+const _moveEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+
+// Walking bob state
+const BASE_CAM_Y = 1.65;
+let walkCycle  = 0;   // phase of the walk cycle
+let bobBlend   = 0;   // 0=still, 1=walking (smooth transition)
+
+let lastT = performance.now();
+function animate() {
+  animId = requestAnimationFrame(animate);
+  const now = performance.now();
+  const dt  = Math.min((now - lastT) / 1000, 0.05);
+  lastT = now;
+
+  let moving = false;
+
+  if (isLocked) {
+    _moveDir.set(0, 0, 0);
+    if (keys['KeyW'] || keys['ArrowUp'])    _moveDir.z -= 1;
+    if (keys['KeyS'] || keys['ArrowDown'])  _moveDir.z += 1;
+    if (keys['KeyA'] || keys['ArrowLeft'])  _moveDir.x -= 1;
+    if (keys['KeyD'] || keys['ArrowRight']) _moveDir.x += 1;
+
+    // Joystick táctil (móvil)
+    if (Math.abs(joyDX) > 0.05 || Math.abs(joyDY) > 0.05) {
+      _moveDir.x += joyDX;
+      _moveDir.z += joyDY;
+    }
+
+    if (_moveDir.lengthSq() > 0) {
+      moving = true;
+      _moveEuler.y = yaw;
+      _moveDir.normalize().applyEuler(_moveEuler);
+      const nx = camera.position.x + _moveDir.x * SPEED * dt;
+      const nz = camera.position.z + _moveDir.z * SPEED * dt;
+      camera.position.x = Math.max(-1.45, Math.min(1.45, nx));
+      camera.position.z = Math.max(-13.0, Math.min(11.8, nz));
+    }
+
+    camera.rotation.y = yaw;
+    camera.rotation.x = pitch;
+
+    // Proximity check — show [ E ] hint when near a photo
+    nearTarget = null;
+    let _nd = 999;
+    for (const t of examTargets) {
+      const dx = camera.position.x - t.px;
+      const dz = camera.position.z - t.pz;
+      const d = Math.sqrt(dx*dx + dz*dz);
+      if (d < 2.2 && d < _nd) { _nd = d; nearTarget = t; }
+    }
+    document.getElementById('hud-examine').style.opacity = nearTarget ? '1' : '0';
+    if (isMobile) document.getElementById('mobile-examine-btn').style.opacity = nearTarget ? '1' : '0';
+
+    // End-of-hall message
+    const atEnd = camera.position.z < -11.5;
+    document.getElementById('hud-end').style.opacity = atEnd ? '1' : '0';
+  }
+
+  // ── Walking bob ──
+  // Blend smoothly in/out as player starts or stops
+  const target = moving ? 1.0 : 0.0;
+  bobBlend += (target - bobBlend) * Math.min(1.0, dt * 4.5);
+
+  if (bobBlend > 0.001) {
+    walkCycle += dt * 6.0;  // step frequency
+    const vertical   =  Math.sin(walkCycle)       * 0.022 * bobBlend;
+    const horizontal =  Math.sin(walkCycle * 0.5) * 0.008 * bobBlend;
+    camera.position.y = BASE_CAM_Y + vertical;
+    camera.rotation.z = horizontal * 0.012;  // subtle lean per step
+  } else {
+    camera.position.y = BASE_CAM_Y;
+    camera.rotation.z = 0;
+  }
+
+  if (skyMesh) skyMesh.position.copy(camera.position);
+  if (skyMaterial) skyMaterial.uniforms.uTime.value += dt;
+  renderer.render(scene, camera);
+}
+
+// ── Procedural gray parquet floor ──
+function makeParquetTexture() {
+  const S = 512;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const ctx = cv.getContext('2d');
+
+  const PLANK_W = 80, PLANK_H = 14;
+  // Cool gray tones
+  const tones = ['#7e7e7c','#888886','#797978','#848482','#7a7a79','#818180'];
+
+  ctx.fillStyle = '#7e7e7c';
+  ctx.fillRect(0, 0, S, S);
+
+  let row = 0;
+  for (let y = 0; y < S; y += PLANK_H) {
+    const offset = (row % 2) * (PLANK_W / 2);
+    row++;
+    for (let x = -PLANK_W + offset; x < S + PLANK_W; x += PLANK_W) {
+      ctx.fillStyle = tones[Math.floor(Math.random() * tones.length)];
+      ctx.fillRect(x + 1, y + 1, PLANK_W - 2, PLANK_H - 2);
+
+      // subtle grain
+      ctx.save();
+      ctx.globalAlpha = 0.05;
+      ctx.strokeStyle = '#3a3a38';
+      ctx.lineWidth = 0.5;
+      for (let g = 0; g < 4; g++) {
+        const gx = x + (g / 3) * PLANK_W + (Math.random() - 0.5) * 3;
+        ctx.beginPath();
+        ctx.moveTo(gx, y + 1);
+        ctx.lineTo(gx + (Math.random() - 0.5) * 2, y + PLANK_H - 1);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  // Grout lines
+  ctx.save();
+  ctx.globalAlpha = 0.12;
+  ctx.fillStyle = '#606060';
+  for (let y = 0; y < S; y += PLANK_H) {
+    ctx.fillRect(0, y, S, 1);
+  }
+  ctx.restore();
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1.2, 9);
+  return tex;
+}
+</script>
+</body>
+</html>
