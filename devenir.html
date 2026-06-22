@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
 <title>DEVENIR — El diario del Pianista</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
@@ -18,6 +17,7 @@
   --text: #2b2b2b;
   --muted: #9a9a9a;
   --line: #d8d5d1;
+  --accent: #b8a99a;
 }
 
 * {
@@ -35,6 +35,43 @@ body {
   animation: pageIn 0.45s ease both;
 }
 
+/* PROGRESS BAR */
+
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 1.5px;
+  width: 0%;
+  background: linear-gradient(to right, var(--accent), var(--text));
+  z-index: 100;
+  transition: width 0.05s linear;
+  opacity: 0.7;
+}
+
+/* BACK */
+
+.back {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  opacity: 0.45;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 20;
+}
+
+.back:hover {
+  opacity: 1;
+  transform: translateX(-4px);
+}
+
 /* HERO */
 
 .hero {
@@ -44,6 +81,24 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('devenir_portada.jpg');
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.07;
+  z-index: 0;
+  filter: grayscale(30%);
+}
+
+.hero > *:not(.hero-bg) {
+  position: relative;
+  z-index: 1;
 }
 
 .hero .small {
@@ -78,6 +133,43 @@ body {
   font-size: 1.1rem;
   color: #7a7a7a;
   letter-spacing: 0.04em;
+  margin-bottom: 48px;
+}
+
+
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.35;
+  animation: scrollPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 0.6; transform: translateY(5px); }
+}
+
+.hero-scroll span {
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-scroll svg {
+  width: 12px;
+  height: 16px;
+  stroke: var(--muted);
+  fill: none;
+  stroke-width: 1;
 }
 
 /* CONTENT */
@@ -87,6 +179,239 @@ body {
   margin: 0 auto;
   padding: 100px 20px;
 }
+
+/* ALBUM SECTION */
+
+.album {
+  margin-bottom: 80px;
+  padding-bottom: 80px;
+  border-bottom: 1px solid var(--line);
+}
+
+.album h2 {
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.album-desc {
+  color: #666;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.album-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.album-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.album-item strong {
+  font-size: 18px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+}
+
+.album-item span {
+  font-size: 16px;
+  color: #777;
+}
+
+/* RELEASE CARD */
+
+.release-card {
+  margin: 72px 0 80px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.release-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.release-img {
+  flex-shrink: 0;
+  display: block;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+}
+
+.release-img.contraportada {
+  width: 115px;
+  height: 115px;
+  opacity: 0.72;
+  transform: perspective(600px) rotateY(6deg);
+  transform-origin: right center;
+}
+
+.release-img.portada {
+  width: 115px;
+  height: 115px;
+  transform: perspective(600px) rotateY(-6deg);
+  transform-origin: left center;
+}
+
+.release-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 28px;
+  text-align: center;
+}
+
+.release-info .release-title {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 1rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.release-info .release-meta {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.platform-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.platform-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  padding: 10px 0;
+  border: 1px solid var(--line);
+  border-radius: 1px;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.platform-link:hover {
+  opacity: 0.5;
+  border-color: var(--accent);
+}
+
+.platform-link .pl-dot {
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+@media (max-width: 560px) {
+  .release-card {
+    gap: 16px;
+  }
+
+  .release-img.contraportada,
+  .release-img.portada {
+    width: 76px;
+    height: 76px;
+    transform: none;
+  }
+
+  .release-info {
+    padding: 0 14px;
+  }
+}
+
+/* PHASE MARKER */
+
+.phase-marker {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 80px 0 64px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.phase-marker.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.phase-marker .phase-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.phase-marker .phase-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.phase-marker .phase-num {
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.phase-marker .phase-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.05rem;
+  color: #6a6a6a;
+  letter-spacing: 0.02em;
+}
+
+.phase-marker .phase-days {
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* DIARY ENTRIES */
 
 .entry {
   margin-bottom: 160px;
@@ -102,7 +427,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .entry {
+  .entry, .phase-marker, .listen-block {
     transition: none;
     transform: none;
     opacity: 1;
@@ -122,6 +447,44 @@ body {
   line-height: 1.85;
   color: #555;
   white-space: pre-line;
+}
+
+/* DOWNLOAD */
+
+.download-block {
+  text-align: center;
+  padding: 0 20px 120px;
+}
+
+.download-block .dl-label {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-weight: 100;
+  font-size: 10px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.download-block a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 3px;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.download-block a:hover {
+  opacity: 0.5;
+  border-color: var(--accent);
 }
 
 /* FOOTER */
@@ -160,139 +523,97 @@ footer span {
   .day {
     font-size: 24px;
   }
-}
 
-/* ALBUM SECTION */
-
-.album{
-  margin-bottom:120px;
-  padding-bottom:80px;
-  border-bottom:1px solid var(--line);
-}
-
-.album h2{
-  font-family:'Jost', sans-serif;
-  font-weight: 100;
-  font-size: 0.65rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom:20px;
-}
-
-.album-desc{
-  color:#666;
-  font-size:18px;
-  line-height:1.6;
-  margin-bottom:25px;
-}
-
-.album-link{
-  display:inline-block;
-  margin-bottom:40px;
-  text-decoration:none;
-  color:var(--text);
-  border-bottom:1px solid var(--text);
-  padding-bottom:2px;
-  transition:opacity .3s ease;
-}
-
-.album-link:hover{
-  opacity:0.6;
-}
-
-.album-list{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-.album-item{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-
-.album-item strong{
-  font-size:18px;
-  font-family:'Cormorant Garamond', serif;
-  font-weight: 400;
-}
-
-.album-item span{
-  font-size:16px;
-  color:#777;
-}
-</style>
-<style>
-.back {
-  position: fixed;
-  top: 30px;
-  left: 30px;
-  font-family: 'Jost', sans-serif;
-  font-weight: 100;
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--text);
-  text-decoration: none;
-  opacity: 0.45;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 20;
-}
-
-.back:hover {
-  opacity: 1;
-  transform: translateX(-4px);
+  .hero-cover {
+    width: 90px;
+    height: 90px;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<div id="progress-bar"></div>
+
 <a href="index.html" class="back">← Volver</a>
 
 <section class="hero">
-  <div class="small">UN RELATO</div>
+  <div class="hero-bg"></div>
+  <div class="small">Un dietario</div>
   <h1>DEVENIR</h1>
   <div class="line"></div>
   <div class="subtitle">El diario del Pianista</div>
+  <div class="hero-scroll">
+    <span>Leer</span>
+    <svg viewBox="0 0 14 20" xmlns="http://www.w3.org/2000/svg">
+      <line x1="7" y1="0" x2="7" y2="14"/>
+      <polyline points="3,10 7,14 11,10"/>
+    </svg>
+  </div>
 </section>
 
 <section class="container">
 
   <div class="album">
+    <h2>El álbum</h2>
     <p class="album-desc">Seis piezas que recorren el mismo proceso que el diario. Cada una corresponde a un tramo concreto del relato; los números indican los días en los que se sitúa cada fragmento.</p>
-
 
     <div class="album-list">
       <div class="album-item">
-        <strong>1. Umbral (Días 1–4)</strong>
+        <strong>I. Umbral <em style="font-weight:300;color:#999;font-size:0.9em">— Días 1–4</em></strong>
         <span>El inicio. El peso del pasado paraliza.</span>
       </div>
       <div class="album-item">
-        <strong>2. Tensión Interna (Días 5–8)</strong>
+        <strong>II. Tensión Interna <em style="font-weight:300;color:#999;font-size:0.9em">— Días 5–8</em></strong>
         <span>Comparación constante con lo que fue.</span>
       </div>
       <div class="album-item">
-        <strong>3. Fractura y Desfase (Días 9–16)</strong>
+        <strong>III. Fractura y Desfase <em style="font-weight:300;color:#999;font-size:0.9em">— Días 9–16</em></strong>
         <span>El sonido y la identidad dejan de coincidir.</span>
       </div>
       <div class="album-item">
-        <strong>4. Inercia (Días 17–21)</strong>
+        <strong>IV. Inercia <em style="font-weight:300;color:#999;font-size:0.9em">— Días 17–21</em></strong>
         <span>Repetición, esfuerzo, desgaste.</span>
       </div>
       <div class="album-item">
-        <strong>5. Cese de la Resistencia (Días 22–27)</strong>
+        <strong>V. Cese de la Resistencia <em style="font-weight:300;color:#999;font-size:0.9em">— Días 22–27</em></strong>
         <span>Abandono de la exigencia.</span>
       </div>
       <div class="album-item">
-        <strong>6. Autorreconfiguración (Días 28–30)</strong>
+        <strong>VI. Autorreconfiguración <em style="font-weight:300;color:#999;font-size:0.9em">— Días 28–30</em></strong>
         <span>Lo nuevo aparece. Y es propio.</span>
       </div>
-
-     <a href="https://podcasts.apple.com/es/podcast/devenir/id1887480447" class="album-link">Escuchar el podcast completo →</a>
-
     </div>
+  </div>
+
+  <!-- RELEASE CARD -->
+  <div class="release-card">
+    <img class="release-img contraportada" src="devenir_contraportada.jpg" alt="DEVENIR — contraportada">
+    <div class="release-info">
+      <p class="release-title">Devenir</p>
+      <p class="release-meta">Álbum · 6 piezas · 2025</p>
+      <div class="platform-links">
+        <a class="platform-link" href="https://podcasts.apple.com/es/podcast/devenir/id1887480447" target="_blank">
+          <span class="pl-dot"></span> Apple Podcasts
+        </a>
+        <a class="platform-link" href="https://open.spotify.com/show/XXXXXXXX" target="_blank">
+          <span class="pl-dot"></span> Spotify
+        </a>
+      </div>
+    </div>
+    <img class="release-img portada" src="devenir_portada.jpg" alt="DEVENIR — portada">
+  </div>
+
+  <!-- FASE I -->
+  <div class="phase-marker">
+    <div class="phase-line"></div>
+    <div class="phase-info">
+      <span class="phase-num">I</span>
+      <span class="phase-name">Umbral</span>
+      <span class="phase-days">Días 1 – 4</span>
+    </div>
+    <div class="phase-line"></div>
   </div>
 
     <div class="entry">
@@ -339,6 +660,17 @@ No llego a tocar nada.
 Solo acaricio desde lo lejano.
     </div>
 </div>
+
+  <!-- FASE II -->
+  <div class="phase-marker">
+    <div class="phase-line"></div>
+    <div class="phase-info">
+      <span class="phase-num">II</span>
+      <span class="phase-name">Tensión Interna</span>
+      <span class="phase-days">Días 5 – 8</span>
+    </div>
+    <div class="phase-line"></div>
+  </div>
 
 <div class="entry">
     <div class="day">Día 5.</div>
@@ -388,6 +720,17 @@ Solo hay pensamientos y silencio.
 Mucho silencio.
     </div>
 </div>
+
+  <!-- FASE III -->
+  <div class="phase-marker">
+    <div class="phase-line"></div>
+    <div class="phase-info">
+      <span class="phase-num">III</span>
+      <span class="phase-name">Fractura y Desfase</span>
+      <span class="phase-days">Días 9 – 16</span>
+    </div>
+    <div class="phase-line"></div>
+  </div>
 
 <div class="entry">
     <div class="day">Día 9.</div>
@@ -520,6 +863,17 @@ El miedo me abraza.
     </div>
 </div>
 
+  <!-- FASE IV -->
+  <div class="phase-marker">
+    <div class="phase-line"></div>
+    <div class="phase-info">
+      <span class="phase-num">IV</span>
+      <span class="phase-name">Inercia</span>
+      <span class="phase-days">Días 17 – 21</span>
+    </div>
+    <div class="phase-line"></div>
+  </div>
+
 <div class="entry">
     <div class="day">Día 17.</div>
     <div class="text">
@@ -592,6 +946,17 @@ Creo que no lo soy…
 Tal vez nunca fuiste tú.
     </div>
 </div>
+
+  <!-- FASE V -->
+  <div class="phase-marker">
+    <div class="phase-line"></div>
+    <div class="phase-info">
+      <span class="phase-num">V</span>
+      <span class="phase-name">Cese de la Resistencia</span>
+      <span class="phase-days">Días 22 – 27</span>
+    </div>
+    <div class="phase-line"></div>
+  </div>
 
 <div class="entry">
     <div class="day">Día 22.</div>
@@ -674,6 +1039,17 @@ Sigo.
     </div>
 </div>
 
+  <!-- FASE VI -->
+  <div class="phase-marker">
+    <div class="phase-line"></div>
+    <div class="phase-info">
+      <span class="phase-num">VI</span>
+      <span class="phase-name">Autorreconfiguración</span>
+      <span class="phase-days">Días 28 – 30</span>
+    </div>
+    <div class="phase-line"></div>
+  </div>
+
 <div class="entry">
     <div class="day">Día 28.</div>
     <div class="text">
@@ -719,6 +1095,18 @@ Y son mías.
 
 </section>
 
+<div class="download-block">
+  <span class="dl-label">Descargar el dietario</span>
+  <a href="DEVENIR. Aarón Alcaide.pdf" download>
+    <svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:currentColor;stroke-width:1.1;opacity:0.6;">
+      <line x1="6.5" y1="0" x2="6.5" y2="11"/>
+      <polyline points="2,7 6.5,11 11,7"/>
+      <line x1="1" y1="15" x2="12" y2="15"/>
+    </svg>
+    DEVENIR — Aarón Alcaide
+  </a>
+</div>
+
 <footer>
   <div class="line"></div>
   <p>Fin</p>
@@ -726,7 +1114,19 @@ Y son mías.
 </footer>
 
 <script>
-const items = document.querySelectorAll('.entry');
+// PROGRESS BAR
+const bar = document.getElementById('progress-bar');
+function updateBar() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  bar.style.width = pct + '%';
+}
+window.addEventListener('scroll', updateBar, { passive: true });
+updateBar();
+
+// INTERSECTION OBSERVER — entries, phase markers, listen block
+const observed = document.querySelectorAll('.entry, .phase-marker, .release-card');
 
 const observer = new IntersectionObserver((entries) => {
   for (const e of entries) {
@@ -740,18 +1140,19 @@ const observer = new IntersectionObserver((entries) => {
   threshold: 0.1
 });
 
-items.forEach(el => observer.observe(el));
+observed.forEach(el => observer.observe(el));
 
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a[href]');
-    if (!a) return;
-    const href = a.getAttribute('href');
-    if (!href || href.startsWith('http') || href.startsWith('#') || a.target === '_blank') return;
-    e.preventDefault();
-    document.body.style.transition = 'opacity 0.3s ease';
-    document.body.style.opacity = '0';
-    setTimeout(() => { window.location.href = href; }, 300);
-  });
+// PAGE TRANSITIONS
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]');
+  if (!a) return;
+  const href = a.getAttribute('href');
+  if (!href || href.startsWith('http') || href.startsWith('#') || a.target === '_blank') return;
+  e.preventDefault();
+  document.body.style.transition = 'opacity 0.3s ease';
+  document.body.style.opacity = '0';
+  setTimeout(() => { window.location.href = href; }, 300);
+});
 </script>
 
 </body>
