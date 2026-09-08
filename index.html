@@ -4,421 +4,137 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aarón Alcaide</title>
-  <meta name="description" content="Aarón Alcaide — fotografía y escritura." />
+  <meta name="description" content="Aarón Alcaide — escritor." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Aarón Alcaide" />
-  <meta property="og:description" content="Fotografía y escritura." />
+  <meta property="og:description" content="Escritor." />
   <meta property="og:url" content="https://aaronalcaide.me/" />
-  <meta property="og:image" content="https://aaronalcaide.me/devenir/portada.jpg" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Aarón Alcaide" />
-  <meta name="twitter:description" content="Fotografía y escritura." />
-  <meta name="twitter:image" content="https://aaronalcaide.me/devenir/portada.jpg" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="twitter:description" content="Escritor." />
+  <link rel="icon" type="image/svg+xml" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --cream:  #faf8f3;
-      --dark:   #221f1a;
-      --mid:    #3a352c;
-      --muted:  #9c9488;
-      --faint:  #cfc7b8;
-      --accent: #7a3b32;
-      --border: #e4dfd3;
+      --white: #ffffff;
+      --black: #111111;
+      --gray:  #6f6f6f;
+      --line:  #dedede;
     }
-    html, body { width: 100%; min-height: 100vh; background: var(--cream); color: var(--mid); font-family: 'Inter', sans-serif; font-weight: 300; }
-    body { animation: pageIn 0.5s ease both; position: relative; }
-    @keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* subtle paper grain for warmth */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: -10%;
-      width: 120%;
-      height: 120%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.035;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .layout { position: relative; z-index: 1; }
-
-    /* editorial split: fixed name on the left, content on the right */
-    .layout { display: flex; min-height: 100vh; }
-
-    .side {
-      flex: 0 0 34%;
-      max-width: 340px;
+    html, body { width: 100%; height: 100%; }
+    body {
       min-height: 100vh;
+      background: var(--white);
+      color: var(--black);
+      font-family: 'EB Garamond', serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 5vh 6vw;
+      opacity: 0;
+      animation: fadeIn 0.7s ease 0.05s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    header {
+      padding-bottom: 2.2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    main {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 4rem 3vw;
-      position: sticky;
-      top: 0;
-      border-right: 1px solid var(--border);
+      max-width: 460px;
     }
 
-    .monogram {
-      width: 42px;
-      height: 42px;
-      border: 1px solid var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'EB Garamond', serif;
-      font-size: 0.95rem;
-      letter-spacing: 0.05em;
-      color: var(--accent);
-      margin-bottom: 1.6rem;
-      opacity: 0;
-      animation: fadeUp 0.9s ease forwards;
-    }
-
-    .side h1 {
-      font-family: 'EB Garamond', serif;
-      font-size: clamp(1.7rem, 3.2vw, 2.3rem);
-      font-weight: 400;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      line-height: 1.45;
-      color: var(--dark);
-      opacity: 0;
-      animation: fadeUp 0.9s ease forwards;
-    }
-
-    .side .rule { width: 34px; height: 1px; background: var(--accent); margin: 1.4rem 0; opacity: 0.6; }
-
-    .side .colophon {
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      opacity: 0;
-      animation: fadeUp 0.9s ease forwards 0.15s;
-    }
-
-    .side footer { margin-top: 2.5rem; opacity: 0; animation: fadeUp 0.9s ease forwards 0.3s; }
-    .side footer a {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    .side footer a:hover { color: var(--accent); }
-
-    .side .stamp {
-      margin-top: 0.6rem;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.58rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-
-    .content { flex: 1; padding: 4rem 5vw; }
-
-    .section { margin-bottom: clamp(3rem, 6vw, 4.5rem); opacity: 0; animation: fadeUp 0.9s ease forwards; }
-    .section:nth-of-type(1) { animation-delay: 0.2s; }
-    .section:nth-of-type(2) { animation-delay: 0.32s; }
-    .section:nth-of-type(3) { animation-delay: 0.44s; }
-
-    .section-label {
-      display: flex;
-      align-items: baseline;
-      gap: 0.9rem;
-      font-family: 'Inter', sans-serif;
+    .eyebrow {
       font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.8rem;
-    }
-    .section-label .num { font-family: 'EB Garamond', serif; font-style: italic; font-weight: 400; letter-spacing: 0; color: var(--faint); }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    .entry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.6rem 2.2rem; }
-
-    .entry {
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1.1rem;
-      padding-left: 0;
-      transition: padding-left 0.3s ease, border-color 0.3s ease;
-    }
-    .entry:hover { padding-left: 0.4rem; border-color: var(--accent); }
-
-    .work-title {
-      font-family: 'EB Garamond', serif;
-      font-size: clamp(1.15rem, 2.4vw, 1.35rem);
       font-weight: 500;
-      color: var(--mid);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 1.1rem;
+    }
+    h1 a {
+      color: var(--black);
       text-decoration: none;
-      position: relative;
-      display: inline-block;
-      transition: color 0.3s;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+      transition: opacity 0.25s ease;
     }
-    .work-title::after {
-      content: '';
-      position: absolute;
-      left: 0; bottom: -2px;
-      width: 0; height: 1px;
-      background: var(--accent);
-      transition: width 0.35s ease;
+    h1 a:hover { opacity: 0.55; }
+
+    .desc {
+      font-size: 0.95rem;
+      font-style: italic;
+      line-height: 1.75;
+      color: var(--gray);
+      max-width: 400px;
     }
-    .work-title:hover { color: var(--dark); }
-    .work-title:hover::after { width: 100%; }
+
+    footer {
+      padding-top: 2.2rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      color: var(--gray);
+    }
+    footer a {
+      color: var(--gray);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.25s ease, border-color 0.25s ease;
+    }
+    footer a:hover { color: var(--black); border-color: var(--black); }
 
     a:focus-visible {
-      outline: 1px solid var(--accent);
-      outline-offset: 4px;
-      border-radius: 1px;
+      outline: 1px solid var(--black);
+      outline-offset: 3px;
     }
 
-    .work-note {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-weight: 300;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 0.35rem;
-    }
-
-    .newsletter-form { display: flex; gap: 0.7rem; max-width: 380px; }
-    .newsletter-form input[type="email"] {
-      flex: 1;
-      font-family: 'Inter', sans-serif;
-      font-weight: 300;
-      font-size: 0.85rem;
-      color: var(--mid);
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--border);
-      padding: 0.5rem 0.1rem;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-    .newsletter-form input[type="email"]::placeholder { color: var(--faint); }
-    .newsletter-form input[type="email"]:focus { border-color: var(--accent); }
-    .newsletter-form input[type="submit"] {
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      font-size: 0.68rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: transparent;
-      border: 1px solid var(--accent);
-      padding: 0.5rem 1.1rem;
-      cursor: pointer;
-      transition: color 0.3s ease, background 0.3s ease;
-    }
-    .newsletter-form input[type="submit"]:hover { color: var(--cream); background: var(--accent); }
-    .newsletter-note {
-      font-family: 'Inter', sans-serif;
-      font-weight: 300;
-      font-size: 0.82rem;
-      color: var(--muted);
-      max-width: 420px;
-      margin-bottom: 1.4rem;
-      line-height: 1.6;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(34, 31, 26, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .modal-overlay.is-open { opacity: 1; pointer-events: auto; }
-
-    .modal-box {
-      background: var(--cream);
-      border: 1px solid var(--border);
-      max-width: 420px;
-      width: 100%;
-      padding: 2.4rem 2.2rem;
-      position: relative;
-      transform: translateY(10px);
-      transition: transform 0.4s ease;
-      box-shadow: 0 20px 50px rgba(34, 31, 26, 0.18);
-    }
-    .modal-overlay.is-open .modal-box { transform: translateY(0); }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1.1rem;
-      background: none;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-    .modal-close:hover { color: var(--accent); }
-
-    .modal-box .monogram { margin-bottom: 1.2rem; opacity: 1; animation: none; }
-    .modal-box h2 {
-      font-family: 'EB Garamond', serif;
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: var(--dark);
-      margin-bottom: 0.8rem;
-    }
-    .modal-box .newsletter-note { max-width: 100%; }
-    .modal-box .newsletter-form { max-width: 100%; }
-
-    @media (max-width: 780px) {
-      .layout { flex-direction: column; }
-      .side {
-        position: relative;
-        max-width: 100%;
-        min-height: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: 3.5rem 8vw 2.5rem;
-        align-items: flex-start;
-      }
-      .content { padding: 3rem 8vw 4rem; }
+    @media (max-width: 560px) {
+      body { padding: 4vh 7vw; }
+      footer { flex-direction: column; gap: 0.6rem; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 
-<div class="layout">
-  <aside class="side">
-    <div class="monogram">AA</div>
-    <h1>Aarón<br>Alcaide</h1>
-    <div class="rule"></div>
-    <p class="colophon">Fotografía &amp; escritura</p>
-    <footer>
-      <a href="mailto:aaronalcaidex@gmail.com">aaronalcaidex@gmail.com</a>
-    </footer>
-  </aside>
+  <header>
+    <span class="wordmark">Aarón Alcaide</span>
+  </header>
 
-  <main class="content">
-    <div class="section">
-      <div class="section-label"><span class="num">01</span><span>Proyectos</span></div>
-      <div class="entry-grid">
-        <div class="entry">
-          <a href="https://thedehron.com" target="_blank" class="work-title">Voces del Dehron</a>
-          <span class="work-note">Relatos narrados por capítulos</span>
-        </div>
-        <div class="entry">
-          <a href="fotografia.html" class="work-title">Fotografía</a>
-          <span class="work-note">Colección &amp; sala virtual</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-label"><span class="num">02</span><span>Relatos</span></div>
-      <div class="entry-grid">
-        <div class="entry"><a href="relatos/tierra-humeda.pdf" target="_blank" class="work-title">Tierra Húmeda</a></div>
-        <div class="entry"><a href="relatos/epitafio-de-un-naufrago.pdf" target="_blank" class="work-title">Epitafio de un Náufrago</a></div>
-        <div class="entry"><a href="relatos/el-otro-lado-del-amanecer.pdf" target="_blank" class="work-title">El Otro Lado del Amanecer</a></div>
-        <div class="entry"><a href="relatos/el-senor-del-prado.pdf" target="_blank" class="work-title">El Señor del Prado</a></div>
-        <div class="entry"><a href="relatos/quiero-ser-un-alevin.pdf" target="_blank" class="work-title">Quiero ser un alevín</a></div>
-        <div class="entry">
-          <a href="devenir.html" class="work-title">Devenir</a>
-          <span class="work-note">Diario del pianista</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-label"><span class="num">03</span><span>Newsletter</span></div>
-      <p class="newsletter-note">Avisos cuando publique nuevos relatos, fotografías o capítulos. Sin spam.</p>
-      <form
-        action="https://buttondown.com/api/emails/embed-subscribe/alcaide"
-        method="post"
-        target="popupwindow"
-        onsubmit="window.open('https://buttondown.com/alcaide', 'popupwindow')"
-        class="newsletter-form"
-      >
-        <input type="email" name="email" placeholder="tu@email.com" required />
-        <input type="hidden" value="1" name="embed" />
-        <input type="submit" value="Suscribirme" />
-      </form>
-    </div>
+  <main>
+    <p class="eyebrow">Proyecto</p>
+    <h1><a href="https://thedehron.com" target="_blank" rel="noopener">VOCES DEL DEhRON</a></h1>
+    <p class="desc">Un universo narrativo de terror y misterio: un podcast por capítulos y un archivo digital que se expanden el uno al otro.</p>
   </main>
-</div>
 
-<div class="modal-overlay" id="newsletterModal">
-  <div class="modal-box">
-    <button class="modal-close" id="newsletterClose" aria-label="Cerrar">Cerrar ✕</button>
-    <div class="monogram">AA</div>
-    <h2>No te pierdas nada nuevo</h2>
-    <p class="newsletter-note">Avisos cuando publique nuevos relatos, fotografías o capítulos. Sin spam.</p>
-    <form
-      action="https://buttondown.com/api/emails/embed-subscribe/alcaide"
-      method="post"
-      target="popupwindow"
-      onsubmit="window.open('https://buttondown.com/alcaide', 'popupwindow')"
-      class="newsletter-form"
-    >
-      <input type="email" name="email" placeholder="tu@email.com" required />
-      <input type="hidden" value="1" name="embed" />
-      <input type="submit" value="Suscribirme" />
-    </form>
-  </div>
-</div>
+  <footer>
+    <span>&copy; Aarón Alcaide</span>
+    <a href="mailto:aaronalcaidex@gmail.com">aaronalcaidex@gmail.com</a>
+  </footer>
 
-<script>
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a[href]');
-    if (!a) return;
-    const href = a.getAttribute('href');
-    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#') || a.target === '_blank') return;
-    e.preventDefault();
-    document.body.style.transition = 'opacity 0.3s ease';
-    document.body.style.opacity = '0';
-    setTimeout(() => { window.location.href = href; }, 300);
-  });
-
-  (function () {
-    const modal = document.getElementById('newsletterModal');
-    const closeBtn = document.getElementById('newsletterClose');
-    const STORAGE_KEY = 'newsletterModalSeen';
-
-    if (!modal || localStorage.getItem(STORAGE_KEY)) return;
-
-    function openModal() { modal.classList.add('is-open'); }
-    function closeModal() {
-      modal.classList.remove('is-open');
-      localStorage.setItem(STORAGE_KEY, '1');
-    }
-
-    setTimeout(openModal, 600);
-    closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-    modal.querySelector('form').addEventListener('submit', () => {
-      localStorage.setItem(STORAGE_KEY, '1');
-    });
-  })();
-</script>
 </body>
 </html>
