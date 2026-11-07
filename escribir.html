@@ -175,6 +175,27 @@
     .log .subj { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .log .empty { color: var(--gray); display: block; }
     .log .tachado { text-decoration: line-through; color: var(--gray); }
+    .log .state button.mini { margin-left: 10px; }
+
+    .tools { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 8px; }
+    .programar { margin-top: 16px; display: grid; gap: 12px; max-width: 26rem; }
+    .programar input { font-size: 16px; }
+
+    .vista {
+      position: fixed; inset: 0; z-index: 30;
+      background: rgba(20, 20, 18, 0.55);
+      display: flex; align-items: center; justify-content: center;
+      padding: 4vh 12px;
+    }
+    .vista-caja {
+      width: min(100%, 680px); max-height: 92vh;
+      display: flex; flex-direction: column;
+      background: var(--paper); border: 1px solid var(--ink);
+      padding: 14px 14px 12px;
+    }
+    .vista-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 15px; text-transform: uppercase; }
+    .vista-de { margin: 6px 0 10px; font-size: 11px; color: var(--gray); }
+    #vista-marco { flex: 1; width: 100%; min-height: 60vh; border: 1px solid var(--line); background: #fff; }
     button.mini { font-size: 12px; color: var(--gray); }
     button.mini:hover { color: var(--ink); }
     .buscar { font-size: 14px !important; margin-bottom: 10px; max-width: 22rem; }
@@ -191,8 +212,10 @@
       .rows dt { font-size: 10.5px; }
       .title { font-size: 14px; padding-left: calc(var(--label-w) + 10px); }
       textarea { min-height: 14em; }
-      .log li { grid-template-columns: 1fr auto; }
+      .log li { grid-template-columns: minmax(0, 1fr); gap: 1px; padding: 6px 0; }
       .log .when { grid-column: 1 / -1; }
+      .log .state:empty { display: none; }
+      .log .state button.mini { margin-left: 12px; }
     }
   </style>
 </head>
@@ -233,7 +256,12 @@
           <dt class="gap">Texto</dt>
           <dd class="gap">
             <textarea id="texto" placeholder="Escribe aquí" spellcheck="true"></textarea>
-            <p class="hint">Línea en blanco = párrafo nuevo · **negrita** · *cursiva* · los enlaces se ponen solos. Al final se añade el aviso para darse de baja.</p>
+            <div class="tools">
+              <button id="btn-imagen" type="button" class="mini">Añadir imagen /</button>
+              <input id="archivo" type="file" accept="image/*" hidden />
+              <button id="btn-vista" type="button" class="mini">Ver cómo queda /</button>
+            </div>
+            <p class="hint">Línea en blanco = párrafo nuevo · **negrita** · *cursiva* · los enlaces se ponen solos · las imágenes van en su propia línea. Al final se añaden tu firma y el aviso para darse de baja.</p>
           </dd>
 
           <dt class="gap"></dt>
@@ -241,6 +269,14 @@
             <div class="actions">
               <button id="btn-prueba" type="button">Prueba /</button>
               <button id="btn-todos" type="button">Enviar a todos /</button>
+              <button id="btn-programar" type="button">Programar /</button>
+            </div>
+            <div id="programar" class="programar" hidden>
+              <input id="cuando" type="datetime-local" aria-label="Día y hora del envío" />
+              <div class="actions">
+                <button id="btn-programar-ok" type="button">Programar para esa hora /</button>
+                <button id="btn-programar-no" type="button" class="mini">Cancelar /</button>
+              </div>
             </div>
             <p id="editor-msg" class="msg" role="status" aria-live="polite"></p>
           </dd>
@@ -261,6 +297,18 @@
       </form>
     </div>
   </main>
+
+  <!-- Vista previa del correo -->
+  <div id="vista" class="vista" hidden role="dialog" aria-modal="true" aria-label="Vista previa del correo">
+    <div class="vista-caja">
+      <div class="vista-cab">
+        <span id="vista-asunto"></span>
+        <button id="vista-cerrar" type="button" class="mini">Cerrar /</button>
+      </div>
+      <p class="vista-de">De: Aaron Alcaide · Para: cada suscriptor, por separado</p>
+      <iframe id="vista-marco" title="Vista previa del correo" sandbox=""></iframe>
+    </div>
+  </div>
 
   <!-- Supabase JS: la clave publishable está pensada para usarse en el navegador.
        Lo que se puede hacer con ella lo deciden las reglas de la base de datos:
@@ -299,8 +347,13 @@
       return `${dos(p.day)}.${dos(p.month)} ${p.hour}:${p.minute}`;
     }
 
+    let cancelarArmado = { id: null, hasta: 0 };  // se guarda fuera del botón: la lista se repinta sola
+    const futuro = (n) => n.status === "pendiente" && n.scheduled_at && new Date(n.scheduled_at).getTime() > Date.now();
+
     function estado(n) {
       const prueba = n.mode === "prueba";
+      if (futuro(n)) return [`Programado ${fecha(n.scheduled_at)}`, ""];
+      if (n.status === "cancelado") return ["Cancelado", ""];
       if (n.status === "enviada") return [prueba ? "Prueba enviada" : `Enviada a ${n.sent_count}`, "done"];
       if (n.status === "enviando") return [n.error ? "Reintentando" : `Enviando (${n.sent_count})`, n.error ? "bad" : ""];
       if (n.status === "error") return ["Error", "bad"];
@@ -308,9 +361,14 @@
     }
 
     async function cargarEnvios() {
-      const { data, error } = await client.from("newsletter_issues")
-        .select("id,created_at,subject,mode,status,sent_count,error")
+      let { data, error } = await client.from("newsletter_issues")
+        .select("id,created_at,subject,mode,status,sent_count,error,scheduled_at")
         .order("created_at", { ascending: false }).limit(8);
+      if (error) {  // por si Supabase aún no tiene la columna de programar
+        ({ data, error } = await client.from("newsletter_issues")
+          .select("id,created_at,subject,mode,status,sent_count,error")
+          .order("created_at", { ascending: false }).limit(8));
+      }
       const ul = $("log");
       if (error) { ul.innerHTML = '<li><span class="empty">No se pueden leer los envíos.</span></li>'; return []; }
       ul.innerHTML = "";
@@ -322,6 +380,13 @@
         li.querySelector(".when").textContent = fecha(n.created_at);
         li.querySelector(".subj").textContent = (n.mode === "prueba" ? "[Prueba] " : "") + n.subject;
         const st = li.querySelector(".state"); st.textContent = txt; if (cls) st.classList.add(cls);
+        if (futuro(n)) {
+          const c = document.createElement("button");
+          const armado = cancelarArmado.id === n.id && Date.now() < cancelarArmado.hasta;
+          c.type = "button"; c.className = "mini" + (armado ? " armed" : ""); c.textContent = armado ? "¿Seguro? /" : "Cancelar /";
+          c.addEventListener("click", () => cancelarProgramado(n, c));
+          st.appendChild(c);
+        }
         if (n.error) li.title = n.error;
         ul.appendChild(li);
       }
@@ -332,7 +397,7 @@
       clearTimeout(sondeo);
       const paso = async () => {
         const data = await cargarEnvios();
-        const vivo = data.some(n => n.status === "pendiente" || n.status === "enviando");
+        const vivo = data.some(n => (n.status === "pendiente" && !futuro(n)) || n.status === "enviando");
         sondeo = setTimeout(paso, vivo ? 5000 : 30000);
       };
       paso();
@@ -385,6 +450,121 @@
       else { clearTimeout(sondeo); $("login-email").focus(); }
     }
 
+    // ——— Vista previa: el correo tal como lo hace el bot (texto, firma y pie)
+    const IMAGEN = /^\s*\[imagen\]\((https:\/\/[^\s()<>"']+)\)\s*$/i;
+    const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
+    function lineaHtml(l) {
+      const im = l.match(IMAGEN);
+      if (im) return `<img src="${esc(im[1])}" alt="" style="display:block;max-width:100%;height:auto;border:0;margin:4px 0">`;
+      let h = esc(l);
+      h = h.replace(/\*\*(\S(?:.*?\S)?)\*\*/g, "<b>$1</b>");
+      h = h.replace(/(?<![*\p{L}\p{N}_])\*(\S(?:.*?\S)?)\*(?![*\p{L}\p{N}_])/gu, "<i>$1</i>");
+      return h.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)»])/g, '<a href="$1">$1</a>');
+    }
+    function correoHtml(t) {
+      const partes = t.trim().split(/\n\s*\n/).filter(b => b.trim())
+        .map(b => "<p>" + b.trim().split("\n").map(lineaHtml).join("<br>") + "</p>").join("");
+      return `<div>${partes}<br><p>— Aaron Alcaide</p><br><br><div style="border-top:1px solid #cfcfcb;padding-top:12px;margin-top:8px;font-family:'Courier Prime','Courier New',Courier,monospace;font-size:12px;color:#8a8a86">Para darte de baja, <a href="mailto:aaronalcaidex@gmail.com?subject=BAJA" style="color:#8a8a86">pulsa aquí</a> o responde «baja» a este correo.</div></div>`;
+    }
+    function abrirVista() {
+      const t = texto.value.trim();
+      if (!t) { msg($("editor-msg"), "Escribe algo para verlo.", "error"); texto.focus(); return; }
+      $("vista-asunto").textContent = asunto.value.trim() || "(sin asunto)";
+      $("vista-marco").srcdoc = '<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;color:#222;margin:16px}</style></head><body>' + correoHtml(t) + "</body></html>";
+      $("vista").hidden = false;
+      $("vista-cerrar").focus();
+    }
+    function cerrarVista() { $("vista").hidden = true; $("btn-vista").focus(); }
+
+    // ——— Imágenes: se reducen en el móvil y se suben a Supabase Storage
+    function insertarEnCursor(trozo) {
+      const ini = texto.selectionStart ?? texto.value.length, fin = texto.selectionEnd ?? ini;
+      const antes = texto.value.slice(0, ini).replace(/\s*$/, ""), despues = texto.value.slice(fin).replace(/^\s*/, "");
+      texto.value = (antes ? antes + "\n\n" : "") + trozo + (despues ? "\n\n" + despues : "\n\n");
+      const pos = (antes ? antes.length + 2 : 0) + trozo.length + 2;
+      texto.focus(); texto.setSelectionRange(pos, pos);
+      guardarBorrador(); ajustarAlto();
+    }
+    async function reducir(file) {
+      if (file.type === "image/gif") return file;
+      try {
+        const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+        const k = Math.min(1, 1200 / bmp.width);
+        const c = document.createElement("canvas");
+        c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+        const g = c.getContext("2d"); g.fillStyle = "#ffffff"; g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(bmp, 0, 0, c.width, c.height);
+        const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.85));
+        return blob || file;
+      } catch (e) { return file; }
+    }
+    async function subirImagen(file) {
+      const m = $("editor-msg"), b = $("btn-imagen");
+      if (!file) return;
+      if (!/^image\//.test(file.type)) { msg(m, "Eso no es una imagen.", "error"); return; }
+      b.disabled = true; msg(m, "Subiendo imagen…");
+      const blob = await reducir(file);
+      if (blob.size > 5 * 1024 * 1024) { b.disabled = false; msg(m, "La imagen pesa demasiado (más de 5 MB).", "error"); return; }
+      const ext = blob.type === "image/gif" ? "gif" : blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg";
+      const ruta = `${new Date().toISOString().slice(0, 10)}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await client.storage.from("newsletter").upload(ruta, blob, { contentType: blob.type || "image/jpeg", cacheControl: "31536000", upsert: false });
+      b.disabled = false;
+      if (error) { console.error(error); msg(m, "No se ha podido subir la imagen. Falta preparar Supabase.", "error"); return; }
+      const { data } = client.storage.from("newsletter").getPublicUrl(ruta);
+      insertarEnCursor(`[imagen](${data.publicUrl})`);
+      msg(m, "Imagen añadida. Mírala con «Ver cómo queda».");
+    }
+
+    // ——— Programar
+    const dos = (x) => String(x).padStart(2, "0");
+    const local = (d) => `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}T${dos(d.getHours())}:${dos(d.getMinutes())}`;
+    let programarArmado = 0;
+    function abrirProgramar() {
+      const d = new Date(Date.now() + 3600e3); d.setMinutes(0, 0, 0);
+      $("cuando").value = local(d); $("cuando").min = local(new Date());
+      $("programar").hidden = false; $("cuando").focus();
+    }
+    function cerrarProgramar() { $("programar").hidden = true; programarArmado = 0; $("btn-programar-ok").classList.remove("armed"); $("btn-programar-ok").textContent = "Programar para esa hora /"; }
+    function diaHora(d) {
+      const f = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(d);
+      const p = Object.fromEntries(f.map(x => [x.type, x.value]));
+      return `${p.weekday.replace(".", "")} ${dos(p.day)}.${dos(p.month)} a las ${p.hour}:${p.minute}`;
+    }
+    async function programar() {
+      const a = asunto.value.trim(), t = texto.value.trim(), m = $("editor-msg"), b = $("btn-programar-ok");
+      if (!a) { msg(m, "Falta el asunto.", "error"); asunto.focus(); return; }
+      if (!t) { msg(m, "Falta el texto.", "error"); texto.focus(); return; }
+      const d = new Date($("cuando").value);
+      if (isNaN(d) || d.getTime() < Date.now() + 60e3) { msg(m, "Elige una hora que aún no haya pasado.", "error"); return; }
+      if (Date.now() > programarArmado) {
+        programarArmado = Date.now() + 6000; b.classList.add("armed");
+        b.textContent = `¿A ${personas ?? "todos"} el ${diaHora(d)}? Pulsa otra vez /`;
+        setTimeout(() => { if (Date.now() >= programarArmado) { b.classList.remove("armed"); b.textContent = "Programar para esa hora /"; } }, 6100);
+        return;
+      }
+      b.disabled = true; msg(m, "Guardando…");
+      const { error } = await client.from("newsletter_issues").insert([{ subject: a, body: t, mode: "todos", scheduled_at: d.toISOString() }]);
+      b.disabled = false;
+      if (error) { console.error(error); msg(m, /scheduled_at/.test(error.message || "") ? "Falta preparar Supabase para programar." : "No se ha podido guardar. Vuelve a intentarlo.", "error"); return; }
+      asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); cerrarProgramar();
+      msg(m, `Programado para el ${diaHora(d)}.`);
+      vigilar();
+    }
+    async function cancelarProgramado(n, c) {
+      if (cancelarArmado.id !== n.id || Date.now() > cancelarArmado.hasta) {
+        cancelarArmado = { id: n.id, hasta: Date.now() + 5000 };
+        c.classList.add("armed"); c.textContent = "¿Seguro? /";
+        setTimeout(() => { if (c.isConnected && Date.now() >= cancelarArmado.hasta) { c.classList.remove("armed"); c.textContent = "Cancelar /"; } }, 5100);
+        return;
+      }
+      cancelarArmado = { id: null, hasta: 0 };
+      c.disabled = true;
+      const { data, error } = await client.from("newsletter_issues").update({ status: "cancelado" }).eq("id", n.id).eq("status", "pendiente").select("id");
+      if (error || !data || !data.length) { console.error(error); msg($("editor-msg"), "No se ha podido cancelar. Falta preparar Supabase.", "error"); c.disabled = false; return; }
+      msg($("editor-msg"), "Envío programado cancelado.");
+      cargarEnvios();
+    }
+
     async function enviar(modo) {
       const a = asunto.value.trim(), t = texto.value.trim();
       const m = $("editor-msg");
@@ -428,6 +608,15 @@
     $("btn-prueba").addEventListener("click", () => enviar("prueba"));
     $("btn-todos").addEventListener("click", () => enviar("todos"));
     $("buscar").addEventListener("input", pintarApuntados);
+    $("btn-vista").addEventListener("click", abrirVista);
+    $("vista-cerrar").addEventListener("click", cerrarVista);
+    $("vista").addEventListener("click", (e) => { if (e.target === $("vista")) cerrarVista(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("vista").hidden) cerrarVista(); });
+    $("btn-imagen").addEventListener("click", () => $("archivo").click());
+    $("archivo").addEventListener("change", (e) => { subirImagen(e.target.files[0]); e.target.value = ""; });
+    $("btn-programar").addEventListener("click", () => $("programar").hidden ? abrirProgramar() : cerrarProgramar());
+    $("btn-programar-ok").addEventListener("click", programar);
+    $("btn-programar-no").addEventListener("click", cerrarProgramar);
     $("ver-todos").addEventListener("click", () => { verTodos = true; pintarApuntados(); });
     $("salir").addEventListener("click", async () => { await client.auth.signOut(); mostrar(); });
     asunto.addEventListener("input", guardarBorrador);
