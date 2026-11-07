@@ -174,6 +174,12 @@
     .log .state.bad { color: var(--error); }
     .log .subj { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .log .empty { color: var(--gray); display: block; }
+    .log .tachado { text-decoration: line-through; color: var(--gray); }
+    button.mini { font-size: 12px; color: var(--gray); }
+    button.mini:hover { color: var(--ink); }
+    button.mini.armed { color: var(--error); }
+    .buscar { font-size: 14px !important; margin-bottom: 10px; max-width: 22rem; }
+    #lista-msg { text-transform: none; }
 
     .small { font-size: 12px; }
     .small button { font-size: 12px; color: var(--gray); }
@@ -242,7 +248,12 @@
           </dd>
 
           <dt class="gap">Apuntados</dt>
-          <dd class="gap"><ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul></dd>
+          <dd class="gap">
+            <input id="buscar" type="text" class="buscar" placeholder="Buscar un correo" autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul>
+            <button id="ver-todos" type="button" class="mini" hidden>Ver todos /</button>
+            <p id="lista-msg" class="msg" role="status" aria-live="polite"></p>
+          </dd>
 
           <dt class="gap">Envíos</dt>
           <dd class="gap"><ul id="log" class="log"><li><span class="empty">—</span></li></ul></dd>
@@ -330,22 +341,63 @@
       paso();
     }
 
-    async function cargarApuntados() {
-      const { data, error } = await client.from("newsletter_subscribers")
-        .select("email,created_at,unsubscribed_at").order("created_at", { ascending: false }).limit(6);
+    // Lista de apuntados: puedes dar de baja a quien quieras (o volver a darle de alta).
+    let lista = [], verTodos = false;
+
+    function pintarApuntados() {
       const ul = $("apuntados");
-      if (error) { ul.innerHTML = '<li><span class="empty">No se pueden leer.</span></li>'; return; }
       ul.innerHTML = "";
-      if (!data.length) { ul.innerHTML = '<li><span class="empty">Todavía nadie.</span></li>'; return; }
-      for (const f of data) {
+      if (!lista.length) { ul.innerHTML = '<li><span class="empty">Todavía nadie.</span></li>'; return; }
+      const filtro = ($("buscar").value || "").trim().toLowerCase();
+      let filas = filtro ? lista.filter(f => f.email.includes(filtro)) : lista;
+      const total = filas.length;
+      if (!verTodos && !filtro) filas = filas.slice(0, 8);
+      for (const f of filas) {
         const li = document.createElement("li");
-        li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"></span>';
+        li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"><button type="button" class="mini"></button></span>';
         li.querySelector(".when").textContent = fecha(f.created_at);
-        li.querySelector(".subj").textContent = f.email;
-        li.querySelector(".subj").style.textTransform = "none";
-        li.querySelector(".state").textContent = f.unsubscribed_at ? "De baja" : "";
+        const subj = li.querySelector(".subj"); subj.textContent = f.email; subj.style.textTransform = "none";
+        if (f.unsubscribed_at) { subj.classList.add("tachado"); }
+        const b = li.querySelector("button");
+        b.textContent = f.unsubscribed_at ? "Dar de alta /" : "Dar de baja /";
+        b.addEventListener("click", () => cambiarBaja(f, b));
         ul.appendChild(li);
       }
+      $("ver-todos").hidden = verTodos || !!filtro || total <= 8;
+      $("ver-todos").textContent = `Ver los ${total} /`;
+    }
+
+    async function cargarApuntados() {
+      const { data, error } = await client.from("newsletter_subscribers")
+        .select("email,created_at,unsubscribed_at").order("created_at", { ascending: false }).limit(1000);
+      if (error) { $("apuntados").innerHTML = '<li><span class="empty">No se pueden leer.</span></li>'; return; }
+      lista = data;
+      pintarApuntados();
+    }
+
+    async function cambiarBaja(f, b) {
+      const baja = !f.unsubscribed_at;
+      if (b.dataset.armado !== "1") {
+        b.dataset.armado = "1"; b.classList.add("armed");
+        b.textContent = baja ? "¿Seguro? Pulsa otra vez /" : "¿Darle de alta? Pulsa otra vez /";
+        setTimeout(() => { if (b.isConnected && b.dataset.armado === "1") { b.dataset.armado = ""; b.classList.remove("armed"); b.textContent = baja ? "Dar de baja /" : "Dar de alta /"; } }, 5000);
+        return;
+      }
+      b.disabled = true;
+      const { data, error } = await client.from("newsletter_subscribers")
+        .update({ unsubscribed_at: baja ? new Date().toISOString() : null })
+        .eq("email", f.email).select("email");
+      if (error || !data || !data.length) {
+        console.error(error);
+        b.disabled = false; b.dataset.armado = ""; b.classList.remove("armed");
+        b.textContent = baja ? "Dar de baja /" : "Dar de alta /";
+        msg($("lista-msg"), "No se ha podido cambiar. Falta el permiso en Supabase.", "error");
+        return;
+      }
+      f.unsubscribed_at = baja ? new Date().toISOString() : null;
+      msg($("lista-msg"), baja ? `${f.email} ya no recibirá nada.` : `${f.email} vuelve a estar en la lista.`);
+      pintarApuntados();
+      cargarPersonas();
     }
 
     async function cargarPersonas() {
@@ -405,6 +457,8 @@
 
     $("btn-prueba").addEventListener("click", () => enviar("prueba"));
     $("btn-todos").addEventListener("click", () => enviar("todos"));
+    $("buscar").addEventListener("input", pintarApuntados);
+    $("ver-todos").addEventListener("click", () => { verTodos = true; pintarApuntados(); });
     $("salir").addEventListener("click", async () => { await client.auth.signOut(); mostrar(); });
     asunto.addEventListener("input", guardarBorrador);
     texto.addEventListener("input", () => { guardarBorrador(); ajustarAlto(); });
