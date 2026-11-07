@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escribir · Aaron Alcaide</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#f1f1ef" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <style>
+    @font-face {
+      font-family: 'Courier Prime';
+      src: url('/fonts/courier-prime.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Courier Prime';
+      src: url('/fonts/courier-prime-bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #f1f1ef;
+      --ink: #000000;
+      --gray: #5a5a55;
+      --line: #b9b9b3;
+      --error: #a1201b;
+      --mono: 'Courier Prime', 'Courier New', Courier, monospace;
+      --label-w: 9.2rem;
+      --value: 19px;
+    }
+
+    html { -webkit-text-size-adjust: 100%; background: var(--paper); }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--mono);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Grano: el mismo de la portada */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2' intercept='-0.5'/><feFuncG type='linear' slope='2' intercept='-0.5'/><feFuncB type='linear' slope='2' intercept='-0.5'/><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+      background-size: 180px 180px;
+      mix-blend-mode: hard-light;
+      opacity: 0.3;
+    }
+
+    .sheet {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      justify-content: center;
+      padding: 9vh 6vw 12vh;
+    }
+
+    .script { width: min(100%, 780px); }
+
+    .title {
+      padding-left: calc(var(--label-w) + 14px);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .rows {
+      display: grid;
+      grid-template-columns: var(--label-w) minmax(0, 1fr);
+      column-gap: 14px;
+      align-items: baseline;
+      margin-top: 30px;
+    }
+
+    .rows dt {
+      text-align: right;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .rows dd {
+      font-size: var(--value);
+      line-height: 1.2;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    .rows .gap { margin-top: 24px; }
+
+    [hidden] { display: none !important; }
+
+    input[type="email"], input[type="password"], input[type="text"], textarea {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--ink);
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: var(--value);
+      line-height: 1.2;
+      padding: 0 0 4px;
+      outline: none;
+      text-transform: none;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--gray); opacity: 1; text-transform: uppercase; }
+
+    textarea {
+      display: block;
+      font-size: 16px;
+      line-height: 1.55;
+      min-height: 16em;
+      resize: vertical;
+      border: 1px solid var(--line);
+      padding: 12px 12px;
+      background: rgba(255, 255, 255, 0.35);
+    }
+    textarea:focus { border-color: var(--ink); }
+
+    .hint {
+      margin-top: 8px;
+      color: var(--gray);
+      font-size: 11px;
+      line-height: 1.4;
+      text-transform: none;
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: baseline; }
+
+    button {
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: var(--value);
+      line-height: 1.2;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: left;
+    }
+    button:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    button:disabled { color: var(--gray); cursor: wait; text-decoration: none; }
+    button.armed { color: var(--error); }
+
+    .msg {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      text-transform: uppercase;
+      min-height: 1.4em;
+    }
+    .msg.error { color: var(--error); }
+
+    .log { list-style: none; font-size: 13px; line-height: 1.45; }
+    .log li { display: grid; grid-template-columns: 7.2em minmax(0, 1fr) auto; gap: 12px; padding: 3px 0; }
+    .log .when, .log .state { color: var(--gray); white-space: nowrap; }
+    .log .state.done { color: var(--ink); }
+    .log .state.bad { color: var(--error); }
+    .log .subj { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .log .empty { color: var(--gray); display: block; }
+
+    .small { font-size: 12px; }
+    .small button { font-size: 12px; color: var(--gray); }
+
+    a:focus-visible, button:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+    @media (max-width: 640px) {
+      :root { --label-w: 5.6rem; --value: 16px; }
+      .sheet { padding: 7vh 18px 10vh; }
+      .rows { column-gap: 10px; }
+      .rows dt { font-size: 10.5px; }
+      .title { font-size: 14px; padding-left: calc(var(--label-w) + 10px); }
+      textarea { min-height: 14em; }
+      .log li { grid-template-columns: 1fr auto; }
+      .log .when { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <div class="script">
+      <h1 class="title">Aaron Alcaide.</h1>
+
+      <!-- Entrar -->
+      <form id="login" hidden novalidate>
+        <dl class="rows">
+          <dt>Escena</dt>
+          <dd>Int. Escritorio — Acceso</dd>
+
+          <dt class="gap">Correo</dt>
+          <dd class="gap"><input id="login-email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="Tu correo" required /></dd>
+
+          <dt class="gap">Contraseña</dt>
+          <dd class="gap"><input id="login-pass" type="password" autocomplete="current-password" placeholder="Tu contraseña" required /></dd>
+
+          <dt class="gap"></dt>
+          <dd class="gap">
+            <button id="login-btn" type="submit">Entrar /</button>
+            <p id="login-msg" class="msg" role="status" aria-live="polite"></p>
+          </dd>
+        </dl>
+      </form>
+
+      <!-- Escribir -->
+      <form id="editor" hidden novalidate>
+        <dl class="rows">
+          <dt>Para</dt>
+          <dd id="para">—</dd>
+
+          <dt class="gap">Asunto</dt>
+          <dd class="gap"><input id="asunto" type="text" maxlength="200" placeholder="El título del correo" autocomplete="off" /></dd>
+
+          <dt class="gap">Texto</dt>
+          <dd class="gap">
+            <textarea id="texto" placeholder="Escribe aquí" spellcheck="true"></textarea>
+            <p class="hint">Línea en blanco = párrafo nuevo · **negrita** · *cursiva* · los enlaces se ponen solos. Al final se añade el aviso para darse de baja.</p>
+          </dd>
+
+          <dt class="gap"></dt>
+          <dd class="gap">
+            <div class="actions">
+              <button id="btn-prueba" type="button">Prueba /</button>
+              <button id="btn-todos" type="button">Enviar a todos /</button>
+            </div>
+            <p id="editor-msg" class="msg" role="status" aria-live="polite"></p>
+          </dd>
+
+          <dt class="gap">Envíos</dt>
+          <dd class="gap"><ul id="log" class="log"><li><span class="empty">—</span></li></ul></dd>
+
+          <dt class="gap"></dt>
+          <dd class="gap small"><button id="salir" type="button">Salir /</button></dd>
+        </dl>
+      </form>
+    </div>
+  </main>
+
+  <!-- Supabase JS: la clave publishable está pensada para usarse en el navegador.
+       Lo que se puede hacer con ella lo deciden las reglas de la base de datos:
+       solo tu usuario puede escribir aquí. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://uwpaqnmznkflzrwvqvig.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_gM53mn5NapTopn08TT4h1A_YdRRbBSz";
+    const BORRADOR = "aa-escribir-borrador";
+
+    const $ = (id) => document.getElementById(id);
+    const login = $("login"), editor = $("editor");
+    const asunto = $("asunto"), texto = $("texto");
+    let client = null, personas = null, armadoHasta = 0, sondeo = null;
+
+    function msg(el, t, tipo) { el.textContent = t || ""; el.className = "msg" + (tipo ? " " + tipo : ""); }
+
+    function guardarBorrador() {
+      try { localStorage.setItem(BORRADOR, JSON.stringify({ a: asunto.value, t: texto.value })); } catch (e) {}
+    }
+    function cargarBorrador() {
+      try { const b = JSON.parse(localStorage.getItem(BORRADOR) || "null"); if (b) { asunto.value = b.a || ""; texto.value = b.t || ""; } } catch (e) {}
+    }
+    function borrarBorrador() { try { localStorage.removeItem(BORRADOR); } catch (e) {} }
+
+    function ajustarAlto() {
+      texto.style.height = "auto";
+      texto.style.height = Math.max(texto.scrollHeight + 2, 0) + "px";
+    }
+
+    function fecha(iso) {
+      const d = new Date(iso);
+      const f = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(d);
+      const p = Object.fromEntries(f.map(x => [x.type, x.value]));
+      const dos = (x) => String(x).padStart(2, "0");
+      return `${dos(p.day)}.${dos(p.month)} ${p.hour}:${p.minute}`;
+    }
+
+    function estado(n) {
+      const prueba = n.mode === "prueba";
+      if (n.status === "enviada") return [prueba ? "Prueba enviada" : `Enviada a ${n.sent_count}`, "done"];
+      if (n.status === "enviando") return [n.error ? "Reintentando" : `Enviando (${n.sent_count})`, n.error ? "bad" : ""];
+      if (n.status === "error") return ["Error", "bad"];
+      return ["En cola", ""];
+    }
+
+    async function cargarEnvios() {
+      const { data, error } = await client.from("newsletter_issues")
+        .select("id,created_at,subject,mode,status,sent_count,error")
+        .order("created_at", { ascending: false }).limit(8);
+      const ul = $("log");
+      if (error) { ul.innerHTML = '<li><span class="empty">No se pueden leer los envíos.</span></li>'; return []; }
+      ul.innerHTML = "";
+      if (!data.length) { ul.innerHTML = '<li><span class="empty">Todavía nada.</span></li>'; return data; }
+      for (const n of data) {
+        const [txt, cls] = estado(n);
+        const li = document.createElement("li");
+        li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"></span>';
+        li.querySelector(".when").textContent = fecha(n.created_at);
+        li.querySelector(".subj").textContent = (n.mode === "prueba" ? "[Prueba] " : "") + n.subject;
+        const st = li.querySelector(".state"); st.textContent = txt; if (cls) st.classList.add(cls);
+        if (n.error) li.title = n.error;
+        ul.appendChild(li);
+      }
+      return data;
+    }
+
+    function vigilar() {
+      clearTimeout(sondeo);
+      const paso = async () => {
+        const data = await cargarEnvios();
+        const vivo = data.some(n => n.status === "pendiente" || n.status === "enviando");
+        sondeo = setTimeout(paso, vivo ? 5000 : 30000);
+      };
+      paso();
+    }
+
+    async function cargarPersonas() {
+      const { count, error } = await client.from("newsletter_subscribers")
+        .select("email", { count: "exact", head: true }).is("unsubscribed_at", null);
+      personas = error ? null : count;
+      $("para").textContent = personas == null ? "Tus suscriptores /" : `${personas} ${personas === 1 ? "persona" : "personas"} /`;
+    }
+
+    async function mostrar() {
+      const { data } = await client.auth.getSession();
+      const dentro = !!data.session;
+      login.hidden = dentro; editor.hidden = !dentro;
+      if (dentro) { cargarBorrador(); ajustarAlto(); cargarPersonas(); vigilar(); }
+      else { clearTimeout(sondeo); $("login-email").focus(); }
+    }
+
+    async function enviar(modo) {
+      const a = asunto.value.trim(), t = texto.value.trim();
+      const m = $("editor-msg");
+      if (!a) { msg(m, "Falta el asunto.", "error"); asunto.focus(); return; }
+      if (!t) { msg(m, "Falta el texto.", "error"); texto.focus(); return; }
+
+      const bTodos = $("btn-todos");
+      if (modo === "todos" && Date.now() > armadoHasta) {
+        armadoHasta = Date.now() + 6000;
+        bTodos.classList.add("armed");
+        bTodos.textContent = personas == null ? "¿Seguro? Pulsa otra vez /" : `¿A ${personas} ${personas === 1 ? "persona" : "personas"}? Pulsa otra vez /`;
+        setTimeout(() => { if (Date.now() >= armadoHasta) { bTodos.classList.remove("armed"); bTodos.textContent = "Enviar a todos /"; } }, 6100);
+        return;
+      }
+      armadoHasta = 0; bTodos.classList.remove("armed"); bTodos.textContent = "Enviar a todos /";
+
+      const botones = [$("btn-prueba"), bTodos];
+      botones.forEach(b => b.disabled = true);
+      msg(m, "Guardando…");
+      const { error } = await client.from("newsletter_issues").insert([{ subject: a, body: t, mode: modo }]);
+      botones.forEach(b => b.disabled = false);
+      if (error) { console.error(error); msg(m, "No se ha podido guardar. Vuelve a intentarlo.", "error"); return; }
+      if (modo === "todos") { asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); }
+      msg(m, modo === "prueba" ? "Prueba en cola. Te llega en un momento." : "En cola. Sale en un momento.");
+      vigilar();
+    }
+
+    login.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const m = $("login-msg"), b = $("login-btn");
+      const email = $("login-email").value.trim(), password = $("login-pass").value;
+      if (!email || !password) { msg(m, "Escribe tu correo y tu contraseña.", "error"); return; }
+      b.disabled = true; msg(m, "Entrando…");
+      const { error } = await client.auth.signInWithPassword({ email, password });
+      b.disabled = false;
+      if (error) { msg(m, "Correo o contraseña incorrectos.", "error"); return; }
+      $("login-pass").value = ""; msg(m, "");
+      mostrar();
+    });
+
+    $("btn-prueba").addEventListener("click", () => enviar("prueba"));
+    $("btn-todos").addEventListener("click", () => enviar("todos"));
+    $("salir").addEventListener("click", async () => { await client.auth.signOut(); mostrar(); });
+    asunto.addEventListener("input", guardarBorrador);
+    texto.addEventListener("input", () => { guardarBorrador(); ajustarAlto(); });
+
+    if (!window.supabase) {
+      login.hidden = false;
+      msg($("login-msg"), "No se ha podido cargar. Recarga la página.", "error");
+    } else {
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+      mostrar();
+    }
+  </script>
+</body>
+</html>
