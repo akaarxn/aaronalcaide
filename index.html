@@ -3,312 +3,411 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aarón Alcaide</title>
-  <meta name="description" content="Aarón Alcaide — escritor." />
+  <title>Aaron Alcaide</title>
+  <meta name="description" content="Aaron Alcaide. Escritos." />
+  <meta name="theme-color" content="#f1f1ef" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Aarón Alcaide" />
-  <meta property="og:description" content="Escritor." />
+  <meta property="og:title" content="Aaron Alcaide" />
+  <meta property="og:description" content="Escritos." />
   <meta property="og:url" content="https://aaronalcaide.me/" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Aarón Alcaide" />
-  <meta name="twitter:description" content="Escritor." />
   <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/courier-prime.woff2" as="font" type="font/woff2" crossorigin />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --white: #ffffff;
-      --black: #111111;
-      --gray: #6f6f6f;
-      --line: #dedede;
+    @font-face {
+      font-family: 'Archivo';
+      src: url('fonts/archivo.woff2') format('woff2-variations'),
+           url('fonts/archivo.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
     }
-    html, body { width: 100%; min-height: 100%; }
+    @font-face {
+      font-family: 'Courier Prime';
+      src: url('fonts/courier-prime.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Courier Prime';
+      src: url('fonts/courier-prime-bold.woff2') format('woff2');
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #f1f1ef;
+      --ink: #000000;
+      --gray: #5a5a55;
+      --error: #a1201b;
+      --mono: 'Courier Prime', 'Courier New', Courier, monospace;
+      --sans: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --label-w: 9.2rem;
+      --value: 21px;
+    }
+
+    html { -webkit-text-size-adjust: 100%; background: var(--paper); }
+
     body {
       min-height: 100vh;
-      background: var(--white);
-      color: var(--black);
-      font-family: 'EB Garamond', serif;
+      min-height: 100svh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Grano: textura fija por encima de la página, como una capa de ajuste.
+       Para más o menos grano, cambia opacity (más alto, más grano). */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2' intercept='-0.5'/><feFuncG type='linear' slope='2' intercept='-0.5'/><feFuncB type='linear' slope='2' intercept='-0.5'/><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+      background-size: 180px 180px;
+      mix-blend-mode: hard-light;
+      opacity: 0.3;
+    }
+
+    .sheet {
+      min-height: 100vh;
+      min-height: 100svh;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 5vh 6vw;
-      opacity: 0;
-      animation: fadeIn 0.7s ease 0.05s forwards;
-    }
-    @keyframes fadeIn { to { opacity: 1; } }
-    header {
-      padding-bottom: 2.2rem;
-      border-bottom: 1px solid var(--line);
-    }
-    .wordmark {
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      max-width: 460px;
-      width: 100%;
-      margin: 3.5rem auto;
+      padding: 8vh 6vw 12vh;
     }
-    .eyebrow {
-      font-size: 0.68rem;
-      font-weight: 500;
-      letter-spacing: 0.24em;
+
+    .script { width: min(100%, 760px); }
+
+    .mono {
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      color: var(--gray);
-      margin-bottom: 1rem;
     }
-    h1 {
-      font-size: clamp(1.3rem, 2.6vw, 1.6rem);
-      font-weight: 500;
-      line-height: 1.3;
-      margin-bottom: 1.1rem;
+
+    .title {
+      padding-left: calc(var(--label-w) + 14px);
+      font-size: 16px;
+      font-weight: 400;
     }
-    h1 a {
-      color: var(--black);
+
+    .rows {
+      display: grid;
+      grid-template-columns: var(--label-w) 1fr;
+      column-gap: 14px;
+      align-items: baseline;
+      margin-top: 30px;
+    }
+
+    .rows dt {
+      text-align: right;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .rows dd {
+      font-size: var(--value);
+      font-weight: 400;
+      line-height: 1.04;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+    }
+
+    .rows .gap { margin-top: 22px; }
+
+    .rows a {
+      color: var(--ink);
       text-decoration: none;
-      border-bottom: 1px solid var(--black);
-      padding-bottom: 2px;
-      transition: opacity 0.25s ease;
     }
-    h1 a:hover { opacity: 0.55; }
-    .desc {
-      font-size: 0.95rem;
-      font-style: italic;
-      line-height: 1.75;
-      color: var(--gray);
-      max-width: 400px;
-    }
-    .newsletter {
-      margin-top: 3rem;
-      padding-top: 1.7rem;
-      border-top: 1px solid var(--line);
-    }
-    .newsletter h2 {
-      font-size: 1.15rem;
-      font-weight: 500;
-      margin-bottom: 0.45rem;
-    }
-    .newsletter p {
-      color: var(--gray);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-    .signup-row {
+
+    .rows a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+    .email-link { text-transform: none; }
+
+    form { display: block; }
+    form[hidden], .ya[hidden] { display: none; }
+
+    .row {
       display: flex;
-      gap: 0.55rem;
-      align-items: stretch;
+      align-items: baseline;
+      gap: 12px;
+      max-width: 430px;
     }
-    .signup-row input[type="email"] {
+
+    .row input[type="email"] {
       flex: 1;
       min-width: 0;
-      border: 1px solid var(--line);
+      border: 0;
+      border-bottom: 1px solid var(--ink);
       border-radius: 0;
-      padding: 0.75rem 0.8rem;
-      background: var(--white);
-      color: var(--black);
-      font: inherit;
-      font-size: 0.95rem;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: var(--value);
+      line-height: 1.04;
+      padding: 0 0 3px;
+      outline: none;
     }
-    .signup-row input[type="email"]:focus {
-      outline: 1px solid var(--black);
-      outline-offset: 1px;
-    }
-    .signup-row button {
-      border: 1px solid var(--black);
-      border-radius: 0;
-      background: var(--black);
-      color: var(--white);
-      padding: 0.75rem 1rem;
-      font: inherit;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-    }
-    .signup-row button:hover { opacity: 0.75; }
-    .signup-row button:disabled { opacity: 0.5; cursor: wait; }
-    .consent {
-      display: flex;
-      gap: 0.5rem;
-      align-items: flex-start;
-      margin-top: 0.8rem;
+
+    .row input[type="email"]::placeholder {
       color: var(--gray);
-      font-size: 0.78rem;
-      line-height: 1.5;
+      opacity: 1;
+      text-transform: uppercase;
     }
-    .consent input { margin-top: 0.25rem; }
+
+    .row button {
+      flex: none;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: var(--value);
+      line-height: 1.04;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .row button:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .row button:disabled { color: var(--gray); cursor: wait; }
+
+    .legal {
+      margin-top: 8px;
+      color: var(--gray);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .legal summary {
+      display: inline;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      list-style: none;
+    }
+
+    .legal summary::-webkit-details-marker { display: none; }
+    .legal details { display: inline; }
+    .legal details p { margin-top: 6px; max-width: 30rem; }
+    .legal a { color: inherit; }
+
     .form-message {
-      margin-top: 0.8rem;
-      font-size: 0.88rem;
-      line-height: 1.5;
-      min-height: 1.2em;
+      margin-top: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
     }
+
     .form-message:empty { display: none; }
-    .form-message.error { color: #a12626; }
-    .form-message.success { color: #27643b; }
+    .form-message.error { color: var(--error); }
+
+    .clock {
+      margin-top: 46px;
+      padding-left: calc(var(--label-w) + 14px + 40%);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
     .honeypot {
       position: absolute !important;
       width: 1px !important;
       height: 1px !important;
-      padding: 0 !important;
-      margin: -1px !important;
       overflow: hidden !important;
       clip: rect(0, 0, 0, 0) !important;
       white-space: nowrap !important;
       border: 0 !important;
     }
-    footer {
-      padding-top: 2.2rem;
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 0.72rem;
-      letter-spacing: 0.05em;
-      color: var(--gray);
-    }
-    footer a {
-      color: var(--gray);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: color 0.25s ease, border-color 0.25s ease;
-    }
-    footer a:hover { color: var(--black); border-color: var(--black); }
-    a:focus-visible, button:focus-visible {
-      outline: 1px solid var(--black);
+
+    a:focus-visible, button:focus-visible, summary:focus-visible {
+      outline: 1px solid var(--ink);
       outline-offset: 3px;
     }
-    @media (max-width: 560px) {
-      body { padding: 4vh 7vw; }
-      footer { flex-direction: column; gap: 0.6rem; align-items: flex-start; }
-      .signup-row { flex-direction: column; }
-      .signup-row button { width: 100%; }
+
+    @media (max-width: 640px) {
+      :root { --label-w: 5.6rem; --value: 16px; }
+      .sheet { padding: 8vh 18px 10vh; }
+      .rows { column-gap: 10px; }
+      .rows dt { font-size: 10.5px; }
+      .title { font-size: 14px; padding-left: calc(var(--label-w) + 10px); }
+      .row { flex-wrap: wrap; row-gap: 10px; }
+      .row input[type="email"] { flex-basis: 100%; }
+      .clock { padding-left: calc(var(--label-w) + 10px); font-size: 12px; }
     }
+
   </style>
 </head>
 <body>
-  <header>
-    <span class="wordmark">Aarón Alcaide</span>
-  </header>
+  <main class="sheet">
+    <div class="script">
+      <h1 class="mono title">Aaron Alcaide.</h1>
 
-  <main>
-    <p class="eyebrow">Proyecto</p>
-    <h1><a href="https://thedehron.com" target="_blank" rel="noopener noreferrer">VOCES DEL DEhRON</a></h1>
-    <p class="desc">Empieza por donde quieras. Cada relato se sostiene solo. Lo raro viene después, cuando llevas dos o tres y empiezas a reconocer cosas que nadie te ha explicado.</p>
+      <dl class="rows">
+        <dt>Escena</dt>
+        <dd id="scene">Int. Escritorio</dd>
 
-    <section class="newsletter" aria-labelledby="newsletter-title">
-      <h2 id="newsletter-title">Cartas y novedades</h2>
-      <p>Recibe noticias sobre mis proyectos, textos y publicaciones. Sin frecuencia fija; solo cuando tenga algo que compartir.</p>
+        <dt>Material</dt>
+        <dd>Escritos /</dd>
 
-      <form id="newsletter-form">
-        <div class="signup-row">
-          <label class="honeypot" aria-hidden="true">
-            No rellenes este campo
-            <input type="text" name="website" tabindex="-1" autocomplete="off" />
-          </label>
-          <input
-            id="newsletter-email"
-            name="email"
-            type="email"
-            placeholder="Tu correo electrónico"
-            autocomplete="email"
-            maxlength="254"
-            aria-label="Tu correo electrónico"
-            required
-          />
-          <button id="newsletter-submit" type="submit">Suscribirme</button>
-        </div>
-        <label class="consent">
-          <input id="newsletter-consent" type="checkbox" required />
-          <span>Acepto recibir correos de Aarón Alcaide y he leído la información de privacidad.</span>
-        </label>
-        <p id="newsletter-message" class="form-message" role="status" aria-live="polite"></p>
-      </form>
-    </section>
+        <!-- Para añadir una red, copia el bloque de REDES y cambia la dirección y el nombre. -->
+        <dt class="gap">Redes</dt>
+        <dd class="gap">
+          <!-- <a href="https://www.instagram.com/TU_USUARIO/" target="_blank" rel="noopener noreferrer">Instagram</a> / -->
+          <a href="https://thedehron.com" target="_blank" rel="noopener noreferrer">Voces del Dehron</a> /
+        </dd>
+
+        <dt>Contacto</dt>
+        <dd><a class="email-link" href="mailto:aaronalcaidex@gmail.com">aaronalcaidex@gmail.com</a> /</dd>
+
+        <dt class="gap">Newsletter</dt>
+        <dd class="gap">
+          <form id="newsletter-form" novalidate>
+            <label class="honeypot" aria-hidden="true">
+              No rellenes este campo
+              <input type="text" name="website" tabindex="-1" autocomplete="off" />
+            </label>
+            <div class="row">
+              <input id="newsletter-email" name="email" type="email" placeholder="Tu correo" autocomplete="email" maxlength="254" aria-label="Tu correo" required />
+              <button id="newsletter-submit" type="submit">Enviar /</button>
+            </div>
+            <div class="legal">
+              Al enviar aceptas recibir inéditos, borradores y notas al margen.
+              <details>
+                <summary>Privacidad</summary>
+                <p>Responsable: Aaron Alcaide (<a href="mailto:aaronalcaidex@gmail.com">aaronalcaidex@gmail.com</a>). Tu correo solo se usa para enviarte la newsletter. Se guarda en Supabase y no se cede a nadie. Puedes darte de baja o pedir que se borre escribiendo a esa dirección.</p>
+              </details>
+            </div>
+            <p id="newsletter-message" class="form-message" role="status" aria-live="polite"></p>
+          </form>
+          <p id="ya" class="ya" hidden>Ya estás dentro /</p>
+        </dd>
+      </dl>
+
+      <p class="mono clock"><time id="clock" aria-label="Hora local">—</time></p>
+    </div>
   </main>
 
-  <footer>
-    <span>&copy; Aarón Alcaide</span>
-    <a href="mailto:aaronalcaidex@gmail.com">aaronalcaidex@gmail.com</a>
-  </footer>
+  <script>
+    // ——— Reloj y encabezado de escena ———
+    const TZ = "Europe/Madrid";
+    const LAT = 39.2026, LON = -0.3108;
+    const clockEl = document.getElementById("clock");
+    const sceneEl = document.getElementById("scene");
 
-  <!-- Supabase JS: la clave publishable/anon está diseñada para usarse en el navegador.
+    const fmt = new Intl.DateTimeFormat("es-ES", {
+      timeZone: TZ, weekday: "short", day: "2-digit", month: "2-digit", year: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "short"
+    });
+
+    // Salida y puesta del sol (algoritmo de la NOAA, precisión de un par de minutos).
+    function sunTimes(date) {
+      const rad = Math.PI / 180;
+      const day = Math.floor((Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - Date.UTC(date.getUTCFullYear(), 0, 0)) / 864e5);
+      const g = 2 * Math.PI / 365 * (day - 1);
+      const eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+      const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+      const ha = Math.acos(Math.cos(90.833 * rad) / (Math.cos(LAT * rad) * Math.cos(decl)) - Math.tan(LAT * rad) * Math.tan(decl)) / rad;
+      const noon = 720 - 4 * LON - eqt; // minutos UTC
+      return { rise: noon - 4 * ha, set: noon + 4 * ha };
+    }
+
+    function sceneFor(now) {
+      const minutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes();
+      const { rise, set } = sunTimes(now);
+      if (Math.abs(minutesUTC - rise) <= 40) return "Amanecer";
+      if (Math.abs(minutesUTC - set) <= 40) return "Atardecer";
+      if (minutesUTC > rise && minutesUTC < set) return "Día";
+      return "Noche";
+    }
+
+    function tick() {
+      const now = new Date();
+      const p = Object.fromEntries(fmt.formatToParts(now).map(x => [x.type, x.value]));
+      const weekday = p.weekday.replace(".", "");
+      clockEl.textContent = `${weekday} ${p.day}.${p.month}.${p.year} — ${p.hour}:${p.minute}:${p.second} ${p.timeZoneName}`;
+      clockEl.dateTime = now.toISOString();
+      sceneEl.textContent = `Int. Escritorio — ${sceneFor(now)}`;
+      setTimeout(tick, 1000 - (Date.now() % 1000) + 5);
+    }
+    tick();
+  </script>
+
+  <!-- Supabase JS: la clave publishable está pensada para usarse en el navegador.
        Nunca pongas aquí una service_role o secret key. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // PASO 1: sustituye estos dos valores por los de tu proyecto Supabase.
     const SUPABASE_URL = "https://uwpaqnmznkflzrwvqvig.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_gM53mn5NapTopn08TT4h1A_YdRRbBSz";
 
     const form = document.getElementById("newsletter-form");
     const emailInput = document.getElementById("newsletter-email");
-    const consentInput = document.getElementById("newsletter-consent");
     const submitButton = document.getElementById("newsletter-submit");
     const message = document.getElementById("newsletter-message");
+    let client = null;
+
+    // Quien ya se apuntó (aquí o en /suscribirse) no vuelve a ver el formulario.
+    const KEY = "aa-suscrito";
+    function marcarSuscrito() { try { localStorage.setItem(KEY, "1"); } catch (e) {} }
+    function mostrarDentro() { form.hidden = true; document.getElementById("ya").hidden = false; }
+    try { if (localStorage.getItem(KEY)) mostrarDentro(); } catch (e) {}
 
     function showMessage(text, type) {
       message.textContent = text;
-      message.className = "form-message " + type;
+      message.className = "form-message" + (type ? " " + type : "");
     }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
-      // Campo oculto anti-bots: si está rellenado, no se procesa.
-      if (form.elements.website.value) return;
-
-      if (!consentInput.checked) {
-        showMessage("Debes aceptar recibir correos para suscribirte.", "error");
-        return;
-      }
-
-      if (
-        SUPABASE_URL.startsWith("PEGA_AQUI") ||
-        SUPABASE_PUBLISHABLE_KEY.startsWith("PEGA_AQUI")
-      ) {
-        showMessage("Falta configurar la URL y la clave pública de Supabase en el código.", "error");
-        return;
-      }
+      if (form.elements.website.value) return; // anti-bots
 
       const email = emailInput.value.trim().toLowerCase();
+      if (!email || !emailInput.checkValidity()) {
+        showMessage("Escribe un correo válido.", "error");
+        emailInput.focus();
+        return;
+      }
+      if (!window.supabase) {
+        showMessage("No se ha podido cargar el formulario. Recarga la página.", "error");
+        return;
+      }
+
       submitButton.disabled = true;
       submitButton.textContent = "Enviando…";
       showMessage("", "");
 
       try {
-        const { createClient } = window.supabase;
-        const client = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
-        const { error } = await client
-          .from("newsletter_subscribers")
-          .insert([{ email }]);
+        if (!client) client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const { error } = await client.from("newsletter_subscribers").insert([{ email }]);
 
         if (error) {
           if (error.code === "23505") {
-            showMessage("Ese correo ya está registrado.", "success");
+            marcarSuscrito();
+            showMessage("Ese correo ya estaba suscrito.", "success");
           } else {
             console.error("Error al suscribir:", error);
-            showMessage("No se ha podido completar la suscripción. Inténtalo de nuevo más tarde.", "error");
+            showMessage("No se ha podido guardar. Vuelve a intentarlo en unos minutos.", "error");
           }
           return;
         }
-
         form.reset();
-        showMessage("Suscripción registrada. Gracias por apuntarte.", "success");
+        marcarSuscrito();
+        showMessage("Suscrito. Gracias.", "success");
       } catch (error) {
         console.error("Error de conexión:", error);
-        showMessage("No se ha podido conectar. Comprueba tu conexión e inténtalo de nuevo.", "error");
+        showMessage("Sin conexión. Vuelve a intentarlo.", "error");
       } finally {
         submitButton.disabled = false;
-        submitButton.textContent = "Suscribirme";
+        submitButton.textContent = "Enviar /";
       }
     });
   </script>
