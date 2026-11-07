@@ -199,6 +199,9 @@
     button.mini { font-size: 12px; color: var(--gray); }
     button.mini:hover { color: var(--ink); }
     .buscar { font-size: 14px !important; margin-bottom: 10px; max-width: 22rem; }
+    button.plegable { font-size: 14px; color: var(--gray); }
+    button.plegable:hover, button.plegable[aria-expanded="true"] { color: var(--ink); }
+    .caja { margin-top: 12px; }
 
     .small { font-size: 12px; }
     .small button { font-size: 12px; color: var(--gray); }
@@ -283,15 +286,17 @@
 
           <dt class="gap">Apuntados</dt>
           <dd class="gap">
-            <input id="buscar" type="text" class="buscar" placeholder="Buscar un correo" autocomplete="off" autocapitalize="off" spellcheck="false" />
-            <ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul>
-            <button id="ver-todos" type="button" class="mini" hidden>Ver todos /</button>
+            <button id="ver-apuntados" type="button" class="plegable" aria-controls="apuntados-caja" aria-expanded="false">Ver ▾</button>
+            <div id="apuntados-caja" class="caja" hidden>
+              <input id="buscar" type="text" class="buscar" placeholder="Buscar un correo" autocomplete="off" autocapitalize="off" spellcheck="false" />
+              <ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul>
+            </div>
           </dd>
 
           <dt class="gap">Envíos</dt>
           <dd class="gap">
-            <ul id="log" class="log"><li><span class="empty">—</span></li></ul>
-            <button id="mas-envios" type="button" class="mini" aria-controls="log" aria-expanded="false" hidden>Ver anteriores ▾</button>
+            <button id="ver-envios" type="button" class="plegable" aria-controls="log" aria-expanded="false">Ver ▾</button>
+            <ul id="log" class="log caja" hidden><li><span class="empty">—</span></li></ul>
           </dd>
 
           <dt class="gap"></dt>
@@ -350,7 +355,9 @@
       return `${dos(p.day)}.${dos(p.month)} ${p.hour}:${p.minute}`;
     }
 
-    let verEnvios = false;  // desplegable de envíos anteriores
+    let verEnvios = false;  // el historial empieza cerrado
+    let envios = [], enviosTotal = 0, enviosError = false;
+    let seguir = null;  // el último envío que has mandado, para avisarte aquí cuando salga
     let cancelarArmado = { id: null, hasta: 0 };  // se guarda fuera del botón: la lista se repinta sola
     const futuro = (n) => n.status === "pendiente" && n.scheduled_at && new Date(n.scheduled_at).getTime() > Date.now();
 
@@ -365,26 +372,34 @@
     }
 
     async function cargarEnvios() {
-      let { data, error } = await client.from("newsletter_issues")
-        .select("id,created_at,subject,mode,status,sent_count,error,scheduled_at")
+      let { data, error, count } = await client.from("newsletter_issues")
+        .select("id,created_at,subject,mode,status,sent_count,error,scheduled_at", { count: "exact" })
         .order("created_at", { ascending: false }).limit(40);
       if (error) {  // por si Supabase aún no tiene la columna de programar
-        ({ data, error } = await client.from("newsletter_issues")
-          .select("id,created_at,subject,mode,status,sent_count,error")
+        ({ data, error, count } = await client.from("newsletter_issues")
+          .select("id,created_at,subject,mode,status,sent_count,error", { count: "exact" })
           .order("created_at", { ascending: false }).limit(40));
       }
-      const ul = $("log");
-      if (error) { ul.innerHTML = '<li><span class="empty">No se pueden leer los envíos.</span></li>'; return []; }
+      enviosError = !!error;
+      envios = error ? [] : data;
+      enviosTotal = error ? 0 : (count ?? data.length);
+      pintarEnvios();
+      avisarEnvio();
+      return envios;
+    }
+
+    // El historial va cerrado: solo se ve el botón hasta que lo abres
+    function pintarEnvios() {
+      const ul = $("log"), boton = $("ver-envios");
+      const prog = envios.filter(futuro).length;
+      ul.hidden = !verEnvios;
+      boton.setAttribute("aria-expanded", verEnvios ? "true" : "false");
+      boton.textContent = verEnvios ? "Ocultar ▴"
+        : `Ver (${enviosTotal})${prog ? ` · ${prog} ${prog === 1 ? "programado" : "programados"}` : ""} ▾`;
       ul.innerHTML = "";
-      if (!data.length) { ul.innerHTML = '<li><span class="empty">Todavía nada.</span></li>'; $("mas-envios").hidden = true; return data; }
-      // Se ven los 3 últimos (y lo que esté programado); el resto, en el desplegable
-      const visibles = data.filter((n, i) => i < 3 || futuro(n));
-      const resto = data.filter(n => !visibles.includes(n));
-      const mas = $("mas-envios");
-      mas.hidden = !resto.length;
-      mas.textContent = verEnvios ? "Ocultar anteriores ▴" : `Ver anteriores (${resto.length}) ▾`;
-      mas.setAttribute("aria-expanded", verEnvios ? "true" : "false");
-      for (const n of verEnvios ? data : visibles) {
+      if (enviosError) { ul.innerHTML = '<li><span class="empty">No se pueden leer los envíos.</span></li>'; return; }
+      if (!envios.length) { ul.innerHTML = '<li><span class="empty">Todavía nada.</span></li>'; return; }
+      for (const n of envios) {
         const [txt, cls] = estado(n);
         const li = document.createElement("li");
         li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"></span>';
@@ -401,7 +416,23 @@
         if (n.error) li.title = n.error;
         ul.appendChild(li);
       }
-      return data;
+    }
+
+    // Como el historial va cerrado, el aviso de "ya ha salido" aparece debajo de los botones
+    function avisarEnvio() {
+      if (!seguir) return;
+      const n = envios.find(x => x.id === seguir);
+      if (!n) return;
+      const m = $("editor-msg");
+      if (n.status === "enviada") {
+        msg(m, n.mode === "prueba" ? "Prueba enviada. Mira tu correo." : `Enviada a ${n.sent_count} ${n.sent_count === 1 ? "persona" : "personas"}.`);
+        seguir = null;
+      } else if (n.status === "error") {
+        msg(m, "No ha salido. Abre el historial para ver qué ha pasado.", "error");
+        seguir = null;
+      } else if (n.status === "enviando" && n.mode !== "prueba") {
+        msg(m, `Enviando… ${n.sent_count} de ${personas ?? "?"}.`);
+      }
     }
 
     function vigilar() {
@@ -415,16 +446,20 @@
     }
 
     // Lista de apuntados (solo para ver; las bajas se hacen en Supabase).
-    let lista = [], verTodos = false;
+    // Empieza cerrada: solo se ve el botón hasta que la abres.
+    let lista = [], verApuntados = false;
 
     function pintarApuntados() {
+      const boton = $("ver-apuntados");
+      boton.setAttribute("aria-expanded", verApuntados ? "true" : "false");
+      boton.textContent = verApuntados ? "Ocultar ▴" : `Ver (${lista.length}) ▾`;
+      $("apuntados-caja").hidden = !verApuntados;
       const ul = $("apuntados");
       ul.innerHTML = "";
       if (!lista.length) { ul.innerHTML = '<li><span class="empty">Todavía nadie.</span></li>'; return; }
       const filtro = ($("buscar").value || "").trim().toLowerCase();
-      let filas = filtro ? lista.filter(f => f.email.includes(filtro)) : lista;
-      const total = filas.length;
-      if (!verTodos && !filtro) filas = filas.slice(0, 8);
+      const filas = filtro ? lista.filter(f => f.email.includes(filtro)) : lista;
+      if (!filas.length) { ul.innerHTML = '<li><span class="empty">Ninguno con eso.</span></li>'; return; }
       for (const f of filas) {
         const li = document.createElement("li");
         li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"></span>';
@@ -434,14 +469,12 @@
         li.querySelector(".state").textContent = f.unsubscribed_at ? "De baja" : "";
         ul.appendChild(li);
       }
-      $("ver-todos").hidden = verTodos || !!filtro || total <= 8;
-      $("ver-todos").textContent = `Ver los ${total} /`;
     }
 
     async function cargarApuntados() {
       const { data, error } = await client.from("newsletter_subscribers")
         .select("email,created_at,unsubscribed_at").order("created_at", { ascending: false }).limit(1000);
-      if (error) { $("apuntados").innerHTML = '<li><span class="empty">No se pueden leer.</span></li>'; return; }
+      if (error) { lista = []; $("apuntados").innerHTML = '<li><span class="empty">No se pueden leer.</span></li>'; $("ver-apuntados").textContent = verApuntados ? "Ocultar ▴" : "Ver ▾"; return; }
       lista = data;
       pintarApuntados();
     }
@@ -595,9 +628,10 @@
       const botones = [$("btn-prueba"), bTodos];
       botones.forEach(b => b.disabled = true);
       msg(m, "Guardando…");
-      const { error } = await client.from("newsletter_issues").insert([{ subject: a, body: t, mode: modo }]);
+      const { data, error } = await client.from("newsletter_issues").insert([{ subject: a, body: t, mode: modo }]).select("id");
       botones.forEach(b => b.disabled = false);
       if (error) { console.error(error); msg(m, "No se ha podido guardar. Vuelve a intentarlo.", "error"); return; }
+      seguir = data && data[0] ? data[0].id : null;
       if (modo === "todos") { asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); }
       msg(m, modo === "prueba" ? "Prueba en cola. Te llega en un momento." : "En cola. Sale en un momento.");
       vigilar();
@@ -620,7 +654,8 @@
     $("btn-todos").addEventListener("click", () => enviar("todos"));
     $("buscar").addEventListener("input", pintarApuntados);
     $("btn-vista").addEventListener("click", abrirVista);
-    $("mas-envios").addEventListener("click", () => { verEnvios = !verEnvios; cargarEnvios(); });
+    $("ver-envios").addEventListener("click", () => { verEnvios = !verEnvios; pintarEnvios(); });
+    $("ver-apuntados").addEventListener("click", () => { verApuntados = !verApuntados; pintarApuntados(); });
     $("vista-cerrar").addEventListener("click", cerrarVista);
     $("vista").addEventListener("click", (e) => { if (e.target === $("vista")) cerrarVista(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("vista").hidden) cerrarVista(); });
@@ -629,7 +664,6 @@
     $("btn-programar").addEventListener("click", () => $("programar").hidden ? abrirProgramar() : cerrarProgramar());
     $("btn-programar-ok").addEventListener("click", programar);
     $("btn-programar-no").addEventListener("click", cerrarProgramar);
-    $("ver-todos").addEventListener("click", () => { verTodos = true; pintarApuntados(); });
     $("salir").addEventListener("click", async () => { await client.auth.signOut(); mostrar(); });
     asunto.addEventListener("input", guardarBorrador);
     texto.addEventListener("input", () => { guardarBorrador(); ajustarAlto(); });
