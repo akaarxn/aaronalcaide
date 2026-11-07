@@ -12,16 +12,8 @@
   <meta property="og:url" content="https://aaronalcaide.me/" />
   <meta name="twitter:card" content="summary" />
   <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/courier-prime.woff2" as="font" type="font/woff2" crossorigin />
   <style>
-    @font-face {
-      font-family: 'Archivo';
-      src: url('fonts/archivo.woff2') format('woff2-variations'),
-           url('fonts/archivo.woff2') format('woff2');
-      font-weight: 100 900;
-      font-display: swap;
-    }
     @font-face {
       font-family: 'Courier Prime';
       src: url('fonts/courier-prime.woff2') format('woff2');
@@ -43,7 +35,8 @@
       --gray: #5a5a55;
       --error: #a1201b;
       --mono: 'Courier Prime', 'Courier New', Courier, monospace;
-      --sans: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      /* Todo en Courier Prime: la letra de los guiones (Courier de 12 puntos, versión hecha para guion). */
+      --sans: 'Courier Prime', 'Courier New', Courier, monospace;
       --label-w: 9.2rem;
       --value: 21px;
     }
@@ -101,7 +94,7 @@
 
     .rows {
       display: grid;
-      grid-template-columns: var(--label-w) 1fr;
+      grid-template-columns: var(--label-w) minmax(0, 1fr);
       column-gap: 14px;
       align-items: baseline;
       margin-top: 30px;
@@ -118,9 +111,9 @@
     .rows dd {
       font-size: var(--value);
       font-weight: 400;
-      line-height: 1.04;
-      letter-spacing: -0.005em;
+      line-height: 1.2;
       text-transform: uppercase;
+      overflow-wrap: anywhere;
     }
 
     .rows .gap { margin-top: 22px; }
@@ -154,7 +147,7 @@
       color: var(--ink);
       font-family: var(--sans);
       font-size: var(--value);
-      line-height: 1.04;
+      line-height: 1.2;
       padding: 0 0 3px;
       outline: none;
     }
@@ -172,7 +165,7 @@
       color: var(--ink);
       font-family: var(--sans);
       font-size: var(--value);
-      line-height: 1.04;
+      line-height: 1.2;
       text-transform: uppercase;
       cursor: pointer;
     }
