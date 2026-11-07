@@ -241,6 +241,9 @@
             <p id="editor-msg" class="msg" role="status" aria-live="polite"></p>
           </dd>
 
+          <dt class="gap">Apuntados</dt>
+          <dd class="gap"><ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul></dd>
+
           <dt class="gap">Envíos</dt>
           <dd class="gap"><ul id="log" class="log"><li><span class="empty">—</span></li></ul></dd>
 
@@ -327,6 +330,24 @@
       paso();
     }
 
+    async function cargarApuntados() {
+      const { data, error } = await client.from("newsletter_subscribers")
+        .select("email,created_at,unsubscribed_at").order("created_at", { ascending: false }).limit(6);
+      const ul = $("apuntados");
+      if (error) { ul.innerHTML = '<li><span class="empty">No se pueden leer.</span></li>'; return; }
+      ul.innerHTML = "";
+      if (!data.length) { ul.innerHTML = '<li><span class="empty">Todavía nadie.</span></li>'; return; }
+      for (const f of data) {
+        const li = document.createElement("li");
+        li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"></span>';
+        li.querySelector(".when").textContent = fecha(f.created_at);
+        li.querySelector(".subj").textContent = f.email;
+        li.querySelector(".subj").style.textTransform = "none";
+        li.querySelector(".state").textContent = f.unsubscribed_at ? "De baja" : "";
+        ul.appendChild(li);
+      }
+    }
+
     async function cargarPersonas() {
       const { count, error } = await client.from("newsletter_subscribers")
         .select("email", { count: "exact", head: true }).is("unsubscribed_at", null);
@@ -338,7 +359,7 @@
       const { data } = await client.auth.getSession();
       const dentro = !!data.session;
       login.hidden = dentro; editor.hidden = !dentro;
-      if (dentro) { cargarBorrador(); ajustarAlto(); cargarPersonas(); vigilar(); }
+      if (dentro) { cargarBorrador(); ajustarAlto(); cargarPersonas(); cargarApuntados(); vigilar(); }
       else { clearTimeout(sondeo); $("login-email").focus(); }
     }
 
