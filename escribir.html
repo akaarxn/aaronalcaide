@@ -202,6 +202,15 @@
     button.plegable { font-size: 14px; color: var(--gray); }
     button.plegable:hover, button.plegable[aria-expanded="true"] { color: var(--ink); }
     .caja { margin-top: 12px; }
+    .casilla { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
+    .casilla input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); cursor: pointer; }
+    .casilla-nota { margin: 6px 0 18px; }
+    .ajustes { display: grid; gap: 18px; }
+    .ajustes .hint { margin-top: 0; }
+    .campo { display: grid; gap: 6px; }
+    .campo span { font-size: 11px; color: var(--gray); }
+    .campo input[type="text"] { font-size: 16px; }
+    textarea.corto { min-height: 6em; }
 
     .small { font-size: 12px; }
     .small button { font-size: 12px; color: var(--gray); }
@@ -269,6 +278,8 @@
 
           <dt class="gap"></dt>
           <dd class="gap">
+            <label class="casilla"><input id="es-parte" type="checkbox" checked /> Es una parte de la historia</label>
+            <p class="hint casilla-nota">Si está marcada, quien se apunte más tarde la recibirá en el correo para ponerse al día.</p>
             <div class="actions">
               <button id="btn-prueba" type="button">Prueba /</button>
               <button id="btn-todos" type="button">Enviar a todos /</button>
@@ -297,6 +308,22 @@
           <dd class="gap">
             <button id="ver-envios" type="button" class="plegable" aria-controls="log" aria-expanded="false">Ver ▾</button>
             <ul id="log" class="log caja" hidden><li><span class="empty">—</span></li></ul>
+          </dd>
+
+          <dt class="gap">Bienvenida</dt>
+          <dd class="gap">
+            <button id="ver-bienvenida" type="button" class="plegable" aria-controls="bienvenida-caja" aria-expanded="false">Ver ▾</button>
+            <div id="bienvenida-caja" class="caja ajustes" hidden>
+              <p class="hint">Al apuntarse alguien le llegan dos correos: esta bienvenida y, si ya has publicado partes, otro con todas ellas en orden.</p>
+              <label class="campo"><span>Asunto de la bienvenida</span><input id="b-asunto" type="text" maxlength="200" autocomplete="off" /></label>
+              <label class="campo"><span>Texto de la bienvenida</span><textarea id="b-texto" class="corto" spellcheck="true"></textarea></label>
+              <label class="campo"><span>Asunto del correo con las partes</span><input id="p-asunto" type="text" maxlength="200" autocomplete="off" /></label>
+              <label class="campo"><span>Frase antes de las partes (opcional)</span><input id="p-intro" type="text" maxlength="300" autocomplete="off" /></label>
+              <div>
+                <button id="btn-guardar-b" type="button">Guardar /</button>
+                <p id="b-msg" class="msg" role="status" aria-live="polite"></p>
+              </div>
+            </div>
           </dd>
 
           <dt class="gap"></dt>
@@ -373,7 +400,7 @@
 
     async function cargarEnvios() {
       let { data, error, count } = await client.from("newsletter_issues")
-        .select("id,created_at,subject,mode,status,sent_count,error,scheduled_at", { count: "exact" })
+        .select("id,created_at,subject,mode,status,sent_count,error,scheduled_at,parte", { count: "exact" })
         .order("created_at", { ascending: false }).limit(40);
       if (error) {  // por si Supabase aún no tiene la columna de programar
         ({ data, error, count } = await client.from("newsletter_issues")
@@ -404,7 +431,7 @@
         const li = document.createElement("li");
         li.innerHTML = '<span class="when"></span><span class="subj"></span><span class="state"></span>';
         li.querySelector(".when").textContent = fecha(n.created_at);
-        li.querySelector(".subj").textContent = (n.mode === "prueba" ? "[Prueba] " : "") + n.subject;
+        li.querySelector(".subj").textContent = (n.mode === "prueba" ? "[Prueba] " : "") + n.subject + (n.parte && n.mode !== "prueba" ? " · parte" : "");
         const st = li.querySelector(".state"); st.textContent = txt; if (cls) st.classList.add(cls);
         if (futuro(n)) {
           const c = document.createElement("button");
@@ -490,7 +517,7 @@
       const { data } = await client.auth.getSession();
       const dentro = !!data.session;
       login.hidden = dentro; editor.hidden = !dentro;
-      if (dentro) { cargarBorrador(); ajustarAlto(); cargarPersonas(); cargarApuntados(); vigilar(); }
+      if (dentro) { cargarBorrador(); ajustarAlto(); cargarPersonas(); cargarApuntados(); cargarAjustes(); vigilar(); }
       else { clearTimeout(sondeo); $("login-email").focus(); }
     }
 
@@ -587,10 +614,10 @@
         return;
       }
       b.disabled = true; msg(m, "Guardando…");
-      const { error } = await client.from("newsletter_issues").insert([{ subject: a, body: t, mode: "todos", scheduled_at: d.toISOString() }]);
+      const { error } = await guardarEnvio({ subject: a, body: t, mode: "todos", scheduled_at: d.toISOString(), parte: $("es-parte").checked });
       b.disabled = false;
       if (error) { console.error(error); msg(m, /scheduled_at/.test(error.message || "") ? "Falta preparar Supabase para programar." : "No se ha podido guardar. Vuelve a intentarlo.", "error"); return; }
-      asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); cerrarProgramar();
+      asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); cerrarProgramar(); $("es-parte").checked = true;
       msg(m, `Programado para el ${diaHora(d)}.`);
       vigilar();
     }
@@ -607,6 +634,41 @@
       if (error || !data || !data.length) { console.error(error); msg($("editor-msg"), "No se ha podido cancelar. Falta preparar Supabase.", "error"); c.disabled = false; return; }
       msg($("editor-msg"), "Envío programado cancelado.");
       cargarEnvios();
+    }
+
+    // Guarda el envío; si Supabase aún no tiene la columna «parte», lo guarda sin ella
+    async function guardarEnvio(fila) {
+      let r = await client.from("newsletter_issues").insert([fila]).select("id");
+      if (r.error && /parte/.test(r.error.message || "")) {
+        const { parte, ...resto } = fila;
+        r = await client.from("newsletter_issues").insert([resto]).select("id");
+      }
+      return r;
+    }
+
+    // ——— Bienvenida: los textos que recibe quien se apunta
+    const AJUSTES = { bienvenida_asunto: "b-asunto", bienvenida_texto: "b-texto", ponte_asunto: "p-asunto", ponte_intro: "p-intro" };
+    let verBienvenida = false;
+    function pintarBienvenida() {
+      const b = $("ver-bienvenida");
+      b.textContent = verBienvenida ? "Ocultar ▴" : "Ver ▾";
+      b.setAttribute("aria-expanded", verBienvenida ? "true" : "false");
+      $("bienvenida-caja").hidden = !verBienvenida;
+    }
+    async function cargarAjustes() {
+      const { data, error } = await client.from("newsletter_ajustes").select("clave,valor");
+      if (error) { msg($("b-msg"), "Falta preparar Supabase para guardar estos textos.", "error"); return; }
+      for (const f of data) if (AJUSTES[f.clave]) $(AJUSTES[f.clave]).value = f.valor;
+    }
+    async function guardarAjustes() {
+      const m = $("b-msg"), b = $("btn-guardar-b");
+      const filas = Object.entries(AJUSTES).map(([clave, id]) => ({ clave, valor: $(id).value.trim(), updated_at: new Date().toISOString() }));
+      if (!filas[0].valor || !filas[1].valor) { msg(m, "La bienvenida necesita asunto y texto.", "error"); return; }
+      b.disabled = true; msg(m, "Guardando…");
+      const { error } = await client.from("newsletter_ajustes").upsert(filas);
+      b.disabled = false;
+      if (error) { console.error(error); msg(m, "No se ha podido guardar. Vuelve a intentarlo.", "error"); return; }
+      msg(m, "Guardado. Lo recibirá quien se apunte a partir de ahora.");
     }
 
     async function enviar(modo) {
@@ -628,11 +690,11 @@
       const botones = [$("btn-prueba"), bTodos];
       botones.forEach(b => b.disabled = true);
       msg(m, "Guardando…");
-      const { data, error } = await client.from("newsletter_issues").insert([{ subject: a, body: t, mode: modo }]).select("id");
+      const { data, error } = await guardarEnvio({ subject: a, body: t, mode: modo, parte: modo === "todos" && $("es-parte").checked });
       botones.forEach(b => b.disabled = false);
       if (error) { console.error(error); msg(m, "No se ha podido guardar. Vuelve a intentarlo.", "error"); return; }
       seguir = data && data[0] ? data[0].id : null;
-      if (modo === "todos") { asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); }
+      if (modo === "todos") { asunto.value = ""; texto.value = ""; borrarBorrador(); ajustarAlto(); $("es-parte").checked = true; }
       msg(m, modo === "prueba" ? "Prueba en cola. Te llega en un momento." : "En cola. Sale en un momento.");
       vigilar();
     }
@@ -651,6 +713,8 @@
     });
 
     $("btn-prueba").addEventListener("click", () => enviar("prueba"));
+    $("ver-bienvenida").addEventListener("click", () => { verBienvenida = !verBienvenida; pintarBienvenida(); });
+    $("btn-guardar-b").addEventListener("click", guardarAjustes);
     $("btn-todos").addEventListener("click", () => enviar("todos"));
     $("buscar").addEventListener("input", pintarApuntados);
     $("btn-vista").addEventListener("click", abrirVista);
