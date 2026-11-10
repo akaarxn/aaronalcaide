@@ -26,6 +26,8 @@
 
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="prefetch" href="/suscribirse" />
+  <script>try{if(sessionStorage.getItem("aa-transicion")==="volver"&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.className+=" volviendo"}catch(e){}</script>
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
 
   <!-- Ficha para Google: quién es Aaron Alcaide y qué ha escrito -->
@@ -169,6 +171,12 @@
     @media (prefers-reduced-motion: reduce) {
       .relato article, .franja svg { transition: none; }
     }
+
+    /* ——— Transición con /suscribirse: la franja sube hasta cubrir la pantalla (y al volver, baja) */
+    .cortina { position: fixed; inset: 0; z-index: 50; pointer-events: none; background: var(--verde); }
+    @keyframes aparecer { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    html.volviendo .relato, html.volviendo .nombre { animation: aparecer .6s cubic-bezier(.2, .7, .2, 1) both; }
+    html.volviendo .nombre { animation-delay: .08s; }
   </style>
 </head>
 <body>
@@ -275,6 +283,39 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustar);
       ajustar();
       window.addEventListener("resize", ajustar);
+
+      // ——— Al pulsar la franja, sube hasta cubrir la pantalla y entonces se abre /suscribirse
+      try { sessionStorage.removeItem("aa-transicion"); } catch (e) {}
+      var franja = document.getElementById("franja");
+      var curva = "cubic-bezier(.65, 0, .25, 1)";
+      function deshacer() {
+        var c = document.querySelector(".cortina"); if (c) c.remove();
+        document.querySelectorAll(".relato, .nombre, #franja-texto, .franja svg").forEach(function (el) {
+          if (el.getAnimations) el.getAnimations().forEach(function (a) { a.cancel(); });
+        });
+      }
+      franja.addEventListener("click", function (e) {
+        if (reduce || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !Element.prototype.animate) return;
+        e.preventDefault();
+        var arriba = Math.max(0, franja.parentElement.getBoundingClientRect().top);
+        var c = document.createElement("div");
+        c.className = "cortina";
+        c.style.clipPath = "inset(" + arriba + "px 0px 0px 0px)";
+        document.body.appendChild(c);
+        document.querySelectorAll(".relato, .nombre").forEach(function (el) {
+          el.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-24px)" }], { duration: 500, easing: curva, fill: "forwards" });
+        });
+        document.querySelectorAll("#franja-texto, .franja svg").forEach(function (el) {
+          el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: "forwards" });
+        });
+        var sube = c.animate([{ clipPath: "inset(" + arriba + "px 0px 0px 0px)" }, { clipPath: "inset(0px 0px 0px 0px)" }], { duration: 750, easing: curva, fill: "forwards" });
+        var ido = false;
+        function ir() { if (ido) return; ido = true; location.href = franja.href; }
+        sube.onfinish = ir;
+        setTimeout(ir, 1100);
+      });
+      // Si vuelven con el botón «atrás» del navegador, la portada aparece como estaba.
+      window.addEventListener("pageshow", function (e) { if (e.persisted) deshacer(); });
     })();
   </script>
 </body>
