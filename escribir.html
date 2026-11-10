@@ -5,331 +5,331 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escribir · Aaron Alcaide</title>
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#f1f1ef" />
+  <meta name="theme-color" content="#f1eee6" />
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <style>
     @font-face {
-      font-family: 'Courier Prime';
-      src: url('/fonts/courier-prime.woff2') format('woff2');
-      font-weight: 400;
+      font-family: 'Inter';
+      src: url('/fonts/inter.woff2') format('woff2');
+      font-weight: 100 900;
       font-display: swap;
     }
     @font-face {
-      font-family: 'Courier Prime';
-      src: url('/fonts/courier-prime-bold.woff2') format('woff2');
-      font-weight: 700;
+      font-family: 'Instrument Serif';
+      src: url('/fonts/instrument-serif.woff2') format('woff2');
+      font-weight: 400;
       font-display: swap;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --paper: #f1f1ef;
-      --ink: #000000;
-      --gray: #5a5a55;
-      --line: #b9b9b3;
+      --papel: #f1eee6;
+      --tinta: #1b201d;
+      --gris: #6b6e6a;
+      --gris-claro: #8b8b84;
+      --linea: #dcd8cd;
+      --verde: #93bfa4;
+      --musgo: #3b5a48;
+      --verde-claro: #dcebe1;
       --error: #a1201b;
-      --mono: 'Courier Prime', 'Courier New', Courier, monospace;
-      --label-w: 9.2rem;
-      --value: 19px;
+      --serif: 'Instrument Serif', Georgia, serif;
     }
 
-    html { -webkit-text-size-adjust: 100%; background: var(--paper); }
+    html { -webkit-text-size-adjust: 100%; background: var(--papel); }
 
     body {
       min-height: 100vh;
       min-height: 100svh;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: var(--mono);
+      background: var(--papel);
+      color: var(--tinta);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-optical-sizing: auto;
+      font-size: 15px;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
     }
-
-    /* Grano: el mismo de la portada */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2' intercept='-0.5'/><feFuncG type='linear' slope='2' intercept='-0.5'/><feFuncB type='linear' slope='2' intercept='-0.5'/><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
-      background-size: 180px 180px;
-      mix-blend-mode: hard-light;
-      opacity: 0.3;
-    }
-
-    .sheet {
-      min-height: 100vh;
-      min-height: 100svh;
-      display: flex;
-      justify-content: center;
-      padding: 9vh 6vw 12vh;
-    }
-
-    .script { width: min(100%, 780px); }
-
-    .title {
-      padding-left: calc(var(--label-w) + 14px);
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1.2;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-
-    .rows {
-      display: grid;
-      grid-template-columns: var(--label-w) minmax(0, 1fr);
-      column-gap: 14px;
-      align-items: baseline;
-      margin-top: 30px;
-    }
-
-    .rows dt {
-      text-align: right;
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-
-    .rows dd {
-      font-size: var(--value);
-      line-height: 1.2;
-      text-transform: uppercase;
-      overflow-wrap: anywhere;
-    }
-
-    .rows .gap { margin-top: 24px; }
 
     [hidden] { display: none !important; }
 
-    input[type="email"], input[type="password"], input[type="text"], textarea {
+    .hoja { width: min(100%, 720px); margin: 0 auto; padding: 0 22px; }
+
+    /* ——— Entrar */
+    #login { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; max-width: 420px; }
+    .nombre { font-weight: 500; font-size: 44px; line-height: 0.95; letter-spacing: -0.045em; margin-bottom: 8px; }
+    .dot { color: var(--verde); }
+    .sub { color: var(--gris); font-size: 14px; margin-bottom: 30px; }
+
+    .campo { display: grid; gap: 6px; margin-bottom: 16px; }
+    .campo > span { font-size: 12px; color: var(--gris); }
+    .campo input, .campo textarea {
       width: 100%;
-      border: 0;
-      border-bottom: 1px solid var(--ink);
-      border-radius: 0;
-      background: transparent;
-      color: var(--ink);
-      font-family: var(--mono);
-      font-size: var(--value);
-      line-height: 1.2;
-      padding: 0 0 4px;
-      outline: none;
-      text-transform: none;
-    }
-
-    input::placeholder, textarea::placeholder { color: var(--gray); opacity: 1; text-transform: uppercase; }
-
-    textarea {
-      display: block;
+      background: #fff;
+      border: 1px solid var(--linea);
+      border-radius: 8px;
+      padding: 13px 14px;
+      font: inherit;
       font-size: 16px;
       line-height: 1.55;
-      min-height: 16em;
-      resize: vertical;
-      border: 1px solid var(--line);
-      padding: 12px 12px;
-      background: rgba(255, 255, 255, 0.35);
+      color: var(--tinta);
+      outline: none;
     }
-    textarea:focus { border-color: var(--ink); }
-
-    .hint {
-      margin-top: 8px;
-      color: var(--gray);
-      font-size: 11px;
-      line-height: 1.4;
-      text-transform: none;
-    }
-
-    .actions { display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: baseline; }
+    .campo input:focus, .campo textarea:focus { border-color: var(--musgo); }
+    .campo textarea { resize: vertical; min-height: 7.5em; display: block; }
+    input::placeholder, textarea::placeholder { color: #a3a5a0; opacity: 1; }
 
     button {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+    .btn {
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    .btn.lleno { background: var(--tinta); color: var(--papel); }
+    .btn.borde { border: 1px solid var(--tinta); }
+    .btn.texto { color: var(--musgo); padding: 0 6px; }
+    .btn:disabled { opacity: 0.55; cursor: wait; }
+    .btn.armed { background: var(--error); color: #fff; border-color: var(--error); }
+    #login .btn { width: 100%; margin-top: 8px; height: 50px; }
+
+    .msg { font-size: 13px; line-height: 1.45; color: var(--musgo); min-height: 1.45em; margin-top: 10px; }
+    .msg.error { color: var(--error); }
+    .msg:empty { min-height: 0; margin-top: 0; }
+
+    /* ——— Cabecera y pestañas */
+    .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0 16px; font-size: 14px; }
+    .marca { font-weight: 500; letter-spacing: -0.01em; }
+    .salir { color: var(--gris); font-size: 14px; }
+    .salir:hover { color: var(--tinta); }
+
+    .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--linea); margin-bottom: 24px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs button { padding: 10px 0; font-size: 14px; color: #7c7f7a; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tabs button[aria-selected="true"] { color: var(--tinta); border-bottom-color: var(--verde); }
+
+    section { padding-bottom: 120px; }
+
+    /* ——— Escribir */
+    .para { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; background: var(--verde-claro); color: #2f4a3b; padding: 5px 12px; border-radius: 999px; margin-bottom: 20px; }
+    .para::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--musgo); }
+
+    #asunto {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--linea);
+      background: transparent;
+      font-family: var(--serif);
+      font-size: 32px;
+      line-height: 1.15;
+      padding: 0 0 12px;
+      margin-bottom: 18px;
+      color: var(--tinta);
+      outline: none;
+    }
+    #asunto:focus { border-bottom-color: var(--musgo); }
+    #asunto::placeholder { color: #b3b0a6; }
+
+    #texto {
+      width: 100%;
       border: 0;
       background: transparent;
-      color: var(--ink);
-      font-family: var(--mono);
-      font-size: var(--value);
-      line-height: 1.2;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-align: left;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.65;
+      color: #2a2f2b;
+      min-height: 15em;
+      resize: none;
+      outline: none;
+      display: block;
     }
-    button:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-    button:disabled { color: var(--gray); cursor: wait; text-decoration: none; }
-    button.armed { color: var(--error); }
 
-    .msg {
-      margin-top: 8px;
-      font-size: 12px;
-      line-height: 1.4;
-      text-transform: uppercase;
-      min-height: 1.4em;
+    .tools { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 8px; }
+    .tools button { font-size: 13px; color: var(--musgo); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--verde); }
+    .tools button:disabled { opacity: 0.55; cursor: wait; }
+    .hint { font-size: 12.5px; color: var(--gris-claro); line-height: 1.5; }
+
+    .casilla { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; margin-top: 22px; }
+    .casilla input { width: 18px; height: 18px; margin: 0; accent-color: var(--tinta); cursor: pointer; }
+    .casilla-nota { margin: 6px 0 0 28px; }
+
+    .programar { margin-top: 18px; display: grid; gap: 10px; max-width: 26rem; }
+    .programar input { width: 100%; background: #fff; border: 1px solid var(--linea); border-radius: 8px; padding: 12px 14px; font: inherit; font-size: 16px; color: var(--tinta); }
+    .programar .fila { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+      background: var(--papel);
+      border-top: 1px solid var(--linea);
+      padding: 12px 22px calc(18px + env(safe-area-inset-bottom));
     }
-    .msg.error { color: var(--error); }
+    .bar-in { width: min(100%, 676px); margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+    .bar .lleno { flex: 1; }
 
-    .log { list-style: none; font-size: 13px; line-height: 1.45; }
-    .log li { display: grid; grid-template-columns: 7.2em minmax(0, 1fr) auto; gap: 12px; padding: 3px 0; }
-    .log .when, .log .state { color: var(--gray); white-space: nowrap; }
-    .log .state.done { color: var(--ink); }
+    /* ——— Listas de apuntados y envíos */
+    .resumen { display: flex; justify-content: space-between; font-size: 13px; color: var(--gris); margin: 4px 0 6px; }
+    .buscar {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--linea);
+      border-radius: 999px;
+      padding: 11px 16px;
+      font: inherit;
+      font-size: 15px;
+      color: var(--tinta);
+      outline: none;
+      margin-bottom: 8px;
+    }
+    .buscar:focus { border-color: var(--musgo); }
+
+    .log { list-style: none; }
+    .log li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 12px;
+      align-items: baseline;
+      padding: 14px 0;
+      border-bottom: 1px solid #e3dfd5;
+    }
+    .log .subj { grid-column: 1; grid-row: 1; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .log .when { grid-column: 2; grid-row: 1; font-size: 12.5px; color: var(--gris-claro); white-space: nowrap; }
+    .log .state { grid-column: 1 / -1; grid-row: 2; font-size: 12.5px; color: var(--gris); margin-top: 3px; display: flex; gap: 14px; align-items: baseline; }
+    .log .state:empty { display: none; }
+    .log .state.done { color: var(--gris); }
     .log .state.bad { color: var(--error); }
-    .log .subj { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .log .empty { color: var(--gray); display: block; }
-    .log .tachado { text-decoration: line-through; color: var(--gray); }
-    .log .state button.mini { margin-left: 10px; }
+    .log .state button { font-size: 12.5px; color: var(--tinta); text-decoration: underline; text-underline-offset: 3px; }
+    .log .state button.armed { color: var(--error); }
+    .log .tachado { text-decoration: line-through; color: #9a9a92; }
+    .log .empty { color: var(--gris-claro); display: block; grid-column: 1 / -1; font-size: 14px; }
 
-    .tools { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 8px; }
-    .programar { margin-top: 16px; display: grid; gap: 12px; max-width: 26rem; }
-    .programar input { font-size: 16px; }
-
+    /* ——— Vista previa del correo */
     .vista {
       position: fixed; inset: 0; z-index: 30;
-      background: rgba(20, 20, 18, 0.55);
+      background: rgba(20, 22, 20, 0.5);
       display: flex; align-items: center; justify-content: center;
       padding: 4vh 12px;
     }
     .vista-caja {
       width: min(100%, 680px); max-height: 92vh;
       display: flex; flex-direction: column;
-      background: var(--paper); border: 1px solid var(--ink);
-      padding: 14px 14px 12px;
+      background: var(--papel); border-radius: 14px;
+      padding: 16px 16px 14px;
     }
-    .vista-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 15px; text-transform: uppercase; }
-    .vista-de { margin: 6px 0 10px; font-size: 11px; color: var(--gray); }
-    #vista-marco { flex: 1; width: 100%; min-height: 60vh; border: 1px solid var(--line); background: #fff; }
-    button.mini { font-size: 12px; color: var(--gray); }
-    button.mini:hover { color: var(--ink); }
-    .buscar { font-size: 14px !important; margin-bottom: 10px; max-width: 22rem; }
-    button.plegable { font-size: 14px; color: var(--gray); }
-    button.plegable:hover, button.plegable[aria-expanded="true"] { color: var(--ink); }
-    .caja { margin-top: 12px; }
-    .casilla { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
-    .casilla input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); cursor: pointer; }
-    .casilla-nota { margin: 6px 0 18px; }
-    .ajustes { display: grid; gap: 18px; }
-    .ajustes .hint { margin-top: 0; }
-    .campo { display: grid; gap: 6px; }
-    .campo span { font-size: 11px; color: var(--gray); }
-    .campo input[type="text"] { font-size: 16px; }
-    textarea.corto { min-height: 6em; }
+    .vista-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-family: var(--serif); font-size: 22px; }
+    .vista-cab button { font-family: 'Inter', sans-serif; font-size: 14px; color: var(--musgo); }
+    .vista-de { margin: 4px 0 12px; font-size: 12px; color: var(--gris); }
+    #vista-marco { flex: 1; width: 100%; min-height: 60vh; border: 1px solid var(--linea); border-radius: 8px; background: #fff; }
 
-    .small { font-size: 12px; }
-    .small button { font-size: 12px; color: var(--gray); }
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--musgo); outline-offset: 2px; }
 
-    a:focus-visible, button:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
-
-    @media (max-width: 640px) {
-      :root { --label-w: 5.6rem; --value: 16px; }
-      .sheet { padding: 7vh 18px 10vh; }
-      .rows { column-gap: 10px; }
-      .rows dt { font-size: 10.5px; }
-      .title { font-size: 14px; padding-left: calc(var(--label-w) + 10px); }
-      textarea { min-height: 14em; }
-      .log li { grid-template-columns: minmax(0, 1fr); gap: 1px; padding: 6px 0; }
-      .log .when { grid-column: 1 / -1; }
-      .log .state:empty { display: none; }
-      .log .state button.mini { margin-left: 12px; }
+    @media (min-width: 900px) {
+      .top { padding-top: 34px; }
+      #asunto { font-size: 44px; }
+      #texto { font-size: 17px; min-height: 18em; }
     }
   </style>
 </head>
 <body>
-  <main class="sheet">
-    <div class="script">
-      <h1 class="title">Aaron Alcaide.</h1>
+  <main class="hoja">
+    <!-- Entrar -->
+    <form id="login" hidden novalidate>
+      <h1 class="nombre">aaron alcaide<span class="dot">.</span></h1>
+      <p class="sub">Panel para escribir a la lista.</p>
+      <label class="campo"><span>Correo</span><input id="login-email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="tu@correo.com" required /></label>
+      <label class="campo"><span>Contraseña</span><input id="login-pass" type="password" autocomplete="current-password" placeholder="Tu contraseña" required /></label>
+      <button id="login-btn" type="submit" class="btn lleno">Entrar</button>
+      <p id="login-msg" class="msg" role="status" aria-live="polite"></p>
+    </form>
 
-      <!-- Entrar -->
-      <form id="login" hidden novalidate>
-        <dl class="rows">
-          <dt>Escena</dt>
-          <dd>Int. Escritorio — Acceso</dd>
+    <!-- Panel -->
+    <div id="editor" hidden>
+      <header class="top">
+        <span class="marca">aaron alcaide<span class="dot">.</span></span>
+        <button id="salir" type="button" class="salir">Salir</button>
+      </header>
 
-          <dt class="gap">Correo</dt>
-          <dd class="gap"><input id="login-email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="Tu correo" required /></dd>
-
-          <dt class="gap">Contraseña</dt>
-          <dd class="gap"><input id="login-pass" type="password" autocomplete="current-password" placeholder="Tu contraseña" required /></dd>
-
-          <dt class="gap"></dt>
-          <dd class="gap">
-            <button id="login-btn" type="submit">Entrar /</button>
-            <p id="login-msg" class="msg" role="status" aria-live="polite"></p>
-          </dd>
-        </dl>
-      </form>
+      <nav class="tabs" role="tablist" aria-label="Apartados">
+        <button type="button" role="tab" data-tab="escribir" aria-controls="tab-escribir">Escribir</button>
+        <button type="button" role="tab" data-tab="apuntados" aria-controls="tab-apuntados">Apuntados</button>
+        <button type="button" role="tab" data-tab="envios" aria-controls="tab-envios">Envíos</button>
+        <button type="button" role="tab" data-tab="bienvenida" aria-controls="tab-bienvenida">Bienvenida</button>
+      </nav>
 
       <!-- Escribir -->
-      <form id="editor" hidden novalidate>
-        <dl class="rows">
-          <dt>Para</dt>
-          <dd id="para">—</dd>
+      <section id="tab-escribir" role="tabpanel" aria-label="Escribir">
+        <p class="para"><span id="para">—</span></p>
+        <input id="asunto" type="text" maxlength="200" placeholder="El título del correo" autocomplete="off" aria-label="Asunto" />
+        <textarea id="texto" placeholder="Escribe aquí" spellcheck="true" aria-label="Texto"></textarea>
+        <div class="tools">
+          <button id="btn-imagen" type="button">Añadir imagen</button>
+          <input id="archivo" type="file" accept="image/*" hidden />
+          <button id="btn-vista" type="button">Ver cómo queda</button>
+        </div>
+        <p class="hint">Línea en blanco = párrafo nuevo · **negrita** · *cursiva* · los enlaces se ponen solos · las imágenes van en su propia línea. Al final se añaden tu firma y el aviso para darse de baja.</p>
 
-          <dt class="gap">Asunto</dt>
-          <dd class="gap"><input id="asunto" type="text" maxlength="200" placeholder="El título del correo" autocomplete="off" /></dd>
+        <label class="casilla"><input id="es-parte" type="checkbox" checked /> Es una parte de la historia</label>
+        <p class="hint casilla-nota">Si está marcada, quien se apunte más tarde la recibirá en el correo para ponerse al día.</p>
 
-          <dt class="gap">Texto</dt>
-          <dd class="gap">
-            <textarea id="texto" placeholder="Escribe aquí" spellcheck="true"></textarea>
-            <div class="tools">
-              <button id="btn-imagen" type="button" class="mini">Añadir imagen /</button>
-              <input id="archivo" type="file" accept="image/*" hidden />
-              <button id="btn-vista" type="button" class="mini">Ver cómo queda /</button>
-            </div>
-            <p class="hint">Línea en blanco = párrafo nuevo · **negrita** · *cursiva* · los enlaces se ponen solos · las imágenes van en su propia línea. Al final se añaden tu firma y el aviso para darse de baja.</p>
-          </dd>
+        <div id="programar" class="programar" hidden>
+          <input id="cuando" type="datetime-local" aria-label="Día y hora del envío" />
+          <div class="fila">
+            <button id="btn-programar-ok" type="button" class="btn lleno">Programar para esa hora</button>
+            <button id="btn-programar-no" type="button" class="btn texto">Cancelar</button>
+          </div>
+        </div>
+        <p id="editor-msg" class="msg" role="status" aria-live="polite"></p>
 
-          <dt class="gap"></dt>
-          <dd class="gap">
-            <label class="casilla"><input id="es-parte" type="checkbox" checked /> Es una parte de la historia</label>
-            <p class="hint casilla-nota">Si está marcada, quien se apunte más tarde la recibirá en el correo para ponerse al día.</p>
-            <div class="actions">
-              <button id="btn-prueba" type="button">Prueba /</button>
-              <button id="btn-todos" type="button">Enviar a todos /</button>
-              <button id="btn-programar" type="button">Programar /</button>
-            </div>
-            <div id="programar" class="programar" hidden>
-              <input id="cuando" type="datetime-local" aria-label="Día y hora del envío" />
-              <div class="actions">
-                <button id="btn-programar-ok" type="button">Programar para esa hora /</button>
-                <button id="btn-programar-no" type="button" class="mini">Cancelar /</button>
-              </div>
-            </div>
-            <p id="editor-msg" class="msg" role="status" aria-live="polite"></p>
-          </dd>
+        <div class="bar"><div class="bar-in">
+          <button id="btn-prueba" type="button" class="btn borde">Prueba</button>
+          <button id="btn-todos" type="button" class="btn lleno">Enviar a todos</button>
+          <button id="btn-programar" type="button" class="btn texto">Programar</button>
+        </div></div>
+      </section>
 
-          <dt class="gap">Apuntados</dt>
-          <dd class="gap">
-            <button id="ver-apuntados" type="button" class="plegable" aria-controls="apuntados-caja" aria-expanded="false">Ver ▾</button>
-            <div id="apuntados-caja" class="caja" hidden>
-              <input id="buscar" type="text" class="buscar" placeholder="Buscar un correo" autocomplete="off" autocapitalize="off" spellcheck="false" />
-              <ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul>
-            </div>
-          </dd>
+      <!-- Apuntados (solo para ver; las bajas se hacen en Supabase) -->
+      <section id="tab-apuntados" role="tabpanel" aria-label="Apuntados" hidden>
+        <button id="ver-apuntados" type="button" hidden aria-controls="apuntados-caja" aria-expanded="true"></button>
+        <div id="apuntados-caja">
+          <input id="buscar" type="text" class="buscar" placeholder="Buscar un correo" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buscar un correo" />
+          <p class="resumen"><span id="apuntados-resumen"></span></p>
+          <ul id="apuntados" class="log"><li><span class="empty">—</span></li></ul>
+        </div>
+      </section>
 
-          <dt class="gap">Envíos</dt>
-          <dd class="gap">
-            <button id="ver-envios" type="button" class="plegable" aria-controls="log" aria-expanded="false">Ver ▾</button>
-            <ul id="log" class="log caja" hidden><li><span class="empty">—</span></li></ul>
-          </dd>
+      <!-- Envíos -->
+      <section id="tab-envios" role="tabpanel" aria-label="Envíos" hidden>
+        <button id="ver-envios" type="button" hidden aria-controls="log" aria-expanded="true"></button>
+        <p class="resumen"><span id="envios-resumen"></span></p>
+        <ul id="log" class="log"><li><span class="empty">—</span></li></ul>
+      </section>
 
-          <dt class="gap">Bienvenida</dt>
-          <dd class="gap">
-            <button id="ver-bienvenida" type="button" class="plegable" aria-controls="bienvenida-caja" aria-expanded="false">Ver ▾</button>
-            <div id="bienvenida-caja" class="caja ajustes" hidden>
-              <p class="hint">Al apuntarse alguien le llegan dos correos: esta bienvenida y, si ya has publicado partes, otro con todas ellas en orden.</p>
-              <label class="campo"><span>Asunto de la bienvenida</span><input id="b-asunto" type="text" maxlength="200" autocomplete="off" /></label>
-              <label class="campo"><span>Texto de la bienvenida</span><textarea id="b-texto" class="corto" spellcheck="true"></textarea></label>
-              <label class="campo"><span>Asunto del correo con las partes</span><input id="p-asunto" type="text" maxlength="200" autocomplete="off" /></label>
-              <label class="campo"><span>Frase antes de las partes (opcional)</span><input id="p-intro" type="text" maxlength="300" autocomplete="off" /></label>
-              <div>
-                <button id="btn-guardar-b" type="button">Guardar /</button>
-                <p id="b-msg" class="msg" role="status" aria-live="polite"></p>
-              </div>
-            </div>
-          </dd>
-
-          <dt class="gap"></dt>
-          <dd class="gap small"><button id="salir" type="button">Salir /</button></dd>
-        </dl>
-      </form>
+      <!-- Bienvenida: los textos que recibe quien se apunta -->
+      <section id="tab-bienvenida" role="tabpanel" aria-label="Bienvenida" hidden>
+        <button id="ver-bienvenida" type="button" hidden aria-controls="bienvenida-caja" aria-expanded="true"></button>
+        <div id="bienvenida-caja">
+          <p class="hint" style="margin-bottom:18px">Al apuntarse alguien le llegan dos correos: esta bienvenida y, si ya has publicado partes, otro con todas ellas en orden.</p>
+          <label class="campo"><span>Asunto de la bienvenida</span><input id="b-asunto" type="text" maxlength="200" autocomplete="off" /></label>
+          <label class="campo"><span>Texto de la bienvenida</span><textarea id="b-texto" spellcheck="true"></textarea></label>
+          <p class="hint" style="margin:-6px 0 20px">Tu firma y el pie de baja se añaden solos.</p>
+          <label class="campo"><span>Asunto del correo con las partes</span><input id="p-asunto" type="text" maxlength="200" autocomplete="off" /></label>
+          <label class="campo"><span>Frase antes de las partes (opcional)</span><input id="p-intro" type="text" maxlength="300" autocomplete="off" /></label>
+          <p id="b-msg" class="msg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="bar"><div class="bar-in">
+          <button id="btn-probar-b" type="button" class="btn borde">Enviarme una prueba</button>
+          <button id="btn-guardar-b" type="button" class="btn lleno">Guardar</button>
+        </div></div>
+      </section>
     </div>
   </main>
 
@@ -338,7 +338,7 @@
     <div class="vista-caja">
       <div class="vista-cab">
         <span id="vista-asunto"></span>
-        <button id="vista-cerrar" type="button" class="mini">Cerrar /</button>
+        <button id="vista-cerrar" type="button">Cerrar</button>
       </div>
       <p class="vista-de">De: Aaron Alcaide · Para: cada suscriptor, por separado</p>
       <iframe id="vista-marco" title="Vista previa del correo" sandbox=""></iframe>
@@ -382,7 +382,7 @@
       return `${dos(p.day)}.${dos(p.month)} ${p.hour}:${p.minute}`;
     }
 
-    let verEnvios = false;  // el historial empieza cerrado
+    let verEnvios = true;  // cada apartado está siempre abierto en su pestaña
     let envios = [], enviosTotal = 0, enviosError = false;
     let seguir = null;  // el último envío que has mandado, para avisarte aquí cuando salga
     let cancelarArmado = { id: null, hasta: 0 };  // se guarda fuera del botón: la lista se repinta sola
@@ -419,6 +419,7 @@
     function pintarEnvios() {
       const ul = $("log"), boton = $("ver-envios");
       const prog = envios.filter(futuro).length;
+      $("envios-resumen").textContent = enviosError ? "" : `${enviosTotal} ${enviosTotal === 1 ? "envío" : "envíos"}${prog ? ` · ${prog} ${prog === 1 ? "programado" : "programados"}` : ""}`;
       ul.hidden = !verEnvios;
       boton.setAttribute("aria-expanded", verEnvios ? "true" : "false");
       boton.textContent = verEnvios ? "Ocultar ▴"
@@ -436,7 +437,7 @@
         if (futuro(n)) {
           const c = document.createElement("button");
           const armado = cancelarArmado.id === n.id && Date.now() < cancelarArmado.hasta;
-          c.type = "button"; c.className = "mini" + (armado ? " armed" : ""); c.textContent = armado ? "¿Seguro? /" : "Cancelar /";
+          c.type = "button"; c.className = "mini" + (armado ? " armed" : ""); c.textContent = armado ? "¿Seguro?" : "Cancelar";
           c.addEventListener("click", () => cancelarProgramado(n, c));
           st.appendChild(c);
         }
@@ -474,13 +475,15 @@
 
     // Lista de apuntados (solo para ver; las bajas se hacen en Supabase).
     // Empieza cerrada: solo se ve el botón hasta que la abres.
-    let lista = [], verApuntados = false;
+    let lista = [], verApuntados = true;
 
     function pintarApuntados() {
       const boton = $("ver-apuntados");
       boton.setAttribute("aria-expanded", verApuntados ? "true" : "false");
       boton.textContent = verApuntados ? "Ocultar ▴" : `Ver (${lista.length}) ▾`;
       $("apuntados-caja").hidden = !verApuntados;
+      const activos = lista.filter(f => !f.unsubscribed_at).length, bajas = lista.length - activos;
+      $("apuntados-resumen").textContent = `${activos} ${activos === 1 ? "apuntado" : "apuntados"}${bajas ? ` · ${bajas} de baja` : ""}`;
       const ul = $("apuntados");
       ul.innerHTML = "";
       if (!lista.length) { ul.innerHTML = '<li><span class="empty">Todavía nadie.</span></li>'; return; }
@@ -510,7 +513,7 @@
       const { count, error } = await client.from("newsletter_subscribers")
         .select("email", { count: "exact", head: true }).is("unsubscribed_at", null);
       personas = error ? null : count;
-      $("para").textContent = personas == null ? "Tus suscriptores /" : `${personas} ${personas === 1 ? "persona" : "personas"} /`;
+      $("para").textContent = personas == null ? "Para tus suscriptores" : `Para ${personas} ${personas === 1 ? "persona" : "personas"}`;
     }
 
     async function mostrar() {
@@ -595,7 +598,7 @@
       $("cuando").value = local(d); $("cuando").min = local(new Date());
       $("programar").hidden = false; $("cuando").focus();
     }
-    function cerrarProgramar() { $("programar").hidden = true; programarArmado = 0; $("btn-programar-ok").classList.remove("armed"); $("btn-programar-ok").textContent = "Programar para esa hora /"; }
+    function cerrarProgramar() { $("programar").hidden = true; programarArmado = 0; $("btn-programar-ok").classList.remove("armed"); $("btn-programar-ok").textContent = "Programar para esa hora"; }
     function diaHora(d) {
       const f = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(d);
       const p = Object.fromEntries(f.map(x => [x.type, x.value]));
@@ -609,8 +612,8 @@
       if (isNaN(d) || d.getTime() < Date.now() + 60e3) { msg(m, "Elige una hora que aún no haya pasado.", "error"); return; }
       if (Date.now() > programarArmado) {
         programarArmado = Date.now() + 6000; b.classList.add("armed");
-        b.textContent = `¿A ${personas ?? "todos"} el ${diaHora(d)}? Pulsa otra vez /`;
-        setTimeout(() => { if (Date.now() >= programarArmado) { b.classList.remove("armed"); b.textContent = "Programar para esa hora /"; } }, 6100);
+        b.textContent = `¿A ${personas ?? "todos"} el ${diaHora(d)}? Pulsa otra vez`;
+        setTimeout(() => { if (Date.now() >= programarArmado) { b.classList.remove("armed"); b.textContent = "Programar para esa hora"; } }, 6100);
         return;
       }
       b.disabled = true; msg(m, "Guardando…");
@@ -624,8 +627,8 @@
     async function cancelarProgramado(n, c) {
       if (cancelarArmado.id !== n.id || Date.now() > cancelarArmado.hasta) {
         cancelarArmado = { id: n.id, hasta: Date.now() + 5000 };
-        c.classList.add("armed"); c.textContent = "¿Seguro? /";
-        setTimeout(() => { if (c.isConnected && Date.now() >= cancelarArmado.hasta) { c.classList.remove("armed"); c.textContent = "Cancelar /"; } }, 5100);
+        c.classList.add("armed"); c.textContent = "¿Seguro?";
+        setTimeout(() => { if (c.isConnected && Date.now() >= cancelarArmado.hasta) { c.classList.remove("armed"); c.textContent = "Cancelar"; } }, 5100);
         return;
       }
       cancelarArmado = { id: null, hasta: 0 };
@@ -648,7 +651,7 @@
 
     // ——— Bienvenida: los textos que recibe quien se apunta
     const AJUSTES = { bienvenida_asunto: "b-asunto", bienvenida_texto: "b-texto", ponte_asunto: "p-asunto", ponte_intro: "p-intro" };
-    let verBienvenida = false;
+    let verBienvenida = true;
     function pintarBienvenida() {
       const b = $("ver-bienvenida");
       b.textContent = verBienvenida ? "Ocultar ▴" : "Ver ▾";
@@ -681,11 +684,11 @@
       if (modo === "todos" && Date.now() > armadoHasta) {
         armadoHasta = Date.now() + 6000;
         bTodos.classList.add("armed");
-        bTodos.textContent = personas == null ? "¿Seguro? Pulsa otra vez /" : `¿A ${personas} ${personas === 1 ? "persona" : "personas"}? Pulsa otra vez /`;
-        setTimeout(() => { if (Date.now() >= armadoHasta) { bTodos.classList.remove("armed"); bTodos.textContent = "Enviar a todos /"; } }, 6100);
+        bTodos.textContent = personas == null ? "¿Seguro? Pulsa otra vez" : `¿A ${personas} ${personas === 1 ? "persona" : "personas"}? Pulsa otra vez`;
+        setTimeout(() => { if (Date.now() >= armadoHasta) { bTodos.classList.remove("armed"); bTodos.textContent = "Enviar a todos"; } }, 6100);
         return;
       }
-      armadoHasta = 0; bTodos.classList.remove("armed"); bTodos.textContent = "Enviar a todos /";
+      armadoHasta = 0; bTodos.classList.remove("armed"); bTodos.textContent = "Enviar a todos";
 
       const botones = [$("btn-prueba"), bTodos];
       botones.forEach(b => b.disabled = true);
@@ -731,6 +734,45 @@
     $("salir").addEventListener("click", async () => { await client.auth.signOut(); mostrar(); });
     asunto.addEventListener("input", guardarBorrador);
     texto.addEventListener("input", () => { guardarBorrador(); ajustarAlto(); });
+
+
+    // ——— Pestañas: Escribir, Apuntados, Envíos y Bienvenida
+    const PESTANAS = ["escribir", "apuntados", "envios", "bienvenida"];
+    function irA(p) {
+      if (!PESTANAS.includes(p)) p = "escribir";
+      for (const q of PESTANAS) {
+        const on = q === p;
+        $("tab-" + q).hidden = !on;
+        const b = document.querySelector(`.tabs [data-tab="${q}"]`);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+        b.tabIndex = on ? 0 : -1;
+      }
+      try { sessionStorage.setItem("aa-pestana", p); } catch (e) {}
+      if (client && p === "envios") cargarEnvios();
+      if (client && p === "apuntados") cargarApuntados();
+    }
+    document.querySelectorAll(".tabs [data-tab]").forEach(b => b.addEventListener("click", () => irA(b.dataset.tab)));
+    document.querySelector(".tabs").addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const actual = PESTANAS.findIndex(q => !$("tab-" + q).hidden);
+      const sig = PESTANAS[(actual + (e.key === "ArrowRight" ? 1 : PESTANAS.length - 1)) % PESTANAS.length];
+      irA(sig); document.querySelector(`.tabs [data-tab="${sig}"]`).focus();
+    });
+    try { irA(sessionStorage.getItem("aa-pestana") || "escribir"); } catch (e) { irA("escribir"); }
+
+    // ——— Enviarme la bienvenida de prueba: sale solo a ti, con firma y pie, como una prueba normal
+    async function probarBienvenida() {
+      const m = $("b-msg"), b = $("btn-probar-b");
+      const a = $("b-asunto").value.trim(), t = $("b-texto").value.trim();
+      if (!a || !t) { msg(m, "La bienvenida necesita asunto y texto.", "error"); return; }
+      b.disabled = true; msg(m, "Guardando…");
+      const { error } = await guardarEnvio({ subject: a, body: t, mode: "prueba", parte: false });
+      b.disabled = false;
+      if (error) { console.error(error); msg(m, "No se ha podido mandar la prueba. Vuelve a intentarlo.", "error"); return; }
+      msg(m, "Prueba en cola. Te llega a tu correo en un momento.");
+      vigilar();
+    }
+    $("btn-probar-b").addEventListener("click", probarBienvenida);
 
     if (!window.supabase) {
       login.hidden = false;
