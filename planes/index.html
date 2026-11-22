@@ -482,6 +482,7 @@ function crearSupabase() {
     deshacer: id => rpc('deshacer_canje', { p_nombre: S.yo, p_clave: S.clave, p_id: id }),
     verVale: c => rpc('ver_vale', { p_codigo: normCodigo(c) }),
     canjear: (c, fecha) => rpc('canjear_vale', { p_codigo: normCodigo(c), p_fecha: fecha }),
+    paseWallet: c => rpc('pase_wallet', { p_codigo: normCodigo(c), p_web: baseWeb() }),
   };
 }
 
@@ -534,7 +535,6 @@ function codigoURL() {
 }
 const baseWeb = () => (location.origin + location.pathname).replace(/index\.html$/, '');
 const urlVale = c => `${baseWeb()}#vale-${c}`;
-const urlCartera = c => `${CFG.supabaseUrl.trim().replace(/\/+$/, '')}/functions/v1/pase-wallet?codigo=${encodeURIComponent(c)}&web=${encodeURIComponent(baseWeb())}`;
 function irAlVale(c) { cerrarHoja(); if (location.hash === '#vale-' + c) enrutar(); else location.hash = 'vale-' + c; }
 function irALaLista() {
   try { history.replaceState(null, '', location.pathname); } catch (e) { location.hash = ''; }
@@ -701,7 +701,7 @@ async function abrirQR(id) {
       <div class="imagen-vale" id="img-vale"><div class="esperando"></div></div>
       <p style="font-size:15px;color:var(--gris)">Imprímelo o mándaselo. Al escanear el QR, ${esc(v.para)} elige el día.</p>
       <div class="enlace-fila"><input id="url-vale" readonly value="${esc(url)}" aria-label="Enlace del vale"><button type="button" class="btn btn-borde btn-peq" data-a="copiar">Copiar</button></div>
-      ${CARTERA ? `<div class="cartera-fila"><div><strong>Cartera del iPhone</strong><span>Mándale este enlace: al abrirlo en su iPhone, el vale se guarda en Cartera.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="copiar-cartera">${ICONO_CARTERA}Copiar enlace</button></div>` : ''}
+      ${CARTERA ? `<div class="cartera-fila" id="cartera-fila"><div><strong>Cartera del iPhone</strong><span>Un enlace para mandárselo: al abrirlo en su iPhone, añade el vale a Cartera.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="cartera-enlace">${ICONO_CARTERA}Crear enlace</button></div>` : ''}
     </div>`,
     `<button type="button" class="btn btn-borde" data-a="imprimir">Imprimir</button>
      <button type="button" class="btn btn-borde" data-a="descargar">Descargar</button>
@@ -820,7 +820,7 @@ function pintarVale() {
       <div class="botones-v">
         <a class="btn btn-negro" href="${esc(enlaceWhatsApp(v))}" target="_blank" rel="noopener">Avisar a ${esc(v.de)} por WhatsApp</a>
         <button type="button" class="btn btn-borde" data-a="ics-vale">Añadir al calendario</button>
-        ${CARTERA ? `<a class="btn btn-borde" href="${esc(urlCartera(v.codigo))}">${ICONO_CARTERA}Añadir a Cartera</a>` : ''}
+        ${CARTERA ? `<button type="button" class="btn btn-borde" data-a="cartera">${ICONO_CARTERA}Añadir a Cartera</button>` : ''}
       </div>
       <button type="button" class="enlace" style="align-self:flex-start;color:var(--gris)" data-a="cambiar-dia">Cambiar el día</button>
     </section>`;
@@ -1002,7 +1002,21 @@ const ACCIONES = {
   },
   'ics'(el) { const v = vale(el.dataset.id); if (v) descargar(ics(v), nombreArchivo(v, '.ics')); },
   'copiar'() { copiar(HOJA.url, $('#url-vale')); },
-  'copiar-cartera'() { copiar(urlCartera(HOJA.v.codigo), null); },
+  'cartera'(el) {
+    return ocupado(el, async () => { const r = await api.paseWallet(V.codigo); location.href = r.url; });
+  },
+  'cartera-enlace'(el) {
+    const h = HOJA;
+    return ocupado(el, async () => {
+      const r = await api.paseWallet(h.v.codigo);
+      const fila = $('#cartera-fila');
+      if (!fila || HOJA !== h) return;
+      h.cartera = r.url;
+      fila.innerHTML = `<div><strong>Enlace de Cartera</strong><span>Mándaselo. Al abrirlo en su iPhone, pulsa «Añadir a Apple Wallet».</span></div>
+        <div class="enlace-fila" style="flex:1 1 100%"><input id="url-cartera" readonly value="${esc(r.url)}" aria-label="Enlace de Cartera"><button type="button" class="btn btn-borde btn-peq" data-a="copiar-cartera">Copiar</button></div>`;
+    });
+  },
+  'copiar-cartera'() { if (HOJA && HOJA.cartera) copiar(HOJA.cartera, $('#url-cartera')); },
   'descargar'() { if (!HOJA || !HOJA.blob) return aviso('Un momento, se está creando la imagen'); descargar(HOJA.blob, nombreArchivo(HOJA.v, '.png')); },
   async 'compartir'() {
     if (!HOJA || !HOJA.blob) return aviso('Un momento, se está creando la imagen');
