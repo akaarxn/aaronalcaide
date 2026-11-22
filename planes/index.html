@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Planes</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0d0e0d">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Planes">
 <link rel="icon" type="image/png" href="icono-192.png">
@@ -17,51 +16,64 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Instrument+Serif:ital@0;1&display=swap">
 <style>
-/* Un talonario sobre negro: entradas de cartulina verde eucalipto (pendientes) y de papel (canjeadas),
-   con talón, muescas y sello. Cabecera con el nombre en serif cursiva. Una columna en el móvil. */
+/* Un talonario de vales sobre blanco, con colores pastel (sin rosa) y tulipanes.
+   Cada vale es una entrada con talón y muescas; puede llevar brillo, holográfico o destellos. */
 @font-face { font-family: 'Inter'; src: url('/fonts/inter.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Courier Prime'; src: url('/fonts/courier-prime.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 
 :root {
-  --fondo: #0d0e0d;
-  --superficie: #161816;
-  --superficie-2: #1f221f;
-  --linea: #2b2f2b;
-  --linea-fuerte: #454a45;
-  --texto: #f3f3ee;
-  --gris: #8d928e;
-  --verde: #93bfa4;           /* eucalipto, el de aaronalcaide.me */
-  --verde-claro: #b9d8c5;
-  --verde-oscuro: #2f5a41;
-  --papel: #f1f0ea;
-  --tinta: #111111;
+  --fondo: #fcfdfb;
+  --superficie: #ffffff;
+  --superficie-2: #f2f8f4;
+  --linea: #e3ece6;
+  --linea-fuerte: #cddcd2;
+  --texto: #1e2b24;
+  --gris: #6c7b72;
+  --verde: #8fdcae;
+  --verde-claro: #c9f0d8;
+  --verde-oscuro: #2b7a50;
+  --tinta: #1e2b24;
+  --c-menta: #bdeed5;
+  --c-salvia: #d5e8c8;
+  --c-pistacho: #e6f5b8;
+  --c-cielo: #cfe8fb;
+  --c-lavanda: #e2d9fb;
+  --c-mantequilla: #fff2b8;
+  --c-melocoton: #ffdfc7;
+  --sombra: 0 1px 0 rgba(30, 43, 36, .04), 0 16px 34px -20px rgba(30, 43, 36, .38);
   --f-texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-titulo: 'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif;
   --f-serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   --f-mono: 'Courier Prime', 'Courier New', ui-monospace, monospace;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; background: var(--fondo); }
 body {
-  min-height: 100vh; background: var(--fondo); color: var(--texto);
+  min-height: 100vh; color: var(--texto); background: transparent;
   font: 400 16px/1.5 var(--f-texto); font-optical-sizing: auto; -webkit-font-smoothing: antialiased;
   padding-top: env(safe-area-inset-top, 0px);
 }
-/* Grano de papel muy suave */
-body::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: .07; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Cielo pastel arriba */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto 0; height: 70vh; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(55% 60% at 8% 0%, #d6f5e3 0%, rgba(214, 245, 227, 0) 70%),
+    radial-gradient(45% 55% at 92% 4%, #e9e1fd 0%, rgba(233, 225, 253, 0) 70%),
+    radial-gradient(40% 45% at 55% 0%, #fff3c4 0%, rgba(255, 243, 196, 0) 70%);
 }
 body.lock { overflow: hidden; }
 button, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 a { color: inherit; }
-:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--verde-oscuro); outline-offset: 3px; }
 [hidden] { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.mono { font-family: var(--f-mono); }
+
+.c-menta { --carton: var(--c-menta); } .c-salvia { --carton: var(--c-salvia); } .c-pistacho { --carton: var(--c-pistacho); }
+.c-cielo { --carton: var(--c-cielo); } .c-lavanda { --carton: var(--c-lavanda); } .c-mantequilla { --carton: var(--c-mantequilla); }
+.c-melocoton { --carton: var(--c-melocoton); }
 
 .wrap {
   max-width: 760px; margin: 0 auto;
@@ -70,176 +82,214 @@ a { color: inherit; }
 
 /* ---------- Cabecera ---------- */
 .aviso-prueba {
-  background: var(--verde-oscuro); color: var(--verde-claro); font-size: 13px; line-height: 1.4; text-align: center;
+  background: var(--verde-claro); color: var(--verde-oscuro); font-size: 13px; line-height: 1.4; text-align: center;
   padding-block: 8px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px));
 }
-.cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 30px 22px; }
-.marca { display: inline-flex; align-items: center; gap: 12px; color: var(--texto); text-decoration: none; }
-.marca svg { width: 40px; height: 28px; flex: none; transform: rotate(-8deg); }
-.marca-t { font: italic 400 46px/0.9 var(--f-serif); letter-spacing: -0.01em; }
-.marca .dot { color: var(--verde); font-style: normal; }
+.cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 26px 20px; }
+.marca { display: inline-flex; align-items: flex-end; gap: 6px; color: var(--texto); text-decoration: none; }
+.marca .tul { width: 22px; height: 54px; flex: none; transform: rotate(-8deg); transform-origin: bottom center; animation: mece 4s ease-in-out infinite; }
+@keyframes mece { 50% { transform: rotate(6deg); } }
+.marca-t { font: italic 400 48px/0.9 var(--f-serif); letter-spacing: -0.01em; }
+.marca .dot { color: var(--verde-oscuro); font-style: normal; }
 .quien {
-  display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px;
-  border: 1px solid var(--linea-fuerte); border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--texto);
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px;
+  border: 1px solid var(--linea-fuerte); border-radius: 999px; font-size: 14px; font-weight: 550; background: rgba(255, 255, 255, .7);
 }
-.quien::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); }
+.quien .tul, .chip .tul { width: 12px; height: 28px; flex: none; margin-left: -2px; }
+.chip .tul { height: 24px; width: 10px; margin-left: -4px; }
 
-.tabs { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--superficie); border: 1px solid var(--linea); width: max-content; max-width: 100%; }
-.tabs button { padding: 8px 16px; border-radius: 9px; font-size: 15px; font-weight: 550; color: var(--gris); white-space: nowrap; }
-.tabs button[aria-current="page"] { background: var(--superficie-2); color: var(--texto); box-shadow: inset 0 0 0 1px var(--linea-fuerte); }
-.tabs .n { margin-left: 6px; font-size: 12px; color: var(--verde); font-variant-numeric: tabular-nums; }
+.tabs { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: rgba(255, 255, 255, .8); border: 1px solid var(--linea); width: max-content; max-width: 100%; box-shadow: 0 6px 16px -12px rgba(30, 43, 36, .3); }
+.tabs button { padding: 9px 16px; border-radius: 10px; font-size: 15px; font-weight: 550; color: var(--gris); white-space: nowrap; }
+.tabs button[aria-current="page"] { background: var(--verde-claro); color: var(--verde-oscuro); }
+.tabs .n { margin-left: 6px; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .8; }
 
-main.wrap { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
+main.wrap { padding-bottom: 10px; }
 .barra { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; padding: 4px 0 22px; }
 
 /* ---------- Botones ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 46px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent;
+  min-height: 46px; padding: 0 18px; border-radius: 12px; border: 1px solid transparent;
   font-size: 15px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;
-  transition: background-color .15s ease, transform .1s ease, border-color .15s ease;
+  transition: background-color .15s ease, transform .12s ease, box-shadow .15s ease, border-color .15s ease;
 }
-.btn:active:not([disabled]) { transform: scale(.98); }
-.btn[disabled] { opacity: .35; cursor: not-allowed; }
-.btn-negro { background: var(--verde); color: var(--tinta); }          /* botón principal */
-.btn-borde { background: transparent; color: var(--texto); border-color: var(--linea-fuerte); }
+.btn:active:not([disabled]) { transform: scale(.97); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-negro {  /* botón principal */
+  background: linear-gradient(180deg, #a6e8c0, #86d6a6); color: #133d27;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 8px 18px -10px rgba(43, 122, 80, .7);
+}
+.btn-borde { background: #fff; color: var(--texto); border-color: var(--linea-fuerte); }
 .btn-suave { background: var(--superficie-2); color: var(--texto); }
 .btn-ancho { width: 100%; }
-.btn-peq { min-height: 36px; padding: 0 14px; font-size: 14px; border-radius: 8px; }
+.btn-peq { min-height: 36px; padding: 0 14px; font-size: 14px; border-radius: 10px; }
 .btn svg { width: 18px; height: 18px; flex: none; }
 @media (hover: hover) {
-  .btn-negro:hover:not([disabled]) { background: var(--verde-claro); }
-  .btn-borde:hover:not([disabled]) { border-color: var(--texto); }
-  .btn-suave:hover:not([disabled]) { background: var(--linea); }
+  .btn-negro:hover:not([disabled]) { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 10px 22px -10px rgba(43, 122, 80, .8); filter: brightness(1.03); }
+  .btn-borde:hover:not([disabled]) { border-color: var(--verde-oscuro); }
+  .btn-suave:hover:not([disabled]) { background: var(--verde-claro); }
 }
-.enlace { font-size: 14px; color: inherit; border-bottom: 1px solid currentColor; padding: 2px 0; line-height: 1.3; opacity: .8; }
+.enlace { font-size: 14px; color: inherit; border-bottom: 1px solid currentColor; padding: 2px 0; line-height: 1.3; opacity: .75; }
 @media (hover: hover) { .enlace:hover { opacity: 1; } }
 .cargando-btn { position: relative; color: transparent !important; pointer-events: none; }
 .cargando-btn::after {
   content: ""; position: absolute; left: calc(50% - 8px); top: calc(50% - 8px); width: 16px; height: 16px; border-radius: 50%;
-  border: 2px solid var(--tinta); border-right-color: transparent; animation: gira .7s linear infinite;
+  border: 2px solid #133d27; border-right-color: transparent; animation: gira .7s linear infinite;
 }
-.btn-borde.cargando-btn::after, .btn-suave.cargando-btn::after { border-color: var(--texto); border-right-color: transparent; }
 @keyframes gira { to { transform: rotate(360deg); } }
 
-/* ---------- Entradas (tickets) de la lista ---------- */
-.talonario { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 18px; }
+/* ---------- Entradas (tickets) ---------- */
+.talonario { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 20px; }
 .tk {
-  --carton: var(--verde); --ink: var(--tinta); --corte: rgba(17, 17, 17, .32);
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 82px;
-  background: var(--carton); color: var(--ink); border-radius: 14px; min-width: 0;
-  box-shadow: 0 20px 40px -28px rgba(0, 0, 0, .9);
-  animation: entra .4s cubic-bezier(.2, .8, .2, 1) both;
+  --corte: rgba(30, 43, 36, .28);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 86px; overflow: hidden; isolation: isolate;
+  background: var(--carton, var(--c-menta)); color: var(--tinta); border-radius: 16px; min-width: 0; box-shadow: var(--sombra);
+  animation: entra .45s cubic-bezier(.2, .8, .2, 1) both;
 }
-.tk.usado { --carton: var(--papel); }
-.tk.usado.pasado { --carton: #c9c8c1; }
-@keyframes entra { from { opacity: 0; transform: translateY(10px); } }
-.tk-main { padding: 18px 14px 16px 20px; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+@keyframes entra { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+.talonario > li:nth-child(2) { animation-delay: .06s; } .talonario > li:nth-child(3) { animation-delay: .12s; } .talonario > li:nth-child(4) { animation-delay: .18s; }
+.tk-main { position: relative; z-index: 2; padding: 18px 12px 16px 20px; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .tk-meta { font: 400 12px/1.35 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
-.tk-titulo { font: 800 31px/.94 var(--f-titulo); text-transform: uppercase; letter-spacing: .004em; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+.tk-titulo { font: 800 31px/.94 var(--f-titulo); text-transform: uppercase; letter-spacing: .004em; text-wrap: balance; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
 .tk-det { font-size: 14px; line-height: 1.4; opacity: .8; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .tk-cuenta { font: 400 12px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--verde-oscuro); }
 .tk-acc { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 8px; }
-.tk .btn-negro { background: var(--tinta); color: var(--papel); }
-@media (hover: hover) { .tk .btn-negro:hover:not([disabled]) { background: #2b2b2b; } }
-.tk .cargando-btn::after { border-color: var(--papel); border-right-color: transparent; }
-.tk :focus-visible { outline-color: var(--tinta); }
+.tk .btn-negro { background: var(--tinta); color: #fff; box-shadow: none; }
+.tk .cargando-btn::after { border-color: #fff; border-right-color: transparent; }
 .tk-talon {
-  position: relative; border-left: 2px dashed var(--corte);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 4px;
+  position: relative; z-index: 2; border-left: 2px dashed var(--corte);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 6px; padding: 14px 2px 0;
 }
 .tk-talon::before, .tk-talon::after {
   content: ""; position: absolute; left: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--fondo);
 }
 .tk-talon::before { top: -11px; } .tk-talon::after { bottom: -11px; }
-.tk-num { font: 400 12px/1 var(--f-mono); letter-spacing: .14em; writing-mode: vertical-rl; transform: rotate(180deg); opacity: .72; white-space: nowrap; }
-.tk-dia { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.tk-emoji { font-size: 34px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(30, 43, 36, .15)); }
+.tk-ramo { width: 80px; height: 84px; margin-bottom: -2px; }
+.tk-ramo svg { width: 100%; height: 100%; display: block; }
+.tk-dia { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .tk-dia .m { font: 400 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
-.tk-dia .d { font: 800 44px/1 var(--f-titulo); }
+.tk-dia .d { font: 800 42px/1 var(--f-titulo); }
 .tk-dia .s { font: 400 12px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
 .tk-sello {
   align-self: flex-start; font: 800 15px/1 var(--f-titulo); letter-spacing: .1em; text-transform: uppercase;
   color: var(--verde-oscuro); border: 2px solid currentColor; border-radius: 6px; padding: 4px 7px 3px; transform: rotate(-3deg);
+  background: rgba(255, 255, 255, .45);
 }
+.tk.pasado { filter: saturate(.55); }
 
-.subt { font: italic 400 26px/1 var(--f-serif); color: var(--texto); padding: 26px 0 14px; }
+/* ---------- Efectos ---------- */
+.fx-brillo::after, .fx-holo::after {
+  content: ""; position: absolute; inset: -40% -60%; z-index: 3; pointer-events: none;
+  background: linear-gradient(110deg, transparent 42%, rgba(255, 255, 255, .85) 50%, transparent 58%);
+  transform: translateX(-70%); animation: barrido 4.2s cubic-bezier(.45, .05, .25, 1) infinite;
+}
+.fx-holo::after { animation-duration: 3.4s; }
+@keyframes barrido { 0%, 50% { transform: translateX(-70%); } 100% { transform: translateX(70%); } }
+.fx-holo::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .75; mix-blend-mode: soft-light;
+  background: linear-gradient(115deg, #b6f3d1, #c8b6ff, #fff09a, #a7dcff, #b6f3d1, #c8b6ff, #fff09a);
+  background-size: 300% 300%; animation: holo 7s linear infinite;
+}
+@keyframes holo { to { background-position: 300% 50%; } }
+.chispas { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.chispas i { position: absolute; width: 14px; height: 14px; color: #fff; filter: drop-shadow(0 0 4px rgba(255, 255, 255, .95)) drop-shadow(0 0 1px rgba(30, 43, 36, .25)); animation: chispa 2.6s ease-in-out infinite; }
+.chispas i svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+@keyframes chispa { 0%, 100% { transform: scale(0) rotate(0); opacity: 0; } 45% { transform: scale(1) rotate(45deg); opacity: 1; } 70% { transform: scale(.4) rotate(90deg); opacity: .6; } }
+
+.subt { font: italic 400 28px/1 var(--f-serif); padding: 26px 0 14px; }
 .subt:first-child { padding-top: 6px; }
 .vacio {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 82px;
-  border: 2px dashed var(--linea-fuerte); border-radius: 14px; color: var(--gris);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 86px; overflow: hidden;
+  border: 2px dashed var(--linea-fuerte); border-radius: 16px; color: var(--gris); background: rgba(255, 255, 255, .6);
 }
 .vacio > div:first-child { padding: 24px 18px 24px 20px; display: flex; flex-direction: column; gap: 8px; }
-.vacio h2 { font: italic 400 30px/1 var(--f-serif); color: var(--texto); }
+.vacio h2 { font: italic 400 32px/1 var(--f-serif); color: var(--texto); }
 .vacio p { font-size: 15px; max-width: 40ch; }
-.vacio > div:last-child { border-left: 2px dashed var(--linea-fuerte); }
+.vacio > div:last-child { border-left: 2px dashed var(--linea-fuerte); display: flex; align-items: flex-end; justify-content: center; }
+.vacio .tk-ramo { opacity: .9; }
 .codigo-caja { margin-top: 38px; padding-top: 20px; border-top: 1px solid var(--linea); max-width: 480px; }
 .codigo-caja label { display: block; font-size: 14px; color: var(--gris); margin-bottom: 8px; }
 .fila { display: flex; gap: 8px; }
 .fila input { flex: 1; min-width: 0; }
+.jardin-pie { height: 130px; margin-top: 46px; overflow: hidden; pointer-events: none; }
+.jardin-pie svg { width: 100%; height: 100%; display: block; }
 
 /* ---------- Formularios ---------- */
-.campo { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.campo > span { font-size: 14px; font-weight: 550; color: var(--texto); }
+.campo { display: flex; flex-direction: column; gap: 7px; min-width: 0; border: 0; }
+.campo > span, .campo > legend { font-size: 14px; font-weight: 600; padding: 0; }
 .campo em { font-style: normal; font-weight: 400; color: var(--gris); }
 input[type="text"], input[type="password"], input[type="date"], input:not([type]), textarea {
-  width: 100%; min-width: 0; font-size: 16px; padding: 12px 14px; border-radius: 10px;
-  border: 1px solid var(--linea-fuerte); background: var(--superficie); color: var(--texto);
+  width: 100%; min-width: 0; font-size: 16px; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--linea-fuerte); background: #fff; color: var(--texto);
 }
 input[type="date"] { min-height: 48px; -webkit-appearance: none; appearance: none; }
-input:focus, textarea:focus { outline: none; border-color: var(--verde); }
-input::placeholder, textarea::placeholder { color: #6c716d; }
+input:focus, textarea:focus { outline: none; border-color: var(--verde-oscuro); box-shadow: 0 0 0 3px var(--verde-claro); }
+input::placeholder, textarea::placeholder { color: #9aa79f; }
 textarea { resize: vertical; line-height: 1.45; }
 .codigo-in { font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
 .check { display: flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; }
-.check input { width: 20px; height: 20px; accent-color: var(--verde); }
+.check input { width: 20px; height: 20px; accent-color: var(--verde-oscuro); }
 .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.error { font-size: 14px; font-weight: 550; color: var(--texto); background: var(--superficie-2); border-left: 3px solid var(--verde); padding: 8px 12px; border-radius: 4px; }
+.error { font-size: 14px; font-weight: 550; background: #fff7d6; border-left: 3px solid #e9c34b; padding: 8px 12px; border-radius: 6px; }
 .para-l { font: 400 13px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--gris); }
-.para-l strong { color: var(--verde); font-weight: 400; }
-.segmento { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: var(--superficie); border: 1px solid var(--linea); }
+.para-l strong { color: var(--verde-oscuro); font-weight: 400; }
+.segmento { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #fff; border: 1px solid var(--linea); }
 .segmento label { position: relative; }
 .segmento input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.segmento span { display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 9px; font-weight: 600; color: var(--gris); }
-.segmento input:checked + span { background: var(--verde); color: var(--tinta); }
-.segmento input:focus-visible + span { outline: 2px solid var(--verde); outline-offset: 2px; }
+.segmento span { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 46px; border-radius: 10px; font-weight: 600; color: var(--gris); }
+.segmento input:checked + span { background: var(--verde-claro); color: var(--verde-oscuro); }
+.segmento input:focus-visible + span { outline: 2px solid var(--verde-oscuro); outline-offset: 2px; }
+.emojis { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
+.emo { height: 42px; border-radius: 10px; border: 1px solid var(--linea); background: #fff; font-size: 21px; line-height: 1; transition: transform .12s; }
+.emo[aria-pressed="true"] { border-color: var(--verde-oscuro); background: var(--verde-claro); transform: scale(1.08); }
+.emojis input { grid-column: span 2; height: 42px; padding: 0 8px; text-align: center; border-radius: 10px; }
+.colores { display: flex; flex-wrap: wrap; gap: 10px; }
+.color { position: relative; width: 42px; height: 42px; border-radius: 50%; background: var(--carton); box-shadow: inset 0 0 0 1px rgba(30, 43, 36, .1); cursor: pointer; }
+.color input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.color:has(input:checked) { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--verde-oscuro); }
+.color:has(input:focus-visible) { outline: 2px solid var(--verde-oscuro); outline-offset: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; }
+.chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.chip > span { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--linea-fuerte); background: #fff; font-size: 14px; font-weight: 550; }
+.chip input:checked + span { background: var(--verde-claro); border-color: var(--verde-oscuro); color: var(--verde-oscuro); }
+.chip input:focus-visible + span { outline: 2px solid var(--verde-oscuro); outline-offset: 2px; }
+.previa { position: sticky; top: -12px; z-index: 5; padding: 6px 0 12px; background: linear-gradient(#fff 80%, rgba(255, 255, 255, 0)); }
+.previa .tk { animation: none; }
 
 /* ---------- Entrar ---------- */
-.entrar { position: relative; min-height: calc(100vh - env(safe-area-inset-top, 0px)); display: grid; place-items: center; overflow: hidden; padding-block: 40px; }
+.entrar { position: relative; min-height: calc(100vh - env(safe-area-inset-top, 0px)); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding-block: 40px 170px; }
 .entrar-caja { position: relative; z-index: 1; width: min(380px, 100%); display: flex; flex-direction: column; gap: 18px; }
-.entrar .marca { margin-bottom: 10px; }
-.entrar .marca-t { font-size: 72px; }
-.entrar .marca svg { width: 54px; height: 38px; }
+.entrar .marca { margin-bottom: 8px; }
+.entrar .marca-t { font-size: 76px; }
+.entrar .marca .tul { width: 34px; height: 84px; }
 .entrar form { display: flex; flex-direction: column; gap: 14px; }
-.entrar .otra { font-size: 14px; color: var(--gris); margin-top: 20px; }
-.entrar .otra .campo > span { color: var(--gris); }
-.deco { position: absolute; width: 280px; height: 128px; border-radius: 14px; pointer-events: none; box-shadow: 0 30px 50px -30px #000; }
-.deco::after { content: ""; position: absolute; top: 14px; bottom: 14px; right: 74px; border-left: 2px dashed rgba(17, 17, 17, .28); }
-.deco.v { background: var(--verde); }
-.deco.n { background: var(--papel); }
-.deco-1 { top: 5%; left: -120px; transform: rotate(-13deg); }
-.deco-2 { bottom: 6%; right: -110px; transform: rotate(10deg); }
-@media (max-width: 520px) { .deco-1 { top: -46px; left: -150px; } .deco-2 { bottom: -60px; right: -160px; } }
+.entrar .otra { font-size: 14px; color: var(--gris); margin-top: 18px; }
+.entrar .otra .campo > span { color: var(--gris); font-weight: 400; }
+.entrar .jardin-fondo { position: absolute; left: 0; right: 0; bottom: 0; height: 190px; pointer-events: none; }
+.entrar .jardin-fondo svg { width: 100%; height: 100%; display: block; }
 
 /* ---------- Hojas ---------- */
 #hoja { position: fixed; inset: 0; z-index: 50; }
-.hoja-fondo { position: absolute; inset: 0; background: rgba(0, 0, 0, .6); opacity: 0; transition: opacity .2s; }
+.hoja-fondo { position: absolute; inset: 0; background: rgba(30, 43, 36, .35); backdrop-filter: blur(2px); opacity: 0; transition: opacity .2s; }
 .hoja {
   position: absolute; left: 0; right: 0; bottom: 0; max-height: 92vh; max-height: 92dvh;
-  display: flex; flex-direction: column; background: var(--superficie); color: var(--texto); border-radius: 18px 18px 0 0;
-  border-top: 1px solid var(--linea);
-  transform: translateY(102%); transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+  display: flex; flex-direction: column; background: #fff; border-radius: 22px 22px 0 0;
+  transform: translateY(102%); transition: transform .3s cubic-bezier(.2, .8, .2, 1);
   padding-bottom: env(safe-area-inset-bottom, 0px); outline: none;
 }
+.hoja { --fondo: #fff; }
 #hoja.on .hoja-fondo { opacity: 1; }
 #hoja.on .hoja { transform: none; }
 .hoja-cab {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 22px max(20px, env(safe-area-inset-right, 0px)) 6px max(20px, env(safe-area-inset-left, 0px));
 }
-.hoja-cab h2 { font: italic 400 32px/1 var(--f-serif); }
-.cerrar { width: 36px; height: 36px; border-radius: 50%; background: var(--superficie-2); color: var(--texto); font-size: 22px; line-height: 1; flex: none; }
+.hoja-cab h2 { font: italic 400 34px/1 var(--f-serif); }
+.cerrar { width: 36px; height: 36px; border-radius: 50%; background: var(--superficie-2); font-size: 22px; line-height: 1; flex: none; }
 .hoja-cuerpo {
-  overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 16px;
+  overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 18px;
   padding: 12px max(20px, env(safe-area-inset-right, 0px)) 18px max(20px, env(safe-area-inset-left, 0px));
 }
 .hoja-pie {
@@ -249,109 +299,133 @@ textarea { resize: vertical; line-height: 1.45; }
 .hoja-pie .btn { flex: 1 1 auto; }
 @media (min-width: 640px) {
   .hoja {
-    left: 50%; top: 50%; bottom: auto; width: min(580px, calc(100% - 40px)); max-height: min(88vh, 880px);
-    border-radius: 16px; border: 1px solid var(--linea); transform: translate(-50%, -47%); opacity: 0; transition: transform .2s ease, opacity .2s ease;
-    box-shadow: 0 40px 80px -30px #000;
+    left: 50%; top: 50%; bottom: auto; width: min(600px, calc(100% - 40px)); max-height: min(90vh, 900px);
+    border-radius: 20px; transform: translate(-50%, -47%); opacity: 0; transition: transform .22s ease, opacity .22s ease;
+    box-shadow: 0 40px 80px -30px rgba(30, 43, 36, .45);
   }
   #hoja.on .hoja { transform: translate(-50%, -50%); opacity: 1; }
   .hoja-pie { justify-content: flex-end; }
   .hoja-pie .btn { flex: 0 0 auto; }
 }
-.imagen-vale img { display: block; width: 100%; height: auto; border-radius: 10px; }
-.esperando { aspect-ratio: 1920 / 1040; border-radius: 10px; background: var(--superficie-2); }
+.imagen-vale img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.esperando { aspect-ratio: 1920 / 1040; border-radius: 12px; background: linear-gradient(90deg, var(--superficie-2), var(--verde-claro), var(--superficie-2)); background-size: 200% 100%; animation: espera 1.2s linear infinite; }
+@keyframes espera { to { background-position: -200% 0; } }
 .enlace-fila { display: flex; gap: 8px; }
 .enlace-fila input { flex: 1; min-width: 0; font: 400 14px/1.2 var(--f-mono) !important; padding: 10px 12px !important; color: var(--gris) !important; }
-.cartera-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; padding: 14px; border-radius: 10px; background: var(--superficie-2); }
+.cartera-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; padding: 14px; border-radius: 14px; background: linear-gradient(135deg, #f1fbf5, #f4f0ff); border: 1px solid var(--linea); }
 .cartera-fila > div { flex: 1 1 220px; min-width: 0; font-size: 14px; }
 .cartera-fila strong { display: block; font-weight: 600; }
 .cartera-fila span { color: var(--gris); }
 
-/* ---------- Página del vale (al escanear el QR) ---------- */
-.v-cab { padding-block: 28px 20px; }
-.tkb {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr);
-  background: var(--verde); color: var(--tinta); border-radius: 18px;
-  box-shadow: 0 40px 70px -36px #000;
-  animation: aparece .7s cubic-bezier(.2, .8, .2, 1) both;
+/* Botón de Cartera */
+.btn-cartera {
+  position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 20px 8px 12px;
+  border-radius: 14px; background: #111; color: #fff; text-align: left; box-shadow: 0 12px 24px -14px rgba(0, 0, 0, .7);
 }
-.tkb.usado { background: var(--papel); }
-@keyframes aparece { from { opacity: 0; transform: translateY(22px) rotate(-1.5deg); } }
-.tkb-main { padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.tkb-num { font: 400 13px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .72; }
-.tkb-titulo { font: 800 clamp(44px, 12vw, 64px)/.92 var(--f-titulo); text-transform: uppercase; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+.btn-cartera .pila { position: relative; width: 34px; height: 30px; flex: none; }
+.btn-cartera .pila i { position: absolute; left: 0; right: 0; height: 12px; border-radius: 4px; }
+.btn-cartera .pila i:nth-child(1) { top: 0; background: #b9a2f0; }
+.btn-cartera .pila i:nth-child(2) { top: 6px; background: #f5c654; }
+.btn-cartera .pila i:nth-child(3) { top: 12px; background: #8fdcae; }
+.btn-cartera .pila i:nth-child(4) { top: 18px; height: 12px; background: #fff; }
+.btn-cartera b { display: block; font-size: 16px; font-weight: 650; line-height: 1.15; }
+.btn-cartera small { display: block; font-size: 12px; opacity: .7; }
+.btn-cartera::after { content: ""; position: absolute; inset: -40% -60%; background: linear-gradient(110deg, transparent 44%, rgba(255, 255, 255, .25) 50%, transparent 56%); transform: translateX(-70%); animation: barrido 3.8s ease-in-out infinite; pointer-events: none; }
+.btn-cartera.cargando-btn::after { animation: gira .7s linear infinite; inset: auto; transform: none; background: none; }
+
+/* ---------- Página del vale (al escanear el QR) ---------- */
+.v-cab { padding-block: 26px 18px; }
+.v-de { font: 400 13px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gris); margin-bottom: 12px; }
+.tkb {
+  --corte: rgba(30, 43, 36, .28);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; isolation: isolate;
+  background: var(--carton, var(--c-menta)); color: var(--tinta); border-radius: 22px;
+  box-shadow: 0 2px 0 rgba(30, 43, 36, .04), 0 40px 70px -40px rgba(30, 43, 36, .55);
+  animation: aparece .8s cubic-bezier(.2, .8, .2, 1) both;
+}
+@keyframes aparece { from { opacity: 0; transform: translateY(26px) rotate(-2deg) scale(.96); } }
+.tkb-main { position: relative; z-index: 2; padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.tkb-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.tkb-num { font: 400 13px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .7; padding-top: 6px; }
+.tkb-emoji { font-size: 52px; line-height: 1; filter: drop-shadow(0 6px 8px rgba(30, 43, 36, .18)); animation: flota 3.5s ease-in-out infinite; }
+@keyframes flota { 50% { transform: translateY(-5px) rotate(4deg); } }
+.tkb-titulo { font: 800 clamp(42px, 11.5vw, 64px)/.92 var(--f-titulo); text-transform: uppercase; text-wrap: balance; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
 .tkb-det { font-size: 16px; line-height: 1.45; opacity: .85; overflow-wrap: anywhere; }
-.tkb-datos { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 4px; padding-top: 14px; border-top: 1.5px solid rgba(17, 17, 17, .22); }
+.tkb-datos { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 4px; padding-top: 14px; border-top: 1.5px solid rgba(30, 43, 36, .18); }
 .tkb-datos dt { font: 400 11px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .65; margin-bottom: 6px; }
 .tkb-datos dd { font: 700 24px/1 var(--f-titulo); text-transform: uppercase; }
 .tkb-talon {
-  position: relative; border-top: 2px dashed rgba(17, 17, 17, .32);
-  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 22px 16px;
+  position: relative; z-index: 2; border-top: 2px dashed var(--corte);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 14px 18px 0 22px;
 }
 .tkb-talon::before, .tkb-talon::after { content: ""; position: absolute; top: -12px; width: 24px; height: 24px; border-radius: 50%; background: var(--fondo); }
 .tkb-talon::before { left: -12px; } .tkb-talon::after { right: -12px; }
 .tkb-talon .eti { font: 400 11px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .65; }
 .tkb-talon .cod { font: 400 17px/1.2 var(--f-mono); letter-spacing: .1em; }
-.talon-bloque { display: flex; flex-direction: column; gap: 6px; }
+.talon-bloque { display: flex; flex-direction: column; gap: 6px; padding-bottom: 16px; }
+.tkb .tk-ramo { width: 110px; height: 116px; }
 .sello {
-  position: absolute; z-index: 2; right: 16px; top: 16px; pointer-events: none;
-  border: 3px solid currentColor; border-radius: 10px; padding: 7px 13px 6px; text-align: center;
-  font: 800 26px/1 var(--f-titulo); text-transform: uppercase; letter-spacing: .08em;
-  transform: rotate(-9deg); color: var(--verde-oscuro); opacity: .92;
+  align-self: flex-start; margin: 14px 0 0 2px; pointer-events: none;
+  border: 3px solid currentColor; border-radius: 10px; padding: 7px 12px 6px; text-align: center; background: rgba(255, 255, 255, .55);
+  font: 800 24px/1 var(--f-titulo); text-transform: uppercase; letter-spacing: .08em;
+  transform: rotate(-9deg); color: var(--verde-oscuro);
 }
 .sello small { display: block; font: 400 12px/1.2 var(--f-mono); letter-spacing: .14em; margin-top: 4px; }
-.sello.anim { animation: sello .5s cubic-bezier(.3, 1.5, .5, 1) .15s both; }
-@keyframes sello { from { opacity: 0; transform: rotate(-9deg) scale(2.4); } to { opacity: .92; transform: rotate(-9deg) scale(1); } }
+.sello.anim { animation: sello .55s cubic-bezier(.3, 1.5, .5, 1) .2s both; }
+@keyframes sello { from { opacity: 0; transform: rotate(-9deg) scale(2.4); } to { opacity: 1; transform: rotate(-9deg) scale(1); } }
 @media (min-width: 640px) {
   .tkb { grid-template-columns: minmax(0, 1fr) 190px; }
   .tkb-main { padding: 30px 30px 26px; }
-  .tkb-talon { border-top: 0; border-left: 2px dashed rgba(17, 17, 17, .32); flex-direction: column; justify-content: center; text-align: center; gap: 22px; padding: 24px 16px; }
+  .tkb-talon { border-top: 0; border-left: 2px dashed var(--corte); flex-direction: column; justify-content: space-between; align-items: center; text-align: center; padding: 26px 12px 0; }
   .tkb-talon::before { top: -12px; left: -13px; } .tkb-talon::after { top: auto; bottom: -12px; right: auto; left: -13px; }
-  .sello { right: 214px; top: 26px; }
+  .tkb .tk-ramo { width: 150px; height: 158px; }
+  .tkb-talon .sello { align-self: center; margin: 16px 0 0; }
 }
 .bloque-v { padding: 34px 0 0; display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
-.bloque-v h2 { font: italic 400 38px/1 var(--f-serif); }
+.bloque-v h2 { font: italic 400 40px/1 var(--f-serif); }
 .botones-v { display: flex; flex-direction: column; gap: 10px; }
-@media (min-width: 640px) { .botones-v { flex-direction: row; flex-wrap: wrap; } }
-.fecha-v { font: italic 400 clamp(38px, 10vw, 52px)/1 var(--f-serif); }
-.cuenta-v { font: 400 13px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--verde); }
-.pie-v { padding: 36px 0 calc(40px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 640px) { .botones-v { flex-direction: row; flex-wrap: wrap; align-items: center; } }
+.fecha-v { font: italic 400 clamp(40px, 10vw, 54px)/1 var(--f-serif); }
+.cuenta-v { font: 400 13px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--verde-oscuro); }
+.pie-v { padding: 30px 0 0; }
 .pie-v .enlace { color: var(--gris); }
 
-.cal { border: 1px solid var(--linea); border-radius: 14px; padding: 12px 10px 10px; background: var(--superficie); }
+.cal { border: 1px solid var(--linea); border-radius: 18px; padding: 12px 10px 10px; background: #fff; box-shadow: var(--sombra); }
 .cal-cab { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 6px; }
-.cal-cab strong { font: italic 400 26px/1 var(--f-serif); }
-.cal-nav { width: 40px; height: 40px; border-radius: 50%; font-size: 20px; line-height: 1; color: var(--texto); }
-.cal-nav[disabled] { opacity: .2; cursor: default; }
+.cal-cab strong { font: italic 400 28px/1 var(--f-serif); }
+.cal-nav { width: 40px; height: 40px; border-radius: 50%; font-size: 20px; line-height: 1; }
+.cal-nav[disabled] { opacity: .25; cursor: default; }
 @media (hover: hover) { .cal-nav:not([disabled]):hover { background: var(--superficie-2); } }
 .cal-sem, .cal-dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; }
 .cal-sem span { font: 400 12px/2.2 var(--f-mono); color: var(--gris); }
-.cal-d { height: clamp(40px, 11vw, 46px); border-radius: 10px; font-size: 15px; font-weight: 550; font-variant-numeric: tabular-nums; color: var(--texto); }
+.cal-d { height: clamp(40px, 11vw, 46px); border-radius: 12px; font-size: 15px; font-weight: 550; font-variant-numeric: tabular-nums; transition: transform .12s; }
 .cal-d.hoy { box-shadow: inset 0 0 0 1px var(--linea-fuerte); }
-.cal-d.sel { background: var(--verde); color: var(--tinta); box-shadow: none; }
-.cal-d[disabled] { color: #3d413d; cursor: default; }
+.cal-d.sel { background: linear-gradient(180deg, #a6e8c0, #86d6a6); color: #133d27; box-shadow: 0 6px 14px -8px rgba(43, 122, 80, .8); transform: scale(1.06); }
+.cal-d[disabled] { color: #c8d0ca; cursor: default; }
 @media (hover: hover) { .cal-d:not([disabled]):not(.sel):hover { background: var(--superficie-2); } }
 
 /* ---------- Varios ---------- */
 #aviso {
   position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60;
   transform: translate(-50%, 12px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
-  background: var(--papel); color: var(--tinta); padding: 11px 16px; border-radius: 10px; font-size: 14px; font-weight: 550;
+  background: var(--texto); color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 14px; font-weight: 550;
   width: max-content; max-width: calc(100% - 40px); text-align: center;
 }
 #aviso.on { opacity: 1; transform: translate(-50%, 0); }
+#petalos { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 70; display: none; }
 .cargando { min-height: 50vh; display: grid; place-items: center; color: var(--gris); font-size: 14px; }
 #imprimir { display: none; }
 @media print {
   @page { margin: 12mm; }
-  html, body { background: #fff; }
   body { padding: 0; }
-  body::after { display: none; }
+  body::before { display: none; }
   body > *:not(#imprimir) { display: none !important; }
   #imprimir { display: block !important; }
   #imprimir img { width: 100%; height: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
+  .fx-brillo::after, .fx-holo::after, .chispas, .btn-cartera::after { display: none; }
 }
 </style>
 </head>
@@ -359,22 +433,41 @@ textarea { resize: vertical; line-height: 1.45; }
 <div id="app"><div class="cargando">Cargando…</div></div>
 <div id="hoja" hidden></div>
 <div id="aviso" role="status" aria-live="polite"></div>
+<canvas id="petalos" aria-hidden="true"></canvas>
 <div id="imprimir" aria-hidden="true"></div>
 <noscript><p style="padding:24px">Esta página necesita JavaScript.</p></noscript>
 
 <script src="config.js"></script>
+<script src="flores.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
 (() => {
 'use strict';
 
 // ================================================================
-//  Configuración
+//  Configuración y opciones de los vales
 // ================================================================
 const CFG = Object.assign({ personas: ['Aaron', 'Lizz'], supabaseUrl: '', supabaseKey: '', clavePrueba: '', wallet: false }, window.PLANES_CONFIG || {});
 const PRUEBA = !(CFG.supabaseUrl && CFG.supabaseKey);
 const CARTERA = !PRUEBA && CFG.wallet === true;
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js';
+const FL = window.FLORES;
+
+const COLORES = [
+  ['menta', 'Menta', '#bdeed5'], ['salvia', 'Salvia', '#d5e8c8'], ['pistacho', 'Pistacho', '#e6f5b8'],
+  ['cielo', 'Cielo', '#cfe8fb'], ['lavanda', 'Lavanda', '#e2d9fb'], ['mantequilla', 'Mantequilla', '#fff2b8'], ['melocoton', 'Melocotón', '#ffdfc7'],
+];
+const HEX = Object.fromEntries(COLORES.map(([k, , h]) => [k, h]));
+const EFECTOS = [['brillo', '✨ Brillo'], ['holo', '🌈 Holográfico'], ['destellos', '⭐ Destellos'], ['ninguno', 'Sin efecto']];
+const FLORES_OPC = [['tulipanes', 'Tulipanes'], ['margaritas', '🌼 Margaritas'], ['ninguna', 'Sin flores']];
+const EMOJIS = ['🌼', '🌻', '🌿', '🍀', '💚', '✨', '🐬', '🐠', '🎬', '🍿', '🍝', '🍣', '🍕', '🍦', '☕', '🍷', '🥂', '🎡', '🎢', '🎭', '🎨', '🎤', '🎳', '🏖️', '⛰️', '🚲', '✈️', '🚗', '🧺', '🌅', '💆', '📚', '🎮', '🎁', '🛍️'];
+const DEF = { emoji: '🌼', color: 'menta', efecto: 'brillo', flor: 'tulipanes' };
+const estilo = v => ({
+  emoji: v.emoji || DEF.emoji,
+  color: HEX[v.color] ? v.color : DEF.color,
+  efecto: EFECTOS.some(e => e[0] === v.efecto) ? v.efecto : DEF.efecto,
+  flor: FLORES_OPC.some(f => f[0] === v.flor) ? v.flor : DEF.flor,
+});
 
 // ================================================================
 //  Utilidades
@@ -399,6 +492,7 @@ const fechaSello = s => { const d = aFecha(s); return `${pad(d.getDate())}·${pa
 const numero = n => 'Nº ' + String(n || 0).padStart(4, '0');
 const normCodigo = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const codigoBonito = c => c ? `${c.slice(0, 5)}-${c.slice(5)}` : '';
+const semilla = s => { let h = 2166136261; for (const ch of String(s || 'x')) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const cuenta = s => {
   const n = diasHasta(s);
   if (n === 0) return 'Es hoy';
@@ -413,6 +507,7 @@ const validez = v => {
   if (v.fecha_max) return `Hasta el ${fechaCorta(v.fecha_max)}`;
   return 'Cualquier día';
 };
+const sinMovimiento = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const memoria = {};
 const ls = {
   get(k) { try { const v = localStorage.getItem(k); return v !== null ? v : (memoria[k] ?? null); } catch (e) { return memoria[k] ?? null; } },
@@ -429,7 +524,6 @@ async function huella(texto) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
   return Array.from(new Uint8Array(b), x => x.toString(16).padStart(2, '0')).join('');
 }
-const ICONO_CARTERA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6.5" width="18" height="13" rx="3"/><path d="M3 11h18"/><path d="M6.5 6.5 15 3.8a1.5 1.5 0 0 1 1.9 1.1l.4 1.6"/></svg>';
 
 // ================================================================
 //  Datos: modo prueba (solo en este navegador)
@@ -443,7 +537,7 @@ function crearPrueba() {
     crypto.getRandomValues(b);
     return Array.from(b, x => A[x % 32]).join('');
   };
-  const publico = v => ({ codigo: v.codigo, numero: v.numero, titulo: v.titulo, detalles: v.detalles, de: v.de, para: v.para, fecha_min: v.fecha_min, fecha_max: v.fecha_max, estado: v.estado, fecha: v.fecha });
+  const publico = v => ({ codigo: v.codigo, numero: v.numero, titulo: v.titulo, detalles: v.detalles, de: v.de, para: v.para, fecha_min: v.fecha_min, fecha_max: v.fecha_max, estado: v.estado, fecha: v.fecha, emoji: v.emoji, color: v.color, efecto: v.efecto, flor: v.flor });
   const comprobar = async (nombre, clave) => {
     if (!CFG.personas.includes(nombre) || !CFG.clavePrueba || (await huella(clave || '')) !== CFG.clavePrueba) throw new Error('Contraseña incorrecta.');
   };
@@ -453,9 +547,10 @@ function crearPrueba() {
     borrarTodo() { ls.del(CLAVE); },
     async entrar(nombre, clave) { await comprobar(nombre, clave); return { nombre, otro: CFG.personas.find(p => p !== nombre) }; },
     async listar() { return leer().vales.filter(v => v.de === S.yo || v.estado === 'canjeado').sort((a, b) => b.creado_en.localeCompare(a.creado_en)); },
-    async crear({ titulo, detalles, fecha_min, fecha_max }) {
+    async crear(o) {
       const d = leer();
-      const v = { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), numero: ++d.n, codigo: genCodigo(), titulo, detalles: detalles || '', de: S.yo, para: otro(), fecha_min, fecha_max, estado: 'pendiente', fecha: null, creado_en: new Date().toISOString(), canjeado_en: null };
+      const v = Object.assign({ id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), numero: ++d.n, codigo: genCodigo(), de: S.yo, para: otro(), estado: 'pendiente', fecha: null, creado_en: new Date().toISOString(), canjeado_en: null },
+        { titulo: o.titulo, detalles: o.detalles || '', fecha_min: o.fecha_min, fecha_max: o.fecha_max }, estilo(o));
       d.vales.push(v); guardar(d); return v;
     },
     async borrar(id) { const d = leer(); d.vales = d.vales.filter(v => v.id !== id); guardar(d); },
@@ -481,7 +576,7 @@ function crearSupabase() {
   let sb = null;
   const traducir = m => {
     if (/failed to fetch|networkerror|load failed|network request failed/i.test(m)) return 'No hay conexión. Revisa internet y vuelve a probar.';
-    if (/could not find the function|schema cache/i.test(m)) return 'Falta preparar la base de datos: ejecuta setup.sql en Supabase.';
+    if (/could not find the function|schema cache/i.test(m)) return 'Falta actualizar la base de datos.';
     if (/invalid api key|no api key/i.test(m)) return 'La clave de Supabase de config.js no es válida.';
     return m;
   };
@@ -498,7 +593,10 @@ function crearSupabase() {
     },
     entrar: (nombre, clave) => rpc('entrar', { p_nombre: nombre, p_clave: clave }),
     listar: () => rpc('listar_vales', { p_nombre: S.yo, p_clave: S.clave }).then(d => d || []),
-    crear: d => rpc('crear_vale', { p_nombre: S.yo, p_clave: S.clave, p_titulo: d.titulo, p_detalles: d.detalles, p_fecha_min: d.fecha_min, p_fecha_max: d.fecha_max }),
+    crear: d => rpc('crear_vale', {
+      p_nombre: S.yo, p_clave: S.clave, p_titulo: d.titulo, p_detalles: d.detalles, p_fecha_min: d.fecha_min, p_fecha_max: d.fecha_max,
+      p_emoji: d.emoji, p_color: d.color, p_efecto: d.efecto, p_flor: d.flor,
+    }),
     borrar: id => rpc('borrar_vale', { p_nombre: S.yo, p_clave: S.clave, p_id: id }),
     deshacer: id => rpc('deshacer_canje', { p_nombre: S.yo, p_clave: S.clave, p_id: id }),
     verVale: c => rpc('ver_vale', { p_codigo: normCodigo(c) }),
@@ -526,7 +624,7 @@ const norm = v => Object.assign(v, {
   fecha: v.fecha ? String(v.fecha).slice(0, 10) : null,
   fecha_min: v.fecha_min ? String(v.fecha_min).slice(0, 10) : null,
   fecha_max: v.fecha_max ? String(v.fecha_max).slice(0, 10) : null,
-});
+}, estilo(v));
 const mios = () => S.vales.filter(v => v.estado === 'pendiente' && v.de === S.yo);
 const canjeados = () => S.vales.filter(v => v.estado === 'canjeado' && v.fecha);
 
@@ -565,30 +663,45 @@ function enrutar() { const c = codigoURL(); if (c) mostrarVale(c); else mostrarA
 addEventListener('hashchange', enrutar);
 
 // ================================================================
+//  Piezas
+// ================================================================
+const marca = () => `<a class="marca" href="./" data-a="lista"><span class="tul">${FL.icono(1)}</span><span class="marca-t">Planes<span class="dot">.</span></span></a>`;
+const avisoPrueba = () => api.prueba ? '<div class="aviso-prueba">Modo prueba: sin base de datos, los vales solo se guardan en este navegador.</div>' : '';
+const jardin = (n, sem, alto = 130) => `<div class="jardin-pie">${FL.jardin({ ancho: 760, alto, n, semilla: sem, tipo: 'mezcla' })}</div>`;
+
+function chispas(sem) {
+  const r = FL.azar(sem);
+  let h = '';
+  for (let i = 0; i < 7; i++) {
+    const tam = 9 + r() * 10;
+    h += `<i style="left:${(4 + r() * 88).toFixed(1)}%;top:${(6 + r() * 82).toFixed(1)}%;width:${tam.toFixed(0)}px;height:${tam.toFixed(0)}px;animation-delay:${(r() * 2.6).toFixed(2)}s">${FL.ESTRELLA}</i>`;
+  }
+  return `<span class="chispas" aria-hidden="true">${h}</span>`;
+}
+const fxClase = e => e === 'ninguno' ? '' : `fx-${e}`;
+const fxExtra = (e, sem) => e === 'destellos' ? chispas(sem) : '';
+
+// ================================================================
 //  Entrar
 // ================================================================
-const MARCA_SVG = '<svg viewBox="0 0 40 28" aria-hidden="true"><path fill="#93bfa4" d="M4 1h32a3 3 0 0 1 3 3v6.5a3.5 3.5 0 0 0 0 7V24a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3v-6.5a3.5 3.5 0 0 0 0-7V4a3 3 0 0 1 3-3Z"/><path d="M28 4.5v19" stroke="#0d0e0d" stroke-width="1.6" stroke-dasharray="2 2.2"/></svg>';
-const marca = () => `<a class="marca" href="./" data-a="lista">${MARCA_SVG}<span class="marca-t">Planes<span class="dot">.</span></span></a>`;
-const avisoPrueba = () => api.prueba ? '<div class="aviso-prueba">Modo prueba: sin base de datos, los vales solo se guardan en este navegador.</div>' : '';
-
 function pintarEntrar(error, nombre) {
   VISTA = 'entrar';
   const sel = nombre || S.yo || CFG.personas[0];
   $('#app').innerHTML = `${avisoPrueba()}<div class="wrap entrar">
-    <div class="deco v deco-1" aria-hidden="true"></div><div class="deco n deco-2" aria-hidden="true"></div>
     <div class="entrar-caja">
       ${marca()}
       <form data-form="entrar" novalidate>
-        <div class="segmento" role="radiogroup" aria-label="¿Quién eres?">${CFG.personas.map(p => `<label><input type="radio" name="yo" value="${esc(p)}" ${p === sel ? 'checked' : ''}><span>${esc(p)}</span></label>`).join('')}</div>
+        <div class="segmento" role="radiogroup" aria-label="¿Quién eres?">${CFG.personas.map((p, i) => `<label><input type="radio" name="yo" value="${esc(p)}" ${p === sel ? 'checked' : ''}><span>${i ? '🌼' : '🌿'} ${esc(p)}</span></label>`).join('')}</div>
         <label class="campo"><span class="sr">Contraseña</span><input id="clave" type="password" placeholder="Contraseña" autocomplete="current-password" inputmode="numeric"></label>
         ${error ? `<p class="error">${esc(error)}</p>` : ''}
         <button class="btn btn-negro btn-ancho" type="submit">Entrar</button>
       </form>
       <form data-form="codigo" class="otra" novalidate>
-        <label class="campo"><span style="font-weight:400">¿Tienes el código de un vale?</span>
+        <label class="campo"><span>¿Tienes el código de un vale?</span>
           <span class="fila"><input class="codigo-in" placeholder="ABCDE-12345" autocomplete="off" autocapitalize="characters" aria-label="Código del vale"><button class="btn btn-borde" type="submit">Abrir</button></span></label>
       </form>
     </div>
+    <div class="jardin-fondo">${FL.jardin({ ancho: 900, alto: 190, n: 19, semilla: 21, tipo: 'mezcla' }).replace('meet', 'slice')}</div>
   </div>`;
 }
 function salir(error) {
@@ -616,36 +729,41 @@ async function recargar() {
 function pintar() {
   const m = mios(), c = canjeados();
   $('#app').innerHTML = `${avisoPrueba()}
-    <header class="wrap cab">${marca()}<button type="button" class="quien" data-a="cuenta" aria-label="Cuenta de ${esc(S.yo)}">${esc(S.yo)}</button></header>
+    <header class="wrap cab">${marca()}<button type="button" class="quien" data-a="cuenta" aria-label="Cuenta de ${esc(S.yo)}"><span class="tul" aria-hidden="true">${FL.icono(S.yo === CFG.personas[1] ? 0 : 1)}</span>${esc(S.yo)}</button></header>
     <main class="wrap">
       <div class="barra">
         <nav class="tabs" aria-label="Secciones">
           <button type="button" data-a="tab" data-t="mios" ${S.tab === 'mios' ? 'aria-current="page"' : ''}>Mis vales<span class="n">${m.length || ''}</span></button>
           <button type="button" data-a="tab" data-t="canjeados" ${S.tab === 'canjeados' ? 'aria-current="page"' : ''}>Canjeados<span class="n">${c.length || ''}</span></button>
         </nav>
-        ${S.tab === 'mios' ? '<button type="button" class="btn btn-negro" data-a="nuevo">Nuevo vale</button>' : ''}
+        ${S.tab === 'mios' ? '<button type="button" class="btn btn-negro" data-a="nuevo">＋ Nuevo vale</button>' : ''}
       </div>
       ${S.tab === 'mios' ? tabMios(m) : tabCanjeados(c)}
+      ${jardin(15, 5)}
     </main>`;
 }
 
-function tkPendiente(v) {
-  return `<li class="tk">
+function tkPendiente(v, previa = false) {
+  const e = estilo(v);
+  return `<li class="tk c-${e.color} ${fxClase(e.efecto)}">
+    ${fxExtra(e.efecto, semilla(v.codigo || v.titulo))}
     <div class="tk-main">
-      <p class="tk-meta">Para ${esc(v.para)} · ${esc(validez(v))}</p>
-      <h3 class="tk-titulo">${esc(v.titulo)}</h3>
+      <p class="tk-meta">${numero(v.numero)} · Para ${esc(v.para || otro())}</p>
+      <h3 class="tk-titulo">${esc(v.titulo || 'Tu vale')}</h3>
       ${v.detalles ? `<p class="tk-det">${esc(v.detalles)}</p>` : ''}
-      <div class="tk-acc"><button type="button" class="btn btn-negro btn-peq" data-a="qr" data-id="${v.id}">Ver QR</button><button type="button" class="enlace" data-a="borrar" data-id="${v.id}">Borrar</button></div>
+      <p class="tk-meta">${esc(validez(v))}</p>
+      ${previa ? '' : `<div class="tk-acc"><button type="button" class="btn btn-negro btn-peq" data-a="qr" data-id="${v.id}">Ver QR</button><button type="button" class="enlace" data-a="borrar" data-id="${v.id}">Borrar</button></div>`}
     </div>
-    <div class="tk-talon"><span class="tk-num">VALE ${numero(v.numero).toUpperCase()}</span></div>
+    <div class="tk-talon"><span class="tk-emoji" aria-hidden="true">${esc(e.emoji)}</span><span class="tk-ramo">${FL.ramo(e.flor, semilla(v.codigo || v.titulo))}</span></div>
   </li>`;
 }
 function tkCanjeado(v) {
-  const pasado = diasHasta(v.fecha) < 0;
-  return `<li class="tk usado ${pasado ? 'pasado' : ''}">
+  const e = estilo(v), pasado = diasHasta(v.fecha) < 0;
+  return `<li class="tk c-${e.color} ${pasado ? 'pasado' : fxClase(e.efecto)}">
+    ${pasado ? '' : fxExtra(e.efecto, semilla(v.codigo))}
     <div class="tk-main">
       <span class="tk-sello">Canjeado</span>
-      <p class="tk-meta">De ${esc(v.de)} para ${esc(v.para)}</p>
+      <p class="tk-meta">${esc(e.emoji)} De ${esc(v.de)} para ${esc(v.para)}</p>
       <h3 class="tk-titulo">${esc(v.titulo)}</h3>
       <p class="tk-cuenta">${capital(fechaLarga(v.fecha))} · ${cuenta(v.fecha)}</p>
       <div class="tk-acc">
@@ -654,15 +772,18 @@ function tkCanjeado(v) {
         <button type="button" class="enlace" data-a="borrar" data-id="${v.id}">Borrar</button>
       </div>
     </div>
-    <div class="tk-talon"><div class="tk-dia" aria-hidden="true"><span class="m">${esc(fmt(v.fecha, { month: 'short' }).replace('.', ''))}</span><span class="d">${aFecha(v.fecha).getDate()}</span><span class="s">${esc(fmt(v.fecha, { weekday: 'short' }).replace('.', ''))}</span></div></div>
+    <div class="tk-talon">
+      <div class="tk-dia" aria-hidden="true"><span class="m">${esc(fmt(v.fecha, { month: 'short' }).replace('.', ''))}</span><span class="d">${aFecha(v.fecha).getDate()}</span><span class="s">${esc(fmt(v.fecha, { weekday: 'short' }).replace('.', ''))}</span></div>
+      <span class="tk-ramo">${FL.ramo(e.flor, semilla(v.codigo))}</span>
+    </div>
   </li>`;
 }
 function vacio(titulo, texto) {
-  return `<div class="vacio"><div><h2>${titulo}</h2><p>${texto}</p></div><div></div></div>`;
+  return `<div class="vacio"><div><h2>${titulo}</h2><p>${texto}</p></div><div><span class="tk-ramo">${FL.ramo('tulipanes', 9)}</span></div></div>`;
 }
 function tabMios(m) {
-  let html = m.length ? `<ul class="talonario">${m.map(tkPendiente).join('')}</ul>`
-    : vacio('Sin vales pendientes', 'Crea uno y pásale el QR. Elegirá el día al escanearlo.');
+  let html = m.length ? `<ul class="talonario">${m.map(v => tkPendiente(v)).join('')}</ul>`
+    : vacio('Sin vales pendientes', 'Crea uno, elige su color y sus flores, y pásale el QR.');
   html += `<form class="codigo-caja" data-form="codigo" novalidate><label for="cod">¿Te han dado un vale? Escribe su código</label>
     <div class="fila"><input id="cod" class="codigo-in" placeholder="ABCDE-12345" autocomplete="off" autocapitalize="characters"><button class="btn btn-borde" type="submit">Abrir</button></div></form>`;
   return html;
@@ -700,12 +821,47 @@ function cerrarHoja() {
   setTimeout(() => { if (!h.classList.contains('on')) { h.hidden = true; h.innerHTML = ''; } }, 250);
   if (focoAntes && focoAntes.isConnected) try { focoAntes.focus({ preventScroll: true }); } catch (e) { /* nada */ }
 }
+
+function datosNuevo() {
+  const val = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value;
+  const otroEmoji = ($('#nv-emoji') || {}).value ? $('#nv-emoji').value.trim() : '';
+  return {
+    titulo: ($('#nv-titulo') || {}).value ? $('#nv-titulo').value.trim() : '',
+    detalles: ($('#nv-det') || {}).value ? $('#nv-det').value.trim() : '',
+    emoji: otroEmoji || (HOJA && HOJA.emoji) || DEF.emoji,
+    color: val('nv-color') || DEF.color,
+    efecto: val('nv-efecto') || DEF.efecto,
+    flor: val('nv-flor') || DEF.flor,
+  };
+}
+function refrescarPrevia() {
+  const p = $('#previa');
+  if (!p || !HOJA || HOJA.tipo !== 'nuevo') return;
+  const d = datosNuevo();
+  const desde = $('#nv-limitar') && $('#nv-limitar').checked ? $('#nv-desde').value : '';
+  const hasta = $('#nv-limitar') && $('#nv-limitar').checked ? $('#nv-hasta').value : '';
+  p.innerHTML = `<ul class="talonario">${tkPendiente(Object.assign({ numero: null, codigo: 'PREVIA', para: otro(), fecha_min: desde || null, fecha_max: hasta || null }, d, { titulo: d.titulo || 'Tu vale' }), true)}</ul>`;
+}
 function abrirNuevo() {
-  HOJA = { tipo: 'nuevo' };
+  HOJA = { tipo: 'nuevo', emoji: DEF.emoji };
   abrirHoja('Nuevo vale', `<form class="hoja-cuerpo" id="f-nuevo" data-form="nuevo" novalidate>
+      <div class="previa" id="previa"></div>
       <p class="para-l">Para <strong>${esc(otro())}</strong></p>
       <label class="campo"><span>Qué es</span><input id="nv-titulo" maxlength="120" placeholder="Entradas para el Oceanogràfic" autocomplete="off"></label>
-      <label class="campo"><span>Detalles <em>(opcional)</em></span><textarea id="nv-det" rows="3" maxlength="500"></textarea></label>
+      <label class="campo"><span>Detalles <em>(opcional)</em></span><textarea id="nv-det" rows="2" maxlength="500"></textarea></label>
+      <fieldset class="campo"><legend>Emoji</legend>
+        <div class="emojis">${EMOJIS.map(e => `<button type="button" class="emo" data-a="emoji" data-e="${e}" aria-pressed="${e === DEF.emoji}" aria-label="Emoji ${e}">${e}</button>`).join('')}
+          <input id="nv-emoji" maxlength="8" placeholder="Otro" aria-label="Otro emoji"></div>
+      </fieldset>
+      <fieldset class="campo"><legend>Color</legend>
+        <div class="colores">${COLORES.map(([k, n]) => `<label class="color c-${k}" title="${n}"><input type="radio" name="nv-color" value="${k}" ${k === DEF.color ? 'checked' : ''}><span class="sr">${n}</span></label>`).join('')}</div>
+      </fieldset>
+      <fieldset class="campo"><legend>Efecto</legend>
+        <div class="chips">${EFECTOS.map(([k, n]) => `<label class="chip"><input type="radio" name="nv-efecto" value="${k}" ${k === DEF.efecto ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div>
+      </fieldset>
+      <fieldset class="campo"><legend>Flores</legend>
+        <div class="chips">${FLORES_OPC.map(([k, n]) => `<label class="chip"><input type="radio" name="nv-flor" value="${k}" ${k === DEF.flor ? 'checked' : ''}><span>${k === 'tulipanes' ? `<span class="tul" aria-hidden="true">${FL.icono(1)}</span>` : ''}${n}</span></label>`).join('')}</div>
+      </fieldset>
       <label class="check"><input type="checkbox" id="nv-limitar"> Limitar las fechas</label>
       <div class="dos" id="nv-fechas" hidden>
         <label class="campo"><span>Desde</span><input type="date" id="nv-desde" min="${hoy()}"></label>
@@ -713,7 +869,8 @@ function abrirNuevo() {
       </div>
       <p class="error" id="nv-error" hidden></p>
     </form>`,
-    `<button type="submit" form="f-nuevo" class="btn btn-negro">Crear vale</button>`);
+    `<button type="submit" form="f-nuevo" class="btn btn-negro">Crear vale ✨</button>`);
+  refrescarPrevia();
 }
 async function abrirQR(id) {
   const v = vale(id);
@@ -724,7 +881,7 @@ async function abrirQR(id) {
       <div class="imagen-vale" id="img-vale"><div class="esperando"></div></div>
       <p style="font-size:15px;color:var(--gris)">Imprímelo o mándaselo. Al escanear el QR, ${esc(v.para)} elige el día.</p>
       <div class="enlace-fila"><input id="url-vale" readonly value="${esc(url)}" aria-label="Enlace del vale"><button type="button" class="btn btn-borde btn-peq" data-a="copiar">Copiar</button></div>
-      ${CARTERA ? `<div class="cartera-fila" id="cartera-fila"><div><strong>Cartera del iPhone</strong><span>Un enlace para mandárselo: al abrirlo en su iPhone, añade el vale a Cartera.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="cartera-enlace">${ICONO_CARTERA}Crear enlace</button></div>` : ''}
+      ${CARTERA ? `<div class="cartera-fila" id="cartera-fila"><div><strong>Para su Cartera del iPhone</strong><span>Un enlace para mandárselo: al abrirlo en su iPhone, guarda el vale en Cartera, en blanco y con tulipanes.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="cartera-enlace">Crear enlace</button></div>` : ''}
     </div>`,
     `<button type="button" class="btn btn-borde" data-a="imprimir">Imprimir</button>
      <button type="button" class="btn btn-borde" data-a="descargar">Descargar</button>
@@ -749,7 +906,7 @@ function abrirConfirmar(titulo, texto, si, alConfirmar) {
 function abrirCuenta() {
   HOJA = { tipo: 'cuenta' };
   abrirHoja(esc(S.yo), `<div class="hoja-cuerpo">
-      <p style="font-size:15px;color:var(--gris)">${api.prueba ? 'Modo prueba: los vales solo están en este navegador hasta que conectes la base de datos.' : 'Has entrado con tu contraseña.'}</p>
+      <p style="font-size:15px;color:var(--gris)">${api.prueba ? 'Modo prueba: los vales solo están en este navegador.' : 'Has entrado con tu contraseña.'}</p>
       <div style="display:flex;flex-direction:column;gap:10px">
         <button type="button" class="btn btn-borde btn-ancho" data-a="salir">Salir</button>
         ${api.prueba ? '<button type="button" class="btn btn-suave btn-ancho" data-a="borrar-prueba">Borrar todos los vales de prueba</button>' : ''}
@@ -798,11 +955,11 @@ async function mostrarVale(codigo) {
   window.scrollTo(0, 0);
 }
 function ticketGrande(v, animSello) {
-  const usado = v.estado === 'canjeado' && v.fecha;
-  return `<article class="tkb ${usado ? 'usado' : ''}">
-    ${usado ? `<div class="sello ${animSello ? 'anim' : ''}" aria-hidden="true">Canjeado<small>${fechaSello(v.fecha)}</small></div>` : ''}
+  const e = estilo(v), usado = v.estado === 'canjeado' && v.fecha;
+  return `<article class="tkb c-${e.color} ${fxClase(e.efecto)}">
+    ${fxExtra(e.efecto, semilla(v.codigo))}
     <div class="tkb-main">
-      <p class="tkb-num">Vale ${numero(v.numero)}</p>
+      <div class="tkb-top"><p class="tkb-num">Vale ${numero(v.numero)}</p><span class="tkb-emoji" aria-hidden="true">${esc(e.emoji)}</span></div>
       <h1 class="tkb-titulo">${esc(v.titulo)}</h1>
       ${v.detalles ? `<p class="tkb-det">${esc(v.detalles)}</p>` : ''}
       <dl class="tkb-datos">
@@ -812,8 +969,9 @@ function ticketGrande(v, animSello) {
       </dl>
     </div>
     <div class="tkb-talon">
-      <div class="talon-bloque"><span class="eti">Código</span><span class="cod">${esc(codigoBonito(v.codigo))}</span></div>
-      ${usado ? `<div class="talon-bloque"><span class="eti">Día</span><span class="cod">${esc(fechaCorta(v.fecha))}</span></div>` : ''}
+      <div class="talon-bloque"><span class="eti">Código</span><span class="cod">${esc(codigoBonito(v.codigo))}</span>
+        ${usado ? `<div class="sello ${animSello ? 'anim' : ''}" aria-hidden="true">Canjeado<small>${fechaSello(v.fecha)}</small></div>` : ''}</div>
+      <span class="tk-ramo">${FL.ramo(e.flor, semilla(v.codigo))}</span>
     </div>
   </article>`;
 }
@@ -826,10 +984,10 @@ function pintarVale() {
       <h2>${V.error ? 'No se ha podido abrir' : 'Este vale no existe'}</h2>
       <p style="color:var(--gris)">${V.error ? esc(V.error) : 'Puede que lo hayan borrado o que el código esté mal escrito.'}</p>
       <form data-form="codigo" class="fila" novalidate><input class="codigo-in" value="${esc(codigoBonito(V.codigo))}" aria-label="Código del vale" autocomplete="off" autocapitalize="characters"><button class="btn btn-negro" type="submit">Abrir</button></form>
-    </div></main>`;
+    </div>${jardin(13, 4)}</main>`;
     return;
   }
-  let html = cab + `<main class="wrap">${ticketGrande(v, V.recien)}`;
+  let html = cab + `<main class="wrap"><p class="v-de">Un vale de ${esc(v.de)} para ${esc(v.para)}</p>${ticketGrande(v, V.recien)}`;
   if (v.estado === 'pendiente' || V.cambiando) {
     html += `<section class="bloque-v">
       <h2>${V.cambiando ? 'Cambia el día' : 'Elige el día'}</h2>
@@ -839,18 +997,18 @@ function pintarVale() {
     </section>`;
   } else {
     html += `<section class="bloque-v">
-      <div><p class="fecha-v">${capital(fechaLarga(v.fecha))}</p><p class="cuenta-v" style="margin-top:8px">${cuenta(v.fecha)}</p></div>
+      <div><p class="fecha-v">${capital(fechaLarga(v.fecha))}</p><p class="cuenta-v" style="margin-top:10px">${cuenta(v.fecha)}</p></div>
+      ${CARTERA ? `<button type="button" class="btn-cartera" data-a="cartera"><span class="pila" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span><b>Añadir a Cartera</b><small>Apple Wallet · con tulipanes</small></span></button>` : ''}
       <div class="botones-v">
-        <a class="btn btn-negro" href="${esc(enlaceWhatsApp(v))}" target="_blank" rel="noopener">Avisar a ${esc(v.de)} por WhatsApp</a>
-        <button type="button" class="btn btn-borde" data-a="ics-vale">Añadir al calendario</button>
-        ${CARTERA ? `<button type="button" class="btn btn-borde" data-a="cartera">${ICONO_CARTERA}Añadir a Cartera</button>` : ''}
+        <a class="btn btn-negro" href="${esc(enlaceWhatsApp(v))}" target="_blank" rel="noopener">💬 Avisar a ${esc(v.de)} por WhatsApp</a>
+        <button type="button" class="btn btn-borde" data-a="ics-vale">📅 Añadir al calendario</button>
       </div>
       <button type="button" class="enlace" style="align-self:flex-start;color:var(--gris)" data-a="cambiar-dia">Cambiar el día</button>
     </section>`;
   }
-  html += `<footer class="pie-v"><a class="enlace" href="./" data-a="lista">Ir a la lista de vales</a></footer></main>`;
+  html += `<footer class="pie-v"><a class="enlace" href="./" data-a="lista">Ir a la lista de vales</a></footer>${jardin(15, 8)}</main>`;
   $('#app').innerHTML = html;
-  V.recien = false;
+  if (V.recien) { V.recien = false; setTimeout(petalos, 300); }
   if ($('#cal')) {
     const min = [hoy(), v.fecha_min].filter(Boolean).sort().pop();
     if (!CAL) CAL = nuevoCal(V.sel && V.sel >= min ? V.sel : null, min, v.fecha_max);
@@ -861,7 +1019,35 @@ function textoCanjear() {
   if (!V || !V.sel) return 'Elige un día en el calendario';
   return `${V.cambiando ? 'Cambiar al' : 'Canjear para el'} ${fechaLarga(V.sel)}`;
 }
-const enlaceWhatsApp = v => 'https://wa.me/?text=' + encodeURIComponent(`Vale canjeado: «${v.titulo}», el ${fechaLarga(v.fecha)}.`);
+const enlaceWhatsApp = v => 'https://wa.me/?text=' + encodeURIComponent(`${v.emoji || '🌼'} Vale canjeado: «${v.titulo}», el ${fechaLarga(v.fecha)}.`);
+
+// ---------- Lluvia de pétalos y tulipanes al canjear ----------
+function petalos() {
+  if (sinMovimiento()) return;
+  const c = $('#petalos'), g = c.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), W = innerWidth, H = innerHeight;
+  c.width = W * dpr; c.height = H * dpr; c.style.display = 'block';
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cols = FL.TULIPANES.map(t => t[0]).concat(['#bdeed5', '#a6e8c0', '#ffffff']);
+  const ps = Array.from({ length: 70 }, (_, i) => ({
+    x: Math.random() * W, y: -20 - Math.random() * H * .6, vy: 1.4 + Math.random() * 2.2, f: Math.random() * 6, vf: .02 + Math.random() * .03,
+    r: Math.random() * 6, vr: (Math.random() - .5) * .08, t: 6 + Math.random() * 8, col: cols[i % cols.length], tul: i % 6 === 0,
+  }));
+  const t0 = performance.now();
+  const paso = t => {
+    g.clearRect(0, 0, W, H);
+    for (const p of ps) {
+      p.y += p.vy; p.f += p.vf; p.r += p.vr; const x = p.x + Math.sin(p.f) * 30;
+      g.save(); g.translate(x, p.y); g.rotate(p.r); g.fillStyle = p.col;
+      if (p.tul) { // tulipancito
+        g.beginPath(); g.moveTo(0, p.t); g.bezierCurveTo(-p.t, p.t, -p.t, -p.t * .2, -p.t * .7, -p.t); g.lineTo(-p.t * .3, -p.t * .4); g.lineTo(0, -p.t * 1.1); g.lineTo(p.t * .3, -p.t * .4); g.lineTo(p.t * .7, -p.t); g.bezierCurveTo(p.t, -p.t * .2, p.t, p.t, 0, p.t); g.fill();
+      } else { g.beginPath(); g.ellipse(0, 0, p.t * .45, p.t, 0, 0, Math.PI * 2); g.fill(); }
+      g.restore();
+    }
+    if (t - t0 < 4200) requestAnimationFrame(paso); else { g.clearRect(0, 0, W, H); c.style.display = 'none'; }
+  };
+  requestAnimationFrame(paso);
+}
 
 // ================================================================
 //  El vale como imagen (para imprimir o mandar)
@@ -893,31 +1079,48 @@ function rect(g, x, y, w, h, r) {
   g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
 }
 const espacio = (g, px) => { if ('letterSpacing' in g) g.letterSpacing = px + 'px'; };
+const svgImagen = (svg, w, h) => new Promise(ok => {
+  const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null);
+  i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('<svg ', `<svg width="${w}" height="${h}" `));
+});
 
 async function imagenVale(v, url) {
   if (typeof window.qrcode !== 'function') throw new Error('No se ha podido cargar el generador de QR. Revisa la conexión.');
   await fuentes();
-  const NEGRO = '#111111', VERDE = '#93bfa4', FONDO = '#ffffff';
+  const e = estilo(v);
+  const TINTA = '#1e2b24', CARTON = HEX[e.color], FONDO = '#ffffff';
   const W = 1920, H = 1040, M = 70, TW = W - M * 2, TH = H - M * 2, SX = M + 1260;
   const F = { t: '"Barlow Condensed", "Arial Narrow", sans-serif', i: 'Inter, system-ui, sans-serif', m: '"Courier Prime", "Courier New", monospace' };
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
   g.fillStyle = FONDO; g.fillRect(0, 0, W, H);
-  // Cartulina verde con sombra
-  g.save(); g.shadowColor = 'rgba(17,17,17,.22)'; g.shadowBlur = 40; g.shadowOffsetY = 16;
-  g.fillStyle = VERDE; rect(g, M, M, TW, TH, 30); g.fill(); g.restore();
-  // Muescas y línea de corte
+  g.save(); g.shadowColor = 'rgba(30,43,36,.2)'; g.shadowBlur = 40; g.shadowOffsetY = 16;
+  g.fillStyle = CARTON; rect(g, M, M, TW, TH, 34); g.fill(); g.restore();
+  // Brillo suave
+  g.save(); rect(g, M, M, TW, TH, 34); g.clip();
+  const br = g.createLinearGradient(M, M, M + TW, M + TH);
+  br.addColorStop(0, 'rgba(255,255,255,.45)'); br.addColorStop(.35, 'rgba(255,255,255,0)'); br.addColorStop(1, 'rgba(255,255,255,.18)');
+  g.fillStyle = br; g.fillRect(M, M, TW, TH); g.restore();
+  // Muescas y corte
   g.fillStyle = FONDO;
   for (const y of [M, M + TH]) { g.beginPath(); g.arc(SX, y, 34, 0, Math.PI * 2); g.fill(); }
-  g.save(); g.strokeStyle = 'rgba(17,17,17,.38)'; g.lineWidth = 4; g.setLineDash([16, 13]);
+  g.save(); g.strokeStyle = 'rgba(30,43,36,.32)'; g.lineWidth = 4; g.setLineDash([16, 13]);
   g.beginPath(); g.moveTo(SX, M + 52); g.lineTo(SX, M + TH - 52); g.stroke(); g.restore();
+
+  // Flores en la esquina inferior derecha de la parte principal
+  const ramo = FL.ramo(e.flor, semilla(v.codigo));
+  if (ramo) {
+    const img = await svgImagen(ramo, 300, 314);
+    if (img) { g.save(); rect(g, M, M, TW, TH, 34); g.clip(); g.globalAlpha = .95; g.drawImage(img, SX - 330, M + TH - 304, 300, 314); g.restore(); }
+  }
 
   // Parte principal
   const x0 = M + 90, x1 = SX - 80, ancho = x1 - x0;
-  g.fillStyle = NEGRO; g.textBaseline = 'alphabetic';
-  g.font = `400 32px ${F.m}`; espacio(g, 5); g.globalAlpha = .75;
+  g.fillStyle = TINTA; g.textBaseline = 'alphabetic';
+  g.font = `400 32px ${F.m}`; espacio(g, 5); g.globalAlpha = .7;
   g.fillText(`VALE ${numero(v.numero).toUpperCase()}`, x0, M + 112); g.globalAlpha = 1; espacio(g, 0);
-  g.fillStyle = 'rgba(17,17,17,.28)'; g.fillRect(x0, M + 146, ancho, 3); g.fillStyle = NEGRO;
+  g.font = `110px ${F.i}`; g.textAlign = 'right'; g.fillText(e.emoji, x1, M + 140); g.textAlign = 'left';
+  g.fillStyle = 'rgba(30,43,36,.22)'; g.fillRect(x0, M + 170, ancho - 150, 3); g.fillStyle = TINTA;
 
   const titulo = String(v.titulo || '').toUpperCase();
   let tam = 160, ls_;
@@ -928,21 +1131,19 @@ async function imagenVale(v, url) {
   }
   g.font = `800 ${tam}px ${F.t}`;
   ls_ = lineas(g, titulo, ancho, 3);
-  let y = M + 190 + tam * 0.86;
+  let y = M + 205 + tam * 0.86;
   for (const l of ls_) { g.fillText(l, x0, y); y += tam * 0.9; }
   y = y - tam * 0.9 + tam * 0.14 + 30;
   const tope = M + TH - 200;
   if (v.detalles && y + 40 < tope) {
-    g.font = `400 38px ${F.i}`; g.globalAlpha = .82;
-    for (const l of lineas(g, v.detalles, ancho, 3)) { if (y + 40 > tope) break; y += 52; g.fillText(l, x0, y); }
+    g.font = `400 38px ${F.i}`; g.globalAlpha = .8;
+    for (const l of lineas(g, v.detalles, ancho - 280, 3)) { if (y + 40 > tope) break; y += 52; g.fillText(l, x0, y); }
     g.globalAlpha = 1;
   }
-  // Datos
   const yb = M + TH - 112;
-  g.fillStyle = 'rgba(17,17,17,.26)'; g.fillRect(x0, yb - 60, ancho, 3); g.fillStyle = NEGRO;
   let xc = x0;
   for (const [k, val] of [['DE', v.de], ['PARA', v.para], ['VÁLIDO', validez(v)]]) {
-    g.font = `400 26px ${F.m}`; espacio(g, 4); g.globalAlpha = .65; g.fillText(k, xc, yb - 12);
+    g.font = `400 26px ${F.m}`; espacio(g, 4); g.globalAlpha = .62; g.fillText(k, xc, yb - 12);
     g.globalAlpha = 1; espacio(g, 0);
     g.font = `700 54px ${F.t}`;
     const t = String(val || '—').toUpperCase();
@@ -952,15 +1153,16 @@ async function imagenVale(v, url) {
 
   // Talón con el QR
   const cx = SX + (M + TW - SX) / 2, anchoTalon = M + TW - SX - 90;
-  g.textAlign = 'center'; g.fillStyle = NEGRO;
+  g.textAlign = 'center'; g.fillStyle = TINTA;
   let tt = 30;
   do { g.font = `400 ${tt}px ${F.m}`; espacio(g, 4); tt -= 1; } while (g.measureText('ESCANÉALO Y ELIGE EL DÍA').width > anchoTalon && tt > 16);
   g.fillText('ESCANÉALO Y ELIGE EL DÍA', cx, M + 112); espacio(g, 0);
   const qs = 440, qx = cx - qs / 2, qy = M + 160;
-  g.fillStyle = '#ffffff'; rect(g, qx, qy, qs, qs, 22); g.fill();
+  g.save(); g.shadowColor = 'rgba(30,43,36,.15)'; g.shadowBlur = 20; g.shadowOffsetY = 6;
+  g.fillStyle = '#ffffff'; rect(g, qx, qy, qs, qs, 26); g.fill(); g.restore();
   const qr = window.qrcode(0, 'M'); qr.addData(url); qr.make();
   const n = qr.getModuleCount(), area = qs - 56, celda = area / n, ox = qx + 28, oy = qy + 28;
-  g.fillStyle = NEGRO;
+  g.fillStyle = TINTA;
   for (let r = 0; r < n; r++) for (let col = 0; col < n; col++) {
     if (!qr.isDark(r, col)) continue;
     const a = Math.round(ox + col * celda), b = Math.round(oy + r * celda);
@@ -968,7 +1170,7 @@ async function imagenVale(v, url) {
   }
   g.font = `400 46px ${F.m}`; espacio(g, 6);
   g.fillText(codigoBonito(v.codigo), cx, qy + qs + 78); espacio(g, 0);
-  g.font = `400 26px ${F.m}`; g.globalAlpha = .7;
+  g.font = `400 26px ${F.m}`; g.globalAlpha = .65;
   const host = baseWeb().replace(/^https?:\/\//, '').replace(/\/$/, '');
   g.fillText(host.length > 34 ? host.slice(0, 33) + '…' : host, cx, qy + qs + 126);
   g.globalAlpha = 1; g.textAlign = 'left';
@@ -990,7 +1192,7 @@ function ics(v) {
   const sello = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
   const l = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Planes//ES', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
     `UID:${v.codigo}@planes`, `DTSTAMP:${sello}`, `DTSTART;VALUE=DATE:${v.fecha.replace(/-/g, '')}`, `DTEND;VALUE=DATE:${sumarDias(v.fecha, 1).replace(/-/g, '')}`,
-    `SUMMARY:${limpio(v.titulo)}`, `DESCRIPTION:${limpio([v.detalles, `Vale de ${v.de} para ${v.para}`].filter(Boolean).join('\n'))}`, 'END:VEVENT', 'END:VCALENDAR'];
+    `SUMMARY:${limpio((v.emoji ? v.emoji + ' ' : '') + v.titulo)}`, `DESCRIPTION:${limpio([v.detalles, `Vale de ${v.de} para ${v.para}`].filter(Boolean).join('\n'))}`, 'END:VEVENT', 'END:VCALENDAR'];
   return new Blob([l.map(doblar).join('\r\n') + '\r\n'], { type: 'text/calendar;charset=utf-8' });
 }
 
@@ -1006,6 +1208,12 @@ const ACCIONES = {
   'nuevo'() { abrirNuevo(); },
   'qr'(el) { abrirQR(el.dataset.id); },
   'salir'() { salir(); },
+  'emoji'(el) {
+    HOJA.emoji = el.dataset.e;
+    const o = $('#nv-emoji'); if (o) o.value = '';
+    document.querySelectorAll('.emo').forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+    refrescarPrevia();
+  },
   'borrar-prueba'() {
     abrirConfirmar('Borrar vales de prueba', 'Se borran todos los vales guardados en este navegador.', 'Borrar todo', async () => {
       api.borrarTodo(); S.vales = []; cerrarHoja(); pintar(); aviso('Vales de prueba borrados');
@@ -1035,7 +1243,7 @@ const ACCIONES = {
       const fila = $('#cartera-fila');
       if (!fila || HOJA !== h) return;
       h.cartera = r.url;
-      fila.innerHTML = `<div><strong>Enlace de Cartera</strong><span>Mándaselo. Al abrirlo en su iPhone, pulsa «Añadir a Apple Wallet».</span></div>
+      fila.innerHTML = `<div><strong>Enlace de Cartera ✨</strong><span>Mándaselo. Al abrirlo en su iPhone, que pulse «Add to Apple Wallet».</span></div>
         <div class="enlace-fila" style="flex:1 1 100%"><input id="url-cartera" readonly value="${esc(r.url)}" aria-label="Enlace de Cartera"><button type="button" class="btn btn-borde btn-peq" data-a="copiar-cartera">Copiar</button></div>`;
     });
   },
@@ -1045,7 +1253,7 @@ const ACCIONES = {
     if (!HOJA || !HOJA.blob) return aviso('Un momento, se está creando la imagen');
     const { blob, v, url } = HOJA;
     const archivo = new File([blob], nombreArchivo(v, '.png'), { type: 'image/png' });
-    const texto = `Vale: «${v.titulo}». Ábrelo para elegir el día: ${url}`;
+    const texto = `${v.emoji || '🌼'} Tienes un vale: «${v.titulo}». Ábrelo para elegir el día: ${url}`;
     try {
       if (navigator.canShare && navigator.canShare({ files: [archivo] })) await navigator.share({ files: [archivo], text: texto });
       else if (navigator.share) await navigator.share({ text: texto, url });
@@ -1073,7 +1281,7 @@ const ACCIONES = {
     return ocupado(el, async () => {
       const r = await api.canjear(V.codigo, V.sel);
       V.v = norm(r); V.sel = r.fecha; V.cambiando = false; V.recien = true; CAL = null;
-      pintarVale(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      pintarVale(); window.scrollTo({ top: 0, behavior: sinMovimiento() ? 'auto' : 'smooth' });
       S.listo = false;
     });
   },
@@ -1088,7 +1296,14 @@ document.addEventListener('click', e => {
   if (fn) fn(el, e);
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'nv-limitar') $('#nv-fechas').hidden = !e.target.checked;
+  const t = e.target;
+  if (t.id === 'nv-limitar') $('#nv-fechas').hidden = !t.checked;
+  if (/^nv-(color|efecto|flor)$/.test(t.name) || /^nv-(limitar|desde|hasta)$/.test(t.id)) refrescarPrevia();
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'nv-emoji' && t.value.trim()) document.querySelectorAll('.emo').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  if (/^nv-(titulo|det|emoji)$/.test(t.id)) refrescarPrevia();
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarHoja(); });
 
@@ -1111,17 +1326,17 @@ const FORMS = {
     irAlVale(c);
   },
   async nuevo(f, btn) {
-    const titulo = $('#nv-titulo').value.trim(), detalles = $('#nv-det').value.trim();
+    const d = datosNuevo();
     const limitar = $('#nv-limitar').checked;
     const desde = limitar ? ($('#nv-desde').value || null) : null, hasta = limitar ? ($('#nv-hasta').value || null) : null;
-    const err = $('#nv-error'), mal = m => { err.textContent = m; err.hidden = false; };
-    if (!titulo) { $('#nv-titulo').focus(); return mal('Escribe qué es el vale.'); }
+    const err = $('#nv-error'), mal = m => { err.textContent = m; err.hidden = false; err.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+    if (!d.titulo) { $('#nv-titulo').focus(); return mal('Escribe qué es el vale.'); }
     if (limitar && !desde && !hasta) return mal('Pon al menos una fecha o quita «Limitar las fechas».');
     if (hasta && hasta < hoy()) return mal('La fecha «Hasta» ya ha pasado.');
     if (desde && hasta && hasta < desde) return mal('«Hasta» tiene que ser después de «Desde».');
     err.hidden = true;
     await ocupado(btn, async () => {
-      const v = norm(await api.crear({ titulo, detalles, fecha_min: desde, fecha_max: hasta }));
+      const v = norm(await api.crear(Object.assign(d, { fecha_min: desde, fecha_max: hasta })));
       S.vales.unshift(v); S.tab = 'mios'; ls.set('planes-tab', 'mios');
       pintar(); abrirQR(v.id);
     });
