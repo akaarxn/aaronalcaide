@@ -1,12 +1,12 @@
 # /planes usa una base de datos gratuita de Supabase, que se pausa tras una
-# semana sin uso. Esta tarea hace una consulta pequeña cada 3 días para evitarlo.
+# semana sin uso. Esta tarea hace una consulta pequeña cada día para evitarlo.
 # Lee los datos de planes/config.js; mientras estén vacíos no hace nada.
 
 name: Planes · mantener activa la base de datos
 
 on:
   schedule:
-    - cron: "17 8 */3 * *"
+    - cron: "17 8 * * *"     # todos los días, sobre las 9-10 h en España
   workflow_dispatch:
 
 permissions:
