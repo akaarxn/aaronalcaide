@@ -1,0 +1,43 @@
+# /planes usa una base de datos gratuita de Supabase, que se pausa tras una
+# semana sin uso. Esta tarea hace una consulta pequeña cada 3 días para evitarlo.
+# Lee los datos de planes/config.js; mientras estén vacíos no hace nada.
+
+name: Planes · mantener activa la base de datos
+
+on:
+  schedule:
+    - cron: "17 8 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Llamar a Supabase
+        run: |
+          node -e '
+            const fs = require("fs");
+            const window = {};
+            new Function("window", fs.readFileSync("planes/config.js", "utf8"))(window);
+            const c = window.PLANES_CONFIG || {};
+            const url = (c.supabaseUrl || "").trim().replace(/\/+$/, "");
+            const key = (c.supabaseKey || "").trim();
+            if (!url || !key) { console.log("planes/config.js aún no tiene Supabase. Nada que hacer."); process.exit(0); }
+            const headers = { apikey: key, "Content-Type": "application/json" };
+            if (key.startsWith("eyJ")) headers.Authorization = "Bearer " + key;
+            fetch(url + "/rest/v1/rpc/ping", { method: "POST", headers, body: "{}" })
+              .then(async r => { console.log("Supabase:", r.status, await r.text()); if (!r.ok) process.exit(1); })
+              .catch(e => { console.error(e); process.exit(1); });
+          '
+
+      # GitHub apaga las tareas programadas de repos sin cambios en 60 días; esto la mantiene encendida.
+      - name: Que GitHub no la apague
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/planes-mantener-activo.yml/enable" || true
