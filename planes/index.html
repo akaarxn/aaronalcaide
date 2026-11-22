@@ -12,8 +12,12 @@
 <link rel="apple-touch-icon" href="icono-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&display=swap">
 <style>
-/* Una columna estrecha tipo app: lista de vales con líneas finas, hojas que suben desde abajo en el móvil. */
+/* Un talonario: los vales son entradas de cartulina con talón y muescas.
+   Verde eucalipto = pendiente; negro = canjeado. Una columna en el móvil, dos en pantallas anchas. */
 @font-face { font-family: 'Inter'; src: url('/fonts/inter.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Courier Prime'; src: url('/fonts/courier-prime.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 
@@ -23,12 +27,12 @@
   --texto: #222222;
   --gris: #6f716e;
   --linea: #e4e6e3;
-  --fondo-2: #f6f7f6;
-  --verde: #93bfa4;          /* eucalipto, el de aaronalcaide.me */
+  --fondo-2: #f5f6f5;
+  --verde: #93bfa4;           /* eucalipto, el de aaronalcaide.me */
   --verde-suave: #edf4ef;
   --verde-texto: #3b6a4f;
-  --sombra: 0 18px 40px -18px rgba(17, 17, 17, .35);
   --f-texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-titulo: 'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif;
   --f-mono: 'Courier Prime', 'Courier New', ui-monospace, monospace;
   color-scheme: light;
 }
@@ -47,11 +51,10 @@ a { color: inherit; }
 :focus-visible { outline: 2px solid var(--negro); outline-offset: 3px; }
 [hidden] { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.gris { color: var(--gris); }
 .mono { font-family: var(--f-mono); }
 
 .wrap {
-  max-width: 640px; margin: 0 auto;
+  max-width: 760px; margin: 0 auto;
   padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px));
 }
 
@@ -60,7 +63,7 @@ a { color: inherit; }
   background: var(--verde-suave); color: var(--verde-texto); font-size: 13px; line-height: 1.4; text-align: center;
   padding-block: 8px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px));
 }
-.cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 26px 18px; }
+.cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 26px 20px; }
 .marca { font-size: 40px; font-weight: 500; letter-spacing: -0.055em; line-height: 1; color: var(--negro); text-decoration: none; }
 .marca .dot { color: var(--verde); }
 .quien {
@@ -69,21 +72,19 @@ a { color: inherit; }
 }
 .quien::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); }
 
-.tabs { display: flex; gap: 26px; border-bottom: 1px solid var(--linea); margin-bottom: 8px; }
-.tabs button {
-  position: relative; padding: 10px 0 12px; font-size: 15px; font-weight: 500; color: var(--gris);
-}
-.tabs button[aria-current="page"] { color: var(--negro); }
-.tabs button[aria-current="page"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--negro); }
+.tabs { display: flex; gap: 6px; padding: 4px; border-radius: 12px; background: var(--fondo-2); width: max-content; max-width: 100%; }
+.tabs button { padding: 8px 16px; border-radius: 9px; font-size: 15px; font-weight: 550; color: var(--gris); white-space: nowrap; }
+.tabs button[aria-current="page"] { background: var(--blanco); color: var(--negro); box-shadow: 0 1px 2px rgba(17, 17, 17, .08), 0 4px 10px -6px rgba(17, 17, 17, .25); }
 .tabs .n { margin-left: 6px; font-size: 12px; color: var(--gris); font-variant-numeric: tabular-nums; }
 
-main.wrap { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+main.wrap { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
+.barra { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; padding: 22px 0 18px; }
 
 /* ---------- Botones ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 46px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent;
-  font-size: 15px; font-weight: 550; line-height: 1.2; text-align: center; text-decoration: none;
+  font-size: 15px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;
   transition: background-color .15s ease, transform .1s ease;
 }
 .btn:active:not([disabled]) { transform: scale(.98); }
@@ -92,64 +93,77 @@ main.wrap { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
 .btn-borde { background: var(--blanco); color: var(--negro); border-color: var(--negro); }
 .btn-suave { background: var(--fondo-2); color: var(--negro); }
 .btn-ancho { width: 100%; }
-.btn-peq { min-height: 36px; padding: 0 12px; font-size: 14px; border-radius: 8px; }
+.btn-peq { min-height: 36px; padding: 0 14px; font-size: 14px; border-radius: 8px; }
 .btn svg { width: 18px; height: 18px; flex: none; }
 @media (hover: hover) {
-  .btn-negro:hover:not([disabled]) { background: #2a2a2a; }
+  .btn-negro:hover:not([disabled]) { background: #2b2b2b; }
   .btn-borde:hover:not([disabled]), .btn-suave:hover:not([disabled]) { background: var(--verde-suave); }
 }
-.enlace {
-  font-size: 14px; color: var(--negro); border-bottom: 1px solid var(--verde); padding: 2px 0; line-height: 1.3;
-}
-@media (hover: hover) { .enlace:hover { border-bottom-color: var(--negro); } }
-.enlace.gris { color: var(--gris); border-bottom-color: var(--linea); }
+.enlace { font-size: 14px; color: inherit; border-bottom: 1px solid currentColor; padding: 2px 0; line-height: 1.3; opacity: .8; }
+@media (hover: hover) { .enlace:hover { opacity: 1; } }
 .cargando-btn { position: relative; color: transparent !important; pointer-events: none; }
 .cargando-btn::after {
-  content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+  content: ""; position: absolute; left: calc(50% - 8px); top: calc(50% - 8px); width: 16px; height: 16px; border-radius: 50%;
   border: 2px solid var(--blanco); border-right-color: transparent; animation: gira .7s linear infinite;
 }
-.btn-borde.cargando-btn::after, .btn-suave.cargando-btn::after, .enlace.cargando-btn::after { border-color: var(--negro); border-right-color: transparent; }
+.btn-borde.cargando-btn::after, .btn-suave.cargando-btn::after { border-color: var(--negro); border-right-color: transparent; }
 @keyframes gira { to { transform: rotate(360deg); } }
 
-/* ---------- Listas ---------- */
-.barra { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 0 6px; }
-.barra p { font-size: 14px; color: var(--gris); }
-.lista { list-style: none; }
-.vale { display: flex; flex-direction: column; gap: 6px; padding: 18px 0; border-bottom: 1px solid var(--linea); min-width: 0; }
-.vale-cab { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.vale h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; overflow-wrap: anywhere; }
-.vale .meta { font-size: 14px; color: var(--gris); }
-.vale .det { font-size: 14px; color: var(--texto); overflow-wrap: anywhere; }
-.estado { flex: none; font-size: 12px; font-weight: 500; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
-.estado.pend { border: 1px solid var(--linea); color: var(--gris); }
-.estado.ok { background: var(--verde-suave); color: var(--verde-texto); }
-.acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 6px; }
-.canj { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 16px; }
-.dia {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
-  border-radius: 10px; background: var(--verde-suave); padding: 8px 0; height: max-content;
+/* ---------- Entradas (tickets) de la lista ---------- */
+.talonario { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 18px; }
+.tk {
+  --carton: var(--verde); --tinta: var(--negro); --corte: rgba(17, 17, 17, .32);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 82px;
+  background: var(--carton); color: var(--tinta); border-radius: 14px; min-width: 0;
+  animation: entra .35s cubic-bezier(.2, .8, .2, 1) both;
 }
-.dia .m { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--verde-texto); }
-.dia .d { font-size: 24px; font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.dia .s { font-size: 11px; color: var(--gris); text-transform: capitalize; }
-.dia.pasado { background: var(--fondo-2); }
-.dia.pasado .m { color: var(--gris); }
-.subt { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gris); padding-top: 22px; }
-.vacio { padding: 40px 0 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.vacio h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
-.vacio p { color: var(--gris); max-width: 42ch; font-size: 15px; }
-.codigo-caja { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--linea); }
+.tk.usado { --carton: var(--negro); --tinta: var(--blanco); --corte: rgba(255, 255, 255, .28); }
+@keyframes entra { from { opacity: 0; transform: translateY(8px); } }
+.tk-main { padding: 18px 14px 16px 20px; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.tk-meta { font: 400 12px/1.35 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; opacity: .72; }
+.tk-titulo { font: 800 31px/.94 var(--f-titulo); text-transform: uppercase; letter-spacing: .004em; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+.tk-det { font-size: 14px; line-height: 1.4; opacity: .82; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tk-cuenta { font: 400 12px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--verde); }
+.tk-acc { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 8px; }
+.tk .btn-negro { background: var(--negro); color: var(--blanco); }
+.tk.usado .btn-negro { background: var(--blanco); color: var(--negro); }
+.tk-talon {
+  position: relative; border-left: 2px dashed var(--corte);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 4px;
+}
+.tk-talon::before, .tk-talon::after {
+  content: ""; position: absolute; left: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--blanco);
+}
+.tk-talon::before { top: -11px; } .tk-talon::after { bottom: -11px; }
+.tk-num { font: 400 12px/1 var(--f-mono); letter-spacing: .14em; writing-mode: vertical-rl; transform: rotate(180deg); opacity: .75; white-space: nowrap; }
+.tk-dia .m { font: 400 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
+.tk-dia .d { font: 800 44px/1 var(--f-titulo); }
+.tk-dia .s { font: 400 12px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+.tk-dia { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.tk.usado.pasado { --carton: #3a3c3a; }
+
+.subt { font: 400 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gris); padding: 26px 0 14px; }
+.subt:first-child { padding-top: 22px; }
+.vacio {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 82px;
+  border: 2px dashed var(--linea); border-radius: 14px; color: var(--gris);
+}
+.vacio > div:first-child { padding: 22px 18px 22px 20px; display: flex; flex-direction: column; gap: 6px; }
+.vacio h2 { font: 800 26px/1 var(--f-titulo); text-transform: uppercase; color: var(--negro); }
+.vacio p { font-size: 15px; max-width: 40ch; }
+.vacio > div:last-child { border-left: 2px dashed var(--linea); }
+.codigo-caja { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--linea); max-width: 480px; }
 .codigo-caja label { display: block; font-size: 14px; color: var(--gris); margin-bottom: 8px; }
 .fila { display: flex; gap: 8px; }
 .fila input { flex: 1; min-width: 0; }
 
 /* ---------- Formularios ---------- */
 .campo { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.campo > span { font-size: 14px; font-weight: 500; }
+.campo > span { font-size: 14px; font-weight: 550; }
 .campo em { font-style: normal; font-weight: 400; color: var(--gris); }
 input[type="text"], input[type="password"], input[type="date"], input:not([type]), textarea {
   width: 100%; min-width: 0; font-size: 16px; padding: 12px 14px; border-radius: 10px;
-  border: 1px solid #d6d9d5; background: var(--blanco); color: var(--negro);
+  border: 1px solid #d3d7d2; background: var(--blanco); color: var(--negro);
 }
 input[type="date"] { min-height: 48px; -webkit-appearance: none; appearance: none; }
 input:focus, textarea:focus { outline: none; border-color: var(--negro); }
@@ -159,21 +173,34 @@ textarea { resize: vertical; line-height: 1.45; }
 .check { display: flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; }
 .check input { width: 20px; height: 20px; accent-color: var(--negro); }
 .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.error { font-size: 14px; font-weight: 500; color: var(--negro); background: var(--fondo-2); border-left: 3px solid var(--negro); padding: 8px 12px; border-radius: 4px; }
-.para-l { font-size: 15px; }
-.para-l strong { font-weight: 600; }
+.error { font-size: 14px; font-weight: 550; color: var(--negro); background: var(--fondo-2); border-left: 3px solid var(--negro); padding: 8px 12px; border-radius: 4px; }
+.para-l { font: 400 13px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--gris); }
+.para-l strong { color: var(--negro); font-weight: 400; }
+.segmento { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; border-radius: 12px; background: var(--fondo-2); }
+.segmento label { position: relative; }
+.segmento input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.segmento span { display: flex; align-items: center; justify-content: center; min-height: 42px; border-radius: 9px; font-weight: 600; color: var(--gris); }
+.segmento input:checked + span { background: var(--blanco); color: var(--negro); box-shadow: 0 1px 2px rgba(17, 17, 17, .08), 0 4px 10px -6px rgba(17, 17, 17, .25); }
+.segmento input:focus-visible + span { outline: 2px solid var(--negro); outline-offset: 2px; }
 
-/* ---------- Pantallas de entrada ---------- */
-.pantalla { min-height: calc(100vh - env(safe-area-inset-top, 0px)); display: flex; flex-direction: column; justify-content: center; padding-block: 40px; }
-.pantalla .marca { font-size: 56px; margin-bottom: 26px; }
-.pantalla form, .pantalla .bloque { display: flex; flex-direction: column; gap: 14px; max-width: 380px; }
-.pantalla h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; }
-.pantalla p { color: var(--gris); font-size: 15px; }
-.nombres-btns { display: flex; flex-direction: column; gap: 10px; }
+/* ---------- Entrar ---------- */
+.entrar { position: relative; min-height: calc(100vh - env(safe-area-inset-top, 0px)); display: grid; place-items: center; overflow: hidden; padding-block: 40px; }
+.entrar-caja { position: relative; z-index: 1; width: min(380px, 100%); display: flex; flex-direction: column; gap: 16px; background: var(--blanco); padding: 4px 0; }
+.entrar .marca { font-size: 60px; margin-bottom: 8px; }
+.entrar form { display: flex; flex-direction: column; gap: 14px; }
+.entrar .otra { font-size: 14px; color: var(--gris); margin-top: 18px; }
+.deco { position: absolute; width: 280px; height: 128px; border-radius: 14px; pointer-events: none; }
+.deco::after { content: ""; position: absolute; top: 14px; bottom: 14px; right: 74px; border-left: 2px dashed rgba(17, 17, 17, .25); }
+.deco.n::after { border-color: rgba(255, 255, 255, .25); }
+.deco.v { background: var(--verde); }
+.deco.n { background: var(--negro); }
+.deco-1 { top: 5%; left: -120px; transform: rotate(-13deg); }
+.deco-2 { bottom: 6%; right: -110px; transform: rotate(10deg); }
+@media (max-width: 520px) { .deco-1 { top: -46px; left: -150px; } .deco-2 { bottom: -60px; right: -160px; } }
 
 /* ---------- Hojas ---------- */
 #hoja { position: fixed; inset: 0; z-index: 50; }
-.hoja-fondo { position: absolute; inset: 0; background: rgba(17, 17, 17, .42); opacity: 0; transition: opacity .2s; }
+.hoja-fondo { position: absolute; inset: 0; background: rgba(17, 17, 17, .45); opacity: 0; transition: opacity .2s; }
 .hoja {
   position: absolute; left: 0; right: 0; bottom: 0; max-height: 92vh; max-height: 92dvh;
   display: flex; flex-direction: column; background: var(--blanco); border-radius: 18px 18px 0 0;
@@ -186,7 +213,7 @@ textarea { resize: vertical; line-height: 1.45; }
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 20px max(20px, env(safe-area-inset-right, 0px)) 6px max(20px, env(safe-area-inset-left, 0px));
 }
-.hoja-cab h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; }
+.hoja-cab h2 { font: 800 26px/1 var(--f-titulo); text-transform: uppercase; }
 .cerrar { width: 36px; height: 36px; border-radius: 50%; background: var(--fondo-2); font-size: 22px; line-height: 1; flex: none; }
 .hoja-cuerpo {
   overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 16px;
@@ -197,21 +224,18 @@ textarea { resize: vertical; line-height: 1.45; }
   padding: 12px max(20px, env(safe-area-inset-right, 0px)) 14px max(20px, env(safe-area-inset-left, 0px));
 }
 .hoja-pie .btn { flex: 1 1 auto; }
-.confirmar { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 10px; background: var(--fondo-2); }
-.confirmar p { font-size: 15px; font-weight: 500; }
-.confirmar div { display: flex; gap: 8px; }
 @media (min-width: 640px) {
   .hoja {
-    left: 50%; top: 50%; bottom: auto; width: min(560px, calc(100% - 40px)); max-height: min(88vh, 860px);
+    left: 50%; top: 50%; bottom: auto; width: min(580px, calc(100% - 40px)); max-height: min(88vh, 880px);
     border-radius: 16px; transform: translate(-50%, -47%); opacity: 0; transition: transform .2s ease, opacity .2s ease;
-    box-shadow: var(--sombra);
+    box-shadow: 0 30px 60px -24px rgba(17, 17, 17, .5);
   }
   #hoja.on .hoja { transform: translate(-50%, -50%); opacity: 1; }
   .hoja-pie { justify-content: flex-end; }
   .hoja-pie .btn { flex: 0 0 auto; }
 }
-.imagen-vale img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--linea); }
-.esperando { aspect-ratio: 1920 / 1000; border-radius: 8px; background: var(--fondo-2); }
+.imagen-vale img { display: block; width: 100%; height: auto; border-radius: 10px; }
+.esperando { aspect-ratio: 1920 / 1040; border-radius: 10px; background: var(--verde-suave); }
 .enlace-fila { display: flex; gap: 8px; }
 .enlace-fila input { flex: 1; min-width: 0; font: 400 14px/1.2 var(--f-mono) !important; padding: 10px 12px !important; color: var(--gris) !important; }
 .cartera-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; padding: 14px; border-radius: 10px; background: var(--fondo-2); }
@@ -220,39 +244,69 @@ textarea { resize: vertical; line-height: 1.45; }
 .cartera-fila span { color: var(--gris); }
 
 /* ---------- Página del vale (al escanear el QR) ---------- */
-.v-cab { padding-block: 26px 10px; }
-.tarjeta { border: 1px solid var(--linea); border-radius: 14px; overflow: hidden; }
-.tarjeta-sup { padding: 22px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
-.tarjeta-sup .de { font-size: 14px; color: var(--gris); display: flex; align-items: center; gap: 8px; }
-.tarjeta-sup .de::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); flex: none; }
-.tarjeta-sup h1 { font-size: clamp(30px, 8vw, 40px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
-.tarjeta-sup .det { color: var(--texto); font-size: 16px; overflow-wrap: anywhere; }
-.tarjeta-inf {
-  display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 14px 20px; background: var(--fondo-2);
-  border-top: 1px dashed #cfd3ce; font-size: 13px;
+.v-cab { padding-block: 26px 18px; }
+.v-de { font: 400 13px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gris); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.v-de::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); }
+.tkb {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr);
+  background: var(--verde); color: var(--negro); border-radius: 18px;
+  box-shadow: 0 26px 50px -30px rgba(17, 17, 17, .55);
+  animation: aparece .6s cubic-bezier(.2, .8, .2, 1) both;
 }
-.tarjeta-inf dt { color: var(--gris); }
-.tarjeta-inf dd { font-weight: 500; }
-.tarjeta-inf .mono { font-size: 14px; letter-spacing: .04em; }
-.bloque-v { padding: 26px 0 0; display: flex; flex-direction: column; gap: 14px; }
-.bloque-v h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; }
-.hecho-v { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; border-radius: 14px; background: var(--verde-suave); }
-.hecho-v .eti { font-size: 13px; font-weight: 600; color: var(--verde-texto); letter-spacing: .06em; text-transform: uppercase; }
-.hecho-v .fecha { font-size: 26px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.15; }
-.hecho-v .cuenta { font-size: 14px; color: var(--verde-texto); }
+.tkb.usado { background: var(--negro); color: var(--blanco); }
+@keyframes aparece { from { opacity: 0; transform: translateY(16px) rotate(-1.2deg); } }
+.tkb-main { padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.tkb-num { font: 400 13px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .72; }
+.tkb-titulo { font: 800 clamp(44px, 12vw, 64px)/.92 var(--f-titulo); text-transform: uppercase; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+.tkb-det { font-size: 16px; line-height: 1.45; opacity: .85; overflow-wrap: anywhere; }
+.tkb-datos { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 4px; padding-top: 14px; border-top: 1.5px solid rgba(17, 17, 17, .22); }
+.tkb.usado .tkb-datos { border-top-color: rgba(255, 255, 255, .2); }
+.tkb-datos dt { font: 400 11px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .65; margin-bottom: 6px; }
+.tkb-datos dd { font: 700 24px/1 var(--f-titulo); text-transform: uppercase; }
+.tkb-talon {
+  position: relative; border-top: 2px dashed rgba(17, 17, 17, .32);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 22px 16px;
+}
+.tkb.usado .tkb-talon { border-color: rgba(255, 255, 255, .28); }
+.tkb-talon::before, .tkb-talon::after { content: ""; position: absolute; top: -12px; width: 24px; height: 24px; border-radius: 50%; background: var(--blanco); }
+.tkb-talon::before { left: -12px; } .tkb-talon::after { right: -12px; }
+.tkb-talon .eti { font: 400 11px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; opacity: .65; }
+.tkb-talon .cod { font: 400 17px/1.2 var(--f-mono); letter-spacing: .1em; }
+.sello {
+  position: absolute; z-index: 2; right: 16px; top: 16px; pointer-events: none;
+  border: 3px solid currentColor; border-radius: 10px; padding: 7px 13px 6px; text-align: center;
+  font: 800 26px/1 var(--f-titulo); text-transform: uppercase; letter-spacing: .08em;
+  transform: rotate(-9deg); color: var(--verde); opacity: .95;
+}
+.sello small { display: block; font: 400 12px/1.2 var(--f-mono); letter-spacing: .14em; margin-top: 4px; }
+.sello.anim { animation: sello .5s cubic-bezier(.3, 1.5, .5, 1) .15s both; }
+@keyframes sello { from { opacity: 0; transform: rotate(-9deg) scale(2.4); } to { opacity: .95; transform: rotate(-9deg) scale(1); } }
+@media (min-width: 640px) {
+  .tkb { grid-template-columns: minmax(0, 1fr) 190px; }
+  .tkb-main { padding: 30px 30px 26px; }
+  .tkb-talon { border-top: 0; border-left: 2px dashed rgba(17, 17, 17, .32); flex-direction: column; justify-content: center; text-align: center; gap: 22px; padding: 24px 16px; }
+  .tkb-talon::before { top: -12px; left: -13px; } .tkb-talon::after { top: auto; bottom: -12px; right: auto; left: -13px; }
+  .sello { right: 214px; top: 26px; }
+}
+.talon-bloque { display: flex; flex-direction: column; gap: 6px; }
+.bloque-v { padding: 30px 0 0; display: flex; flex-direction: column; gap: 14px; max-width: 520px; }
+.bloque-v h2 { font: 800 30px/1 var(--f-titulo); text-transform: uppercase; }
 .botones-v { display: flex; flex-direction: column; gap: 10px; }
 @media (min-width: 640px) { .botones-v { flex-direction: row; flex-wrap: wrap; } }
-.pie-v { padding: 30px 0 calc(40px + env(safe-area-inset-bottom, 0px)); }
+.fecha-v { font: 800 clamp(34px, 9vw, 46px)/1 var(--f-titulo); text-transform: uppercase; }
+.cuenta-v { font: 400 13px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--verde-texto); }
+.pie-v { padding: 34px 0 calc(40px + env(safe-area-inset-bottom, 0px)); }
+.pie-v .enlace { color: var(--gris); }
 
 .cal { border: 1px solid var(--linea); border-radius: 14px; padding: 12px 10px 10px; }
 .cal-cab { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 6px; }
-.cal-cab strong { font-size: 16px; font-weight: 600; }
+.cal-cab strong { font: 700 22px/1 var(--f-titulo); text-transform: uppercase; letter-spacing: .02em; }
 .cal-nav { width: 40px; height: 40px; border-radius: 50%; font-size: 20px; line-height: 1; color: var(--negro); }
 .cal-nav[disabled] { opacity: .25; cursor: default; }
 @media (hover: hover) { .cal-nav:not([disabled]):hover { background: var(--fondo-2); } }
 .cal-sem, .cal-dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; }
-.cal-sem span { font-size: 12px; color: var(--gris); line-height: 2.2; }
-.cal-d { height: clamp(40px, 11vw, 46px); border-radius: 10px; font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--negro); }
+.cal-sem span { font: 400 12px/2.2 var(--f-mono); color: var(--gris); }
+.cal-d { height: clamp(40px, 11vw, 46px); border-radius: 10px; font-size: 15px; font-weight: 550; font-variant-numeric: tabular-nums; color: var(--negro); }
 .cal-d.hoy { box-shadow: inset 0 0 0 1px var(--linea); }
 .cal-d.sel { background: var(--negro); color: var(--blanco); box-shadow: none; }
 .cal-d[disabled] { color: #c3c6c2; cursor: default; }
@@ -262,7 +316,7 @@ textarea { resize: vertical; line-height: 1.45; }
 #aviso {
   position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60;
   transform: translate(-50%, 12px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
-  background: var(--negro); color: var(--blanco); padding: 11px 16px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  background: var(--negro); color: var(--blanco); padding: 11px 16px; border-radius: 10px; font-size: 14px; font-weight: 550;
   width: max-content; max-width: calc(100% - 40px); text-align: center;
 }
 #aviso.on { opacity: 1; transform: translate(-50%, 0); }
@@ -276,7 +330,7 @@ textarea { resize: vertical; line-height: 1.45; }
   #imprimir img { width: 100%; height: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
 }
 </style>
 </head>
@@ -296,7 +350,7 @@ textarea { resize: vertical; line-height: 1.45; }
 // ================================================================
 //  Configuración
 // ================================================================
-const CFG = Object.assign({ supabaseUrl: '', supabaseKey: '', wallet: false }, window.PLANES_CONFIG || {});
+const CFG = Object.assign({ personas: ['Aaron', 'Lizz'], supabaseUrl: '', supabaseKey: '', clavePrueba: '', wallet: false }, window.PLANES_CONFIG || {});
 const PRUEBA = !(CFG.supabaseUrl && CFG.supabaseKey);
 const CARTERA = !PRUEBA && CFG.wallet === true;
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js';
@@ -320,6 +374,8 @@ const fechaLarga = s => {
   return fmt(s, o);
 };
 const fechaCorta = s => fmt(s, { day: 'numeric', month: 'short' }).replace('.', '');
+const fechaSello = s => { const d = aFecha(s); return `${pad(d.getDate())}·${pad(d.getMonth() + 1)}·${String(d.getFullYear()).slice(2)}`; };
+const numero = n => 'Nº ' + String(n || 0).padStart(4, '0');
 const normCodigo = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const codigoBonito = c => c ? `${c.slice(0, 5)}-${c.slice(5)}` : '';
 const cuenta = s => {
@@ -331,7 +387,7 @@ const cuenta = s => {
   return `Fue hace ${-n} días`;
 };
 const validez = v => {
-  if (v.fecha_min && v.fecha_max) return `Del ${fechaCorta(v.fecha_min)} al ${fechaCorta(v.fecha_max)}`;
+  if (v.fecha_min && v.fecha_max) return `${fechaCorta(v.fecha_min)} – ${fechaCorta(v.fecha_max)}`;
   if (v.fecha_min) return `Desde el ${fechaCorta(v.fecha_min)}`;
   if (v.fecha_max) return `Hasta el ${fechaCorta(v.fecha_max)}`;
   return 'Cualquier día';
@@ -348,14 +404,18 @@ const cargarScript = src => new Promise((ok, ko) => {
   s.onerror = () => ko(new Error('No se ha podido conectar. Revisa internet y vuelve a cargar la página.'));
   document.head.appendChild(s);
 });
+async function huella(texto) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
+  return Array.from(new Uint8Array(b), x => x.toString(16).padStart(2, '0')).join('');
+}
 const ICONO_CARTERA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6.5" width="18" height="13" rx="3"/><path d="M3 11h18"/><path d="M6.5 6.5 15 3.8a1.5 1.5 0 0 1 1.9 1.1l.4 1.6"/></svg>';
 
 // ================================================================
 //  Datos: modo prueba (solo en este navegador)
 // ================================================================
 function crearPrueba() {
-  const CLAVE = 'planes-prueba-v1';
-  const leer = () => { try { return JSON.parse(ls.get(CLAVE)) || { nombres: null, vales: [], n: 0 }; } catch (e) { return { nombres: null, vales: [], n: 0 }; } };
+  const CLAVE = 'planes-prueba-v2';
+  const leer = () => { try { return JSON.parse(ls.get(CLAVE)) || { vales: [], n: 0 }; } catch (e) { return { vales: [], n: 0 }; } };
   const guardar = d => ls.set(CLAVE, JSON.stringify(d));
   const genCodigo = () => {
     const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', b = new Uint8Array(10);
@@ -363,17 +423,18 @@ function crearPrueba() {
     return Array.from(b, x => A[x % 32]).join('');
   };
   const publico = v => ({ codigo: v.codigo, numero: v.numero, titulo: v.titulo, detalles: v.detalles, de: v.de, para: v.para, fecha_min: v.fecha_min, fecha_max: v.fecha_max, estado: v.estado, fecha: v.fecha });
+  const comprobar = async (nombre, clave) => {
+    if (!CFG.personas.includes(nombre) || !CFG.clavePrueba || (await huella(clave || '')) !== CFG.clavePrueba) throw new Error('Contraseña incorrecta.');
+  };
   return {
     prueba: true,
     async iniciar() {},
-    nombresGuardados() { return leer().nombres; },
-    guardarNombres(nombres) { const d = leer(); d.nombres = nombres; guardar(d); },
     borrarTodo() { ls.del(CLAVE); },
-    async entrar() { return { nombres: leer().nombres }; },
-    async listar(yo) { return leer().vales.filter(v => v.de === yo || v.estado === 'canjeado').sort((a, b) => b.creado_en.localeCompare(a.creado_en)); },
-    async crear({ de, para, titulo, detalles, fecha_min, fecha_max }) {
+    async entrar(nombre, clave) { await comprobar(nombre, clave); return { nombre, otro: CFG.personas.find(p => p !== nombre) }; },
+    async listar() { return leer().vales.filter(v => v.de === S.yo || v.estado === 'canjeado').sort((a, b) => b.creado_en.localeCompare(a.creado_en)); },
+    async crear({ titulo, detalles, fecha_min, fecha_max }) {
       const d = leer();
-      const v = { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), numero: ++d.n, codigo: genCodigo(), titulo, detalles: detalles || '', de, para, fecha_min, fecha_max, estado: 'pendiente', fecha: null, creado_en: new Date().toISOString(), canjeado_en: null };
+      const v = { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), numero: ++d.n, codigo: genCodigo(), titulo, detalles: detalles || '', de: S.yo, para: otro(), fecha_min, fecha_max, estado: 'pendiente', fecha: null, creado_en: new Date().toISOString(), canjeado_en: null };
       d.vales.push(v); guardar(d); return v;
     },
     async borrar(id) { const d = leer(); d.vales = d.vales.filter(v => v.id !== id); guardar(d); },
@@ -414,11 +475,11 @@ function crearSupabase() {
       await cargarScript(SUPABASE_JS);
       sb = window.supabase.createClient(CFG.supabaseUrl.trim(), CFG.supabaseKey.trim(), { auth: { persistSession: false, autoRefreshToken: false } });
     },
-    entrar: clave => rpc('entrar', { p_clave: clave }),
-    listar: yo => rpc('listar_vales', { p_clave: S.clave, p_yo: yo }).then(d => d || []),
-    crear: d => rpc('crear_vale', { p_clave: S.clave, p_de: d.de, p_para: d.para, p_titulo: d.titulo, p_detalles: d.detalles, p_fecha_min: d.fecha_min, p_fecha_max: d.fecha_max }),
-    borrar: id => rpc('borrar_vale', { p_clave: S.clave, p_id: id }),
-    deshacer: id => rpc('deshacer_canje', { p_clave: S.clave, p_id: id }),
+    entrar: (nombre, clave) => rpc('entrar', { p_nombre: nombre, p_clave: clave }),
+    listar: () => rpc('listar_vales', { p_nombre: S.yo, p_clave: S.clave }).then(d => d || []),
+    crear: d => rpc('crear_vale', { p_nombre: S.yo, p_clave: S.clave, p_titulo: d.titulo, p_detalles: d.detalles, p_fecha_min: d.fecha_min, p_fecha_max: d.fecha_max }),
+    borrar: id => rpc('borrar_vale', { p_nombre: S.yo, p_clave: S.clave, p_id: id }),
+    deshacer: id => rpc('deshacer_canje', { p_nombre: S.yo, p_clave: S.clave, p_id: id }),
     verVale: c => rpc('ver_vale', { p_codigo: normCodigo(c) }),
     canjear: (c, fecha) => rpc('canjear_vale', { p_codigo: normCodigo(c), p_fecha: fecha }),
   };
@@ -429,19 +490,15 @@ function crearSupabase() {
 // ================================================================
 const api = PRUEBA ? crearPrueba() : crearSupabase();
 const S = {
+  yo: CFG.personas.includes(ls.get('planes-yo')) ? ls.get('planes-yo') : null,
   clave: ls.get('planes-clave'),
-  yo: ls.get('planes-yo'),
-  nombres: (() => { try { return JSON.parse(ls.get('planes-nombres')); } catch (e) { return null; } })(),
   vales: [],
   tab: ls.get('planes-tab') === 'canjeados' ? 'canjeados' : 'mios',
   listo: false,
 };
-let VISTA = '';
-let V = null;     // pantalla del vale
-let HOJA = null;  // hoja abierta
-let CAL = null;   // calendario visible
+let VISTA = '', V = null, HOJA = null, CAL = null;
 
-const otro = () => (S.nombres || []).find(n => n !== S.yo) || '';
+const otro = () => CFG.personas.find(n => n !== S.yo) || '';
 const vale = id => S.vales.find(v => v.id === id);
 const norm = v => Object.assign(v, {
   fecha: v.fecha ? String(v.fecha).slice(0, 10) : null,
@@ -460,7 +517,7 @@ async function ocupado(btn, fn) {
   try { return await fn(); }
   catch (e) {
     console.error(e);
-    if (/clave incorrecta/i.test(e.message) && !api.prueba) { salir('La clave ha cambiado. Vuelve a escribirla.'); return undefined; }
+    if (/contraseña incorrecta/i.test(e.message) && VISTA === 'app') { salir('La contraseña ha cambiado. Vuelve a entrar.'); return undefined; }
     aviso(e.message || 'Algo ha fallado. Vuelve a probar.');
     return undefined;
   } finally { if (btn && btn.isConnected) { btn.disabled = false; btn.classList.remove('cargando-btn'); } }
@@ -487,137 +544,113 @@ function enrutar() { const c = codigoURL(); if (c) mostrarVale(c); else mostrarA
 addEventListener('hashchange', enrutar);
 
 // ================================================================
-//  Pantallas de entrada
+//  Entrar
 // ================================================================
 const marca = () => `<a class="marca" href="./" data-a="lista">Planes<span class="dot">.</span></a>`;
 const avisoPrueba = () => api.prueba ? '<div class="aviso-prueba">Modo prueba: sin base de datos, los vales solo se guardan en este navegador.</div>' : '';
 
-function pantalla(html) {
-  $('#app').innerHTML = `${avisoPrueba()}<div class="wrap pantalla">${marca()}${html}</div>`;
+function pintarEntrar(error, nombre) {
+  VISTA = 'entrar';
+  const sel = nombre || S.yo || CFG.personas[0];
+  $('#app').innerHTML = `${avisoPrueba()}<div class="wrap entrar">
+    <div class="deco v deco-1" aria-hidden="true"></div><div class="deco n deco-2" aria-hidden="true"></div>
+    <div class="entrar-caja">
+      ${marca()}
+      <form data-form="entrar" novalidate>
+        <div class="segmento" role="radiogroup" aria-label="¿Quién eres?">${CFG.personas.map(p => `<label><input type="radio" name="yo" value="${esc(p)}" ${p === sel ? 'checked' : ''}><span>${esc(p)}</span></label>`).join('')}</div>
+        <label class="campo"><span class="sr">Contraseña</span><input id="clave" type="password" placeholder="Contraseña" autocomplete="current-password" inputmode="numeric"></label>
+        ${error ? `<p class="error">${esc(error)}</p>` : ''}
+        <button class="btn btn-negro btn-ancho" type="submit">Entrar</button>
+      </form>
+      <form data-form="codigo" class="otra" novalidate>
+        <label class="campo"><span style="font-weight:400">¿Tienes el código de un vale?</span>
+          <span class="fila"><input class="codigo-in" placeholder="ABCDE-12345" autocomplete="off" autocapitalize="characters" aria-label="Código del vale"><button class="btn btn-borde" type="submit">Abrir</button></span></label>
+      </form>
+    </div>
+  </div>`;
 }
-function pintarNombres(error) {
-  VISTA = 'nombres';
-  const n = api.nombresGuardados() || ['', ''];
-  pantalla(`<form data-form="nombres" class="bloque" novalidate>
-    <h1>Vuestros nombres</h1>
-    <p>Salen en los vales: «De … para …».</p>
-    <label class="campo"><span>Tú</span><input id="n1" autocomplete="off" value="${esc(n[0])}" maxlength="30"></label>
-    <label class="campo"><span>La otra persona</span><input id="n2" autocomplete="off" value="${esc(n[1])}" maxlength="30"></label>
-    ${error ? `<p class="error">${esc(error)}</p>` : ''}
-    <button class="btn btn-negro btn-ancho" type="submit">Continuar</button>
-  </form>`);
-}
-function pintarClave(error) {
-  VISTA = 'clave';
-  pantalla(`<form data-form="clave" class="bloque" novalidate>
-    <h1>Clave</h1>
-    <p>La que pusisteis al preparar la base de datos.</p>
-    <label class="campo"><span class="sr">Clave</span><input id="clave" type="password" autocomplete="current-password"></label>
-    ${error ? `<p class="error">${esc(error)}</p>` : ''}
-    <button class="btn btn-negro btn-ancho" type="submit">Entrar</button>
-  </form>
-  <form data-form="codigo" class="bloque" style="margin-top:34px" novalidate>
-    <label class="campo"><span class="gris" style="font-weight:400">¿Tienes el código de un vale?</span>
-    <span class="fila"><input class="codigo-in" placeholder="ABCDE-12345" autocomplete="off" autocapitalize="characters" aria-label="Código del vale"><button class="btn btn-borde" type="submit">Abrir</button></span></label>
-  </form>`);
-}
-function pintarQuien() {
-  VISTA = 'quien';
-  pantalla(`<div class="bloque"><h1>¿Quién eres?</h1><p>Se queda guardado en este móvil.</p>
-    <div class="nombres-btns">${S.nombres.map(n => `<button type="button" class="btn btn-borde btn-ancho" data-a="soy" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>`);
+function salir(error) {
+  ls.del('planes-clave'); S.clave = null; S.vales = []; S.listo = false;
+  cerrarHoja(); pintarEntrar(error);
 }
 
 // ================================================================
-//  Lista principal
+//  Lista
 // ================================================================
 async function mostrarApp() {
-  VISTA = 'app';
-  cerrarHoja();
-  if (api.prueba) {
-    S.nombres = api.nombresGuardados();
-    if (!S.nombres) return pintarNombres();
-  } else {
-    if (!S.clave) return pintarClave();
-    if (!S.nombres) {
-      $('#app').innerHTML = '<div class="cargando">Cargando…</div>';
-      try {
-        const r = await api.entrar(S.clave);
-        S.nombres = r.nombres; ls.set('planes-nombres', JSON.stringify(S.nombres));
-      } catch (e) { return /clave/i.test(e.message) ? salir() : pintarClave(e.message); }
-    }
-  }
-  if (!S.yo || !S.nombres.includes(S.yo)) return pintarQuien();
+  VISTA = 'app'; cerrarHoja();
+  if (!S.yo || !S.clave) return pintarEntrar();
   if (!S.listo) { $('#app').innerHTML = '<div class="cargando">Cargando…</div>'; await recargar(); }
-  if (VISTA === 'app') pintar();
+  if (VISTA === 'app' && S.clave) pintar();
 }
 async function recargar() {
-  try { S.vales = (await api.listar(S.yo)).map(norm); S.listo = true; }
+  try { S.vales = (await api.listar()).map(norm); S.listo = true; }
   catch (e) {
-    if (/clave incorrecta/i.test(e.message) && !api.prueba) return salir('La clave ha cambiado. Vuelve a escribirla.');
+    if (/contraseña incorrecta/i.test(e.message)) return salir('La contraseña ha cambiado. Vuelve a entrar.');
     S.listo = true; aviso(e.message);
   }
-}
-function salir(error) {
-  ls.del('planes-clave'); ls.del('planes-nombres');
-  S.clave = null; S.nombres = null; S.vales = []; S.listo = false;
-  cerrarHoja(); pintarClave(error);
 }
 
 function pintar() {
   const m = mios(), c = canjeados();
   $('#app').innerHTML = `${avisoPrueba()}
-    <header class="wrap cab">${marca()}<button type="button" class="quien" data-a="cuenta" aria-label="Cuenta: ${esc(S.yo)}">${esc(S.yo)}</button></header>
+    <header class="wrap cab">${marca()}<button type="button" class="quien" data-a="cuenta" aria-label="Cuenta de ${esc(S.yo)}">${esc(S.yo)}</button></header>
     <main class="wrap">
-      <nav class="tabs" aria-label="Secciones">
-        <button type="button" data-a="tab" data-t="mios" ${S.tab === 'mios' ? 'aria-current="page"' : ''}>Mis vales<span class="n">${m.length || ''}</span></button>
-        <button type="button" data-a="tab" data-t="canjeados" ${S.tab === 'canjeados' ? 'aria-current="page"' : ''}>Canjeados<span class="n">${c.length || ''}</span></button>
-      </nav>
+      <div class="barra">
+        <nav class="tabs" aria-label="Secciones">
+          <button type="button" data-a="tab" data-t="mios" ${S.tab === 'mios' ? 'aria-current="page"' : ''}>Mis vales<span class="n">${m.length || ''}</span></button>
+          <button type="button" data-a="tab" data-t="canjeados" ${S.tab === 'canjeados' ? 'aria-current="page"' : ''}>Canjeados<span class="n">${c.length || ''}</span></button>
+        </nav>
+        ${S.tab === 'mios' ? '<button type="button" class="btn btn-negro" data-a="nuevo">Nuevo vale</button>' : ''}
+      </div>
       ${S.tab === 'mios' ? tabMios(m) : tabCanjeados(c)}
     </main>`;
 }
 
+function tkPendiente(v) {
+  return `<li class="tk">
+    <div class="tk-main">
+      <p class="tk-meta">Para ${esc(v.para)} · ${esc(validez(v))}</p>
+      <h3 class="tk-titulo">${esc(v.titulo)}</h3>
+      ${v.detalles ? `<p class="tk-det">${esc(v.detalles)}</p>` : ''}
+      <div class="tk-acc"><button type="button" class="btn btn-negro btn-peq" data-a="qr" data-id="${v.id}">Ver QR</button><button type="button" class="enlace" data-a="borrar" data-id="${v.id}">Borrar</button></div>
+    </div>
+    <div class="tk-talon"><span class="tk-num">VALE ${numero(v.numero).toUpperCase()}</span></div>
+  </li>`;
+}
+function tkCanjeado(v) {
+  const pasado = diasHasta(v.fecha) < 0;
+  return `<li class="tk usado ${pasado ? 'pasado' : ''}">
+    <div class="tk-main">
+      <p class="tk-meta">De ${esc(v.de)} para ${esc(v.para)}</p>
+      <h3 class="tk-titulo">${esc(v.titulo)}</h3>
+      <p class="tk-cuenta">${capital(fechaLarga(v.fecha))} · ${cuenta(v.fecha)}</p>
+      <div class="tk-acc">
+        <button type="button" class="enlace" data-a="ics" data-id="${v.id}">Calendario</button>
+        ${v.de === S.yo ? `<button type="button" class="enlace" data-a="deshacer" data-id="${v.id}">Deshacer canje</button>` : ''}
+        <button type="button" class="enlace" data-a="borrar" data-id="${v.id}">Borrar</button>
+      </div>
+    </div>
+    <div class="tk-talon"><div class="tk-dia" aria-hidden="true"><span class="m">${esc(fmt(v.fecha, { month: 'short' }).replace('.', ''))}</span><span class="d">${aFecha(v.fecha).getDate()}</span><span class="s">${esc(fmt(v.fecha, { weekday: 'short' }).replace('.', ''))}</span></div></div>
+  </li>`;
+}
+function vacio(titulo, texto) {
+  return `<div class="vacio"><div><h2>${titulo}</h2><p>${texto}</p></div><div></div></div>`;
+}
 function tabMios(m) {
-  let html = `<div class="barra"><p>${m.length ? 'Pendientes de canjear' : ''}</p><button type="button" class="btn btn-negro" data-a="nuevo">Nuevo vale</button></div>`;
-  if (!m.length) {
-    html += `<div class="vacio"><h2>No tienes vales pendientes</h2><p>Crea uno, imprime o manda su QR, y quien lo reciba elegirá el día.</p></div>`;
-  } else {
-    html += `<ul class="lista">${m.map(v => `<li class="vale">
-      <div class="vale-cab"><h3>${esc(v.titulo)}</h3><span class="estado pend">Pendiente</span></div>
-      <p class="meta">Para ${esc(v.para)} · ${esc(validez(v))}</p>
-      ${v.detalles ? `<p class="det">${esc(v.detalles)}</p>` : ''}
-      <div class="acciones"><button type="button" class="btn btn-borde btn-peq" data-a="qr" data-id="${v.id}">Ver QR</button><button type="button" class="enlace gris" data-a="borrar" data-id="${v.id}">Borrar</button></div>
-    </li>`).join('')}</ul>`;
-  }
+  let html = m.length ? `<ul class="talonario">${m.map(tkPendiente).join('')}</ul>`
+    : vacio('Sin vales pendientes', 'Crea uno y pásale el QR. Elegirá el día al escanearlo.');
   html += `<form class="codigo-caja" data-form="codigo" novalidate><label for="cod">¿Te han dado un vale? Escribe su código</label>
     <div class="fila"><input id="cod" class="codigo-in" placeholder="ABCDE-12345" autocomplete="off" autocapitalize="characters"><button class="btn btn-borde" type="submit">Abrir</button></div></form>`;
   return html;
 }
-
-function filaCanjeado(v) {
-  const d = aFecha(v.fecha), pasado = diasHasta(v.fecha) < 0;
-  const mes = fmt(v.fecha, { month: 'short' }).replace('.', '');
-  const sem = fmt(v.fecha, { weekday: 'short' }).replace('.', '');
-  return `<li class="vale canj">
-    <div class="dia ${pasado ? 'pasado' : ''}" aria-hidden="true"><span class="m">${esc(mes)}</span><span class="d">${d.getDate()}</span><span class="s">${esc(sem)}</span></div>
-    <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
-      <h3>${esc(v.titulo)}</h3>
-      <p class="meta">De ${esc(v.de)} para ${esc(v.para)} · ${capital(fechaLarga(v.fecha))}</p>
-      <p class="meta" style="color:${pasado ? 'var(--gris)' : 'var(--verde-texto)'}">${cuenta(v.fecha)}</p>
-      <div class="acciones">
-        <button type="button" class="enlace" data-a="ics" data-id="${v.id}">Añadir al calendario</button>
-        ${v.de === S.yo ? `<button type="button" class="enlace gris" data-a="deshacer" data-id="${v.id}">Deshacer canje</button>` : ''}
-        <button type="button" class="enlace gris" data-a="borrar" data-id="${v.id}">Borrar</button>
-      </div>
-    </div>
-  </li>`;
-}
 function tabCanjeados(c) {
-  if (!c.length) return `<div class="vacio"><h2>Nada canjeado todavía</h2><p>Cuando alguien canjee un vale y elija el día, aparecerá aquí.</p></div>`;
+  if (!c.length) return vacio('Nada canjeado', 'Cuando se canjee un vale, aparecerá aquí con su día.');
   const prox = c.filter(v => diasHasta(v.fecha) >= 0).sort((a, b) => a.fecha.localeCompare(b.fecha));
   const pas = c.filter(v => diasHasta(v.fecha) < 0).sort((a, b) => b.fecha.localeCompare(a.fecha));
   let html = '';
-  if (prox.length) html += `<p class="subt">Próximos</p><ul class="lista">${prox.map(filaCanjeado).join('')}</ul>`;
-  if (pas.length) html += `<p class="subt">Pasados</p><ul class="lista">${pas.map(filaCanjeado).join('')}</ul>`;
+  if (prox.length) html += `<p class="subt">Próximos</p><ul class="talonario">${prox.map(tkCanjeado).join('')}</ul>`;
+  if (pas.length) html += `<p class="subt">Pasados</p><ul class="talonario">${pas.map(tkCanjeado).join('')}</ul>`;
   return html;
 }
 
@@ -644,13 +677,12 @@ function cerrarHoja() {
   setTimeout(() => { if (!h.classList.contains('on')) { h.hidden = true; h.innerHTML = ''; } }, 250);
   if (focoAntes && focoAntes.isConnected) try { focoAntes.focus({ preventScroll: true }); } catch (e) { /* nada */ }
 }
-
 function abrirNuevo() {
   HOJA = { tipo: 'nuevo' };
   abrirHoja('Nuevo vale', `<form class="hoja-cuerpo" id="f-nuevo" data-form="nuevo" novalidate>
-      <label class="campo"><span>Qué es</span><input id="nv-titulo" maxlength="120" placeholder="Por ejemplo: entradas para el Oceanogràfic" autocomplete="off"></label>
-      <label class="campo"><span>Detalles <em>(opcional)</em></span><textarea id="nv-det" rows="3" maxlength="500"></textarea></label>
       <p class="para-l">Para <strong>${esc(otro())}</strong></p>
+      <label class="campo"><span>Qué es</span><input id="nv-titulo" maxlength="120" placeholder="Entradas para el Oceanogràfic" autocomplete="off"></label>
+      <label class="campo"><span>Detalles <em>(opcional)</em></span><textarea id="nv-det" rows="3" maxlength="500"></textarea></label>
       <label class="check"><input type="checkbox" id="nv-limitar"> Limitar las fechas</label>
       <div class="dos" id="nv-fechas" hidden>
         <label class="campo"><span>Desde</span><input type="date" id="nv-desde" min="${hoy()}"></label>
@@ -660,15 +692,14 @@ function abrirNuevo() {
     </form>`,
     `<button type="submit" form="f-nuevo" class="btn btn-negro">Crear vale</button>`);
 }
-
 async function abrirQR(id) {
   const v = vale(id);
   if (!v) return;
   const url = urlVale(v.codigo);
   HOJA = { tipo: 'qr', id, v, url };
-  abrirHoja(esc(v.titulo), `<div class="hoja-cuerpo">
-      <p class="gris" style="font-size:15px">Imprímelo o mándaselo. Al escanear el QR, ${esc(v.para)} elige el día.</p>
+  abrirHoja('Vale listo', `<div class="hoja-cuerpo">
       <div class="imagen-vale" id="img-vale"><div class="esperando"></div></div>
+      <p style="font-size:15px;color:var(--gris)">Imprímelo o mándaselo. Al escanear el QR, ${esc(v.para)} elige el día.</p>
       <div class="enlace-fila"><input id="url-vale" readonly value="${esc(url)}" aria-label="Enlace del vale"><button type="button" class="btn btn-borde btn-peq" data-a="copiar">Copiar</button></div>
       ${CARTERA ? `<div class="cartera-fila"><div><strong>Cartera del iPhone</strong><span>Mándale este enlace: al abrirlo en su iPhone, el vale se guarda en Cartera.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="copiar-cartera">${ICONO_CARTERA}Copiar enlace</button></div>` : ''}
     </div>`,
@@ -687,24 +718,18 @@ async function abrirQR(id) {
     if (caja) caja.innerHTML = `<p class="error">${esc(e.message)}</p>`;
   }
 }
-
 function abrirConfirmar(titulo, texto, si, alConfirmar) {
   HOJA = { tipo: 'confirmar', alConfirmar };
   abrirHoja(titulo, `<div class="hoja-cuerpo"><p style="font-size:15px">${texto}</p></div>`,
     `<button type="button" class="btn btn-borde" data-a="cerrar">Cancelar</button><button type="button" class="btn btn-negro" data-a="confirmar">${esc(si)}</button>`);
 }
-
 function abrirCuenta() {
   HOJA = { tipo: 'cuenta' };
   abrirHoja(esc(S.yo), `<div class="hoja-cuerpo">
-      <p class="gris" style="font-size:15px">${api.prueba
-        ? 'Estás en modo prueba. Cuando conectes la base de datos, los dos veréis lo mismo desde cualquier móvil.'
-        : 'Estás dentro con la clave compartida.'}</p>
+      <p style="font-size:15px;color:var(--gris)">${api.prueba ? 'Modo prueba: los vales solo están en este navegador hasta que conectes la base de datos.' : 'Has entrado con tu contraseña.'}</p>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <button type="button" class="btn btn-borde btn-ancho" data-a="cambiar-persona">Cambiar a ${esc(otro())}</button>
-        ${api.prueba
-          ? '<button type="button" class="btn btn-borde btn-ancho" data-a="cambiar-nombres">Cambiar los nombres</button><button type="button" class="btn btn-suave btn-ancho" data-a="borrar-prueba">Borrar todos los vales de prueba</button>'
-          : '<button type="button" class="btn btn-suave btn-ancho" data-a="salir">Salir en este móvil</button>'}
+        <button type="button" class="btn btn-borde btn-ancho" data-a="salir">Salir</button>
+        ${api.prueba ? '<button type="button" class="btn btn-suave btn-ancho" data-a="borrar-prueba">Borrar todos los vales de prueba</button>' : ''}
       </div>
     </div>`);
 }
@@ -749,50 +774,60 @@ async function mostrarVale(codigo) {
   if (VISTA === 'vale' && V.codigo === codigo) { CAL = null; pintarVale(); }
   window.scrollTo(0, 0);
 }
+function ticketGrande(v, animSello) {
+  const usado = v.estado === 'canjeado' && v.fecha;
+  return `<article class="tkb ${usado ? 'usado' : ''}">
+    ${usado ? `<div class="sello ${animSello ? 'anim' : ''}" aria-hidden="true">Canjeado<small>${fechaSello(v.fecha)}</small></div>` : ''}
+    <div class="tkb-main">
+      <p class="tkb-num">Vale ${numero(v.numero)}</p>
+      <h1 class="tkb-titulo">${esc(v.titulo)}</h1>
+      ${v.detalles ? `<p class="tkb-det">${esc(v.detalles)}</p>` : ''}
+      <dl class="tkb-datos">
+        <div><dt>De</dt><dd>${esc(v.de)}</dd></div>
+        <div><dt>Para</dt><dd>${esc(v.para)}</dd></div>
+        <div><dt>Válido</dt><dd>${esc(validez(v))}</dd></div>
+      </dl>
+    </div>
+    <div class="tkb-talon">
+      <div class="talon-bloque"><span class="eti">Código</span><span class="cod">${esc(codigoBonito(v.codigo))}</span></div>
+      ${usado ? `<div class="talon-bloque"><span class="eti">Día</span><span class="cod">${esc(fechaCorta(v.fecha))}</span></div>` : ''}
+    </div>
+  </article>`;
+}
 function pintarVale() {
   const cab = `${avisoPrueba()}<header class="wrap v-cab">${marca()}</header>`;
   if (V.cargando) { $('#app').innerHTML = cab + '<div class="cargando">Buscando el vale…</div>'; return; }
   const v = V.v;
   if (!v) {
-    $('#app').innerHTML = cab + `<main class="wrap"><div class="bloque-v">
-      <h2>${V.error ? 'No se ha podido abrir el vale' : 'Este vale no existe'}</h2>
-      <p class="gris">${V.error ? esc(V.error) : 'Puede que lo hayan borrado o que el código esté mal escrito.'}</p>
+    $('#app').innerHTML = cab + `<main class="wrap"><div class="bloque-v" style="padding-top:10px">
+      <h2>${V.error ? 'No se ha podido abrir' : 'Este vale no existe'}</h2>
+      <p style="color:var(--gris)">${V.error ? esc(V.error) : 'Puede que lo hayan borrado o que el código esté mal escrito.'}</p>
       <form data-form="codigo" class="fila" novalidate><input class="codigo-in" value="${esc(codigoBonito(V.codigo))}" aria-label="Código del vale" autocomplete="off" autocapitalize="characters"><button class="btn btn-negro" type="submit">Abrir</button></form>
     </div></main>`;
     return;
   }
-  let html = cab + `<main class="wrap">
-    <article class="tarjeta">
-      <div class="tarjeta-sup">
-        <p class="de">Vale de ${esc(v.de)} para ${esc(v.para)}</p>
-        <h1>${esc(v.titulo)}</h1>
-        ${v.detalles ? `<p class="det">${esc(v.detalles)}</p>` : ''}
-      </div>
-      <dl class="tarjeta-inf">
-        <div><dt>Válido</dt><dd>${esc(validez(v))}</dd></div>
-        <div><dt>Código</dt><dd class="mono">${esc(codigoBonito(v.codigo))}</dd></div>
-      </dl>
-    </article>`;
+  let html = cab + `<main class="wrap">${ticketGrande(v, V.recien)}`;
   if (v.estado === 'pendiente' || V.cambiando) {
     html += `<section class="bloque-v">
       <h2>${V.cambiando ? 'Cambia el día' : 'Elige el día'}</h2>
       <div id="cal"></div>
-      <button type="button" class="btn btn-negro btn-ancho" data-a="canjear" id="btn-canjear" ${V.sel && (!v.fecha || V.cambiando) ? '' : 'disabled'}>${textoCanjear()}</button>
-      ${V.cambiando ? '<button type="button" class="enlace gris" style="align-self:center" data-a="no-cambiar">Dejarlo como estaba</button>' : ''}
+      <button type="button" class="btn btn-negro btn-ancho" data-a="canjear" id="btn-canjear" ${V.sel && (v.estado === 'pendiente' || V.cambiando) ? '' : 'disabled'}>${textoCanjear()}</button>
+      ${V.cambiando ? '<button type="button" class="enlace" style="align-self:center;color:var(--gris)" data-a="no-cambiar">Dejarlo como estaba</button>' : ''}
     </section>`;
   } else {
     html += `<section class="bloque-v">
-      <div class="hecho-v"><span class="eti">Canjeado</span><span class="fecha">${capital(fechaLarga(v.fecha))}</span><span class="cuenta">${cuenta(v.fecha)}</span></div>
+      <div><p class="fecha-v">${capital(fechaLarga(v.fecha))}</p><p class="cuenta-v" style="margin-top:8px">${cuenta(v.fecha)}</p></div>
       <div class="botones-v">
         <a class="btn btn-negro" href="${esc(enlaceWhatsApp(v))}" target="_blank" rel="noopener">Avisar a ${esc(v.de)} por WhatsApp</a>
         <button type="button" class="btn btn-borde" data-a="ics-vale">Añadir al calendario</button>
         ${CARTERA ? `<a class="btn btn-borde" href="${esc(urlCartera(v.codigo))}">${ICONO_CARTERA}Añadir a Cartera</a>` : ''}
       </div>
-      <button type="button" class="enlace gris" style="align-self:flex-start" data-a="cambiar-dia">Cambiar el día</button>
+      <button type="button" class="enlace" style="align-self:flex-start;color:var(--gris)" data-a="cambiar-dia">Cambiar el día</button>
     </section>`;
   }
-  html += `<footer class="pie-v"><a class="enlace gris" href="./" data-a="lista">Ir a la lista de vales</a></footer></main>`;
+  html += `<footer class="pie-v"><a class="enlace" href="./" data-a="lista">Ir a la lista de vales</a></footer></main>`;
   $('#app').innerHTML = html;
+  V.recien = false;
   if ($('#cal')) {
     const min = [hoy(), v.fecha_min].filter(Boolean).sort().pop();
     if (!CAL) CAL = nuevoCal(V.sel && V.sel >= min ? V.sel : null, min, v.fecha_max);
@@ -800,7 +835,7 @@ function pintarVale() {
   }
 }
 function textoCanjear() {
-  if (!V || !V.sel || (V.v && V.v.estado === 'canjeado' && !V.cambiando)) return 'Elige un día en el calendario';
+  if (!V || !V.sel) return 'Elige un día en el calendario';
   return `${V.cambiando ? 'Cambiar al' : 'Canjear para el'} ${fechaLarga(V.sel)}`;
 }
 const enlaceWhatsApp = v => 'https://wa.me/?text=' + encodeURIComponent(`Vale canjeado: «${v.titulo}», el ${fechaLarga(v.fecha)}.`);
@@ -812,7 +847,7 @@ async function fuentes() {
   if (!document.fonts || !document.fonts.load) return;
   try {
     await Promise.race([
-      Promise.all(['600 100px Inter', '400 40px Inter', '400 30px "Courier Prime"'].map(f => document.fonts.load(f))),
+      Promise.all(['800 100px "Barlow Condensed"', '700 40px "Barlow Condensed"', '400 40px Inter', '400 30px "Courier Prime"'].map(f => document.fonts.load(f))),
       new Promise(ok => setTimeout(ok, 2500)),
     ]);
   } catch (e) { /* fuentes de reserva */ }
@@ -839,66 +874,67 @@ const espacio = (g, px) => { if ('letterSpacing' in g) g.letterSpacing = px + 'p
 async function imagenVale(v, url) {
   if (typeof window.qrcode !== 'function') throw new Error('No se ha podido cargar el generador de QR. Revisa la conexión.');
   await fuentes();
-  const NEGRO = '#111111', GRIS = '#6f716e', VERDE = '#93bfa4', VERDE_SUAVE = '#edf4ef';
-  const W = 1920, H = 1000, M = 60, TW = W - M * 2, TH = H - M * 2, SX = M + 1260;
-  const F = { t: 'Inter, system-ui, sans-serif', m: '"Courier Prime", "Courier New", monospace' };
+  const NEGRO = '#111111', VERDE = '#93bfa4', FONDO = '#ffffff';
+  const W = 1920, H = 1040, M = 70, TW = W - M * 2, TH = H - M * 2, SX = M + 1260;
+  const F = { t: '"Barlow Condensed", "Arial Narrow", sans-serif', i: 'Inter, system-ui, sans-serif', m: '"Courier Prime", "Courier New", monospace' };
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
-  g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
-  // Tarjeta con borde y talón verde
-  g.save(); rect(g, M, M, TW, TH, 28); g.clip();
-  g.fillStyle = VERDE_SUAVE; g.fillRect(SX, M, M + TW - SX, TH);
-  g.restore();
-  g.strokeStyle = NEGRO; g.lineWidth = 3; rect(g, M, M, TW, TH, 28); g.stroke();
-  g.save(); g.strokeStyle = '#9aa39c'; g.lineWidth = 3; g.setLineDash([14, 12]);
-  g.beginPath(); g.moveTo(SX, M + 30); g.lineTo(SX, M + TH - 30); g.stroke(); g.restore();
+  g.fillStyle = FONDO; g.fillRect(0, 0, W, H);
+  // Cartulina verde con sombra
+  g.save(); g.shadowColor = 'rgba(17,17,17,.22)'; g.shadowBlur = 40; g.shadowOffsetY = 16;
+  g.fillStyle = VERDE; rect(g, M, M, TW, TH, 30); g.fill(); g.restore();
+  // Muescas y línea de corte
+  g.fillStyle = FONDO;
+  for (const y of [M, M + TH]) { g.beginPath(); g.arc(SX, y, 34, 0, Math.PI * 2); g.fill(); }
+  g.save(); g.strokeStyle = 'rgba(17,17,17,.38)'; g.lineWidth = 4; g.setLineDash([16, 13]);
+  g.beginPath(); g.moveTo(SX, M + 52); g.lineTo(SX, M + TH - 52); g.stroke(); g.restore();
 
   // Parte principal
   const x0 = M + 90, x1 = SX - 80, ancho = x1 - x0;
-  g.textBaseline = 'alphabetic';
-  g.fillStyle = VERDE; g.beginPath(); g.arc(x0 + 9, M + 106, 9, 0, Math.PI * 2); g.fill();
-  g.fillStyle = GRIS; g.font = `400 32px ${F.m}`; espacio(g, 3);
-  g.fillText(`VALE Nº ${String(v.numero || 0).padStart(4, '0')}`, x0 + 34, M + 116); espacio(g, 0);
+  g.fillStyle = NEGRO; g.textBaseline = 'alphabetic';
+  g.font = `400 32px ${F.m}`; espacio(g, 5); g.globalAlpha = .75;
+  g.fillText(`VALE ${numero(v.numero).toUpperCase()}`, x0, M + 112); g.globalAlpha = 1; espacio(g, 0);
+  g.fillStyle = 'rgba(17,17,17,.28)'; g.fillRect(x0, M + 146, ancho, 3); g.fillStyle = NEGRO;
 
-  g.fillStyle = NEGRO;
-  let tam = 128, ls_;
-  for (; tam >= 64; tam -= 4) {
-    g.font = `600 ${tam}px ${F.t}`; espacio(g, -tam * 0.03);
-    ls_ = lineas(g, v.titulo, ancho, 99);
-    if (ls_.length <= (tam >= 96 ? 2 : 3)) break;
+  const titulo = String(v.titulo || '').toUpperCase();
+  let tam = 160, ls_;
+  for (; tam >= 72; tam -= 4) {
+    g.font = `800 ${tam}px ${F.t}`;
+    ls_ = lineas(g, titulo, ancho, 99);
+    if (ls_.length <= (tam >= 112 ? 2 : 3) && ls_.every(l => !l.endsWith('…'))) break;
   }
-  g.font = `600 ${tam}px ${F.t}`; espacio(g, -tam * 0.03);
-  ls_ = lineas(g, v.titulo, ancho, 3);
-  let y = M + 190 + tam * 0.82;
-  for (const l of ls_) { g.fillText(l, x0, y); y += tam * 1.04; }
-  espacio(g, 0);
-  y = y - tam * 1.04 + tam * 0.3 + 30;
+  g.font = `800 ${tam}px ${F.t}`;
+  ls_ = lineas(g, titulo, ancho, 3);
+  let y = M + 190 + tam * 0.86;
+  for (const l of ls_) { g.fillText(l, x0, y); y += tam * 0.9; }
+  y = y - tam * 0.9 + tam * 0.14 + 30;
   const tope = M + TH - 200;
   if (v.detalles && y + 40 < tope) {
-    g.font = `400 38px ${F.t}`; g.fillStyle = GRIS;
-    for (const l of lineas(g, v.detalles, ancho, 3)) { if (y + 30 > tope) break; y += 50; g.fillText(l, x0, y); }
-    g.fillStyle = NEGRO;
+    g.font = `400 38px ${F.i}`; g.globalAlpha = .82;
+    for (const l of lineas(g, v.detalles, ancho, 3)) { if (y + 40 > tope) break; y += 52; g.fillText(l, x0, y); }
+    g.globalAlpha = 1;
   }
   // Datos
-  const yb = M + TH - 110;
-  g.fillStyle = '#d9dcd8'; g.fillRect(x0, yb - 64, ancho, 2); g.fillStyle = NEGRO;
+  const yb = M + TH - 112;
+  g.fillStyle = 'rgba(17,17,17,.26)'; g.fillRect(x0, yb - 60, ancho, 3); g.fillStyle = NEGRO;
   let xc = x0;
   for (const [k, val] of [['DE', v.de], ['PARA', v.para], ['VÁLIDO', validez(v)]]) {
-    g.font = `400 26px ${F.m}`; espacio(g, 3); g.fillStyle = GRIS; g.fillText(k, xc, yb - 18);
-    espacio(g, 0); g.fillStyle = NEGRO; g.font = `500 42px ${F.t}`;
-    g.fillText(String(val || '—'), xc, yb + 30);
-    xc += Math.max(g.measureText(String(val || '—')).width + 70, 220);
+    g.font = `400 26px ${F.m}`; espacio(g, 4); g.globalAlpha = .65; g.fillText(k, xc, yb - 12);
+    g.globalAlpha = 1; espacio(g, 0);
+    g.font = `700 54px ${F.t}`;
+    const t = String(val || '—').toUpperCase();
+    g.fillText(t, xc, yb + 44);
+    xc += Math.max(g.measureText(t).width + 70, 220);
   }
 
   // Talón con el QR
-  const cx = SX + (M + TW - SX) / 2;
+  const cx = SX + (M + TW - SX) / 2, anchoTalon = M + TW - SX - 90;
   g.textAlign = 'center'; g.fillStyle = NEGRO;
-  const anchoTalon = M + TW - SX - 80;
   let tt = 30;
-  do { g.font = `400 ${tt}px ${F.m}`; espacio(g, 3); tt -= 1; } while (g.measureText('ESCANÉALO Y ELIGE EL DÍA').width > anchoTalon && tt > 16);
-  g.fillText('ESCANÉALO Y ELIGE EL DÍA', cx, M + 116); espacio(g, 0);
+  do { g.font = `400 ${tt}px ${F.m}`; espacio(g, 4); tt -= 1; } while (g.measureText('ESCANÉALO Y ELIGE EL DÍA').width > anchoTalon && tt > 16);
+  g.fillText('ESCANÉALO Y ELIGE EL DÍA', cx, M + 112); espacio(g, 0);
   const qs = 440, qx = cx - qs / 2, qy = M + 160;
-  g.fillStyle = '#ffffff'; rect(g, qx, qy, qs, qs, 20); g.fill();
+  g.fillStyle = '#ffffff'; rect(g, qx, qy, qs, qs, 22); g.fill();
   const qr = window.qrcode(0, 'M'); qr.addData(url); qr.make();
   const n = qr.getModuleCount(), area = qs - 56, celda = area / n, ox = qx + 28, oy = qy + 28;
   g.fillStyle = NEGRO;
@@ -908,11 +944,11 @@ async function imagenVale(v, url) {
     g.fillRect(a, b, Math.round(ox + (col + 1) * celda) - a, Math.round(oy + (r + 1) * celda) - b);
   }
   g.font = `400 46px ${F.m}`; espacio(g, 6);
-  g.fillText(codigoBonito(v.codigo), cx, qy + qs + 76); espacio(g, 0);
-  g.font = `400 26px ${F.m}`; g.fillStyle = GRIS;
+  g.fillText(codigoBonito(v.codigo), cx, qy + qs + 78); espacio(g, 0);
+  g.font = `400 26px ${F.m}`; g.globalAlpha = .7;
   const host = baseWeb().replace(/^https?:\/\//, '').replace(/\/$/, '');
-  g.fillText(host.length > 34 ? host.slice(0, 33) + '…' : host, cx, qy + qs + 124);
-  g.textAlign = 'left';
+  g.fillText(host.length > 34 ? host.slice(0, 33) + '…' : host, cx, qy + qs + 126);
+  g.globalAlpha = 1; g.textAlign = 'left';
   return await new Promise((ok, ko) => c.toBlob(b => b ? ok(b) : ko(new Error('No se ha podido crear la imagen.')), 'image/png'));
 }
 const nombreArchivo = (v, ext) => 'vale-' + String(v.titulo || 'plan').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) + ext;
@@ -946,15 +982,12 @@ const ACCIONES = {
   'confirmar'(el) { const h = HOJA; if (h && h.alConfirmar) return ocupado(el, h.alConfirmar); },
   'nuevo'() { abrirNuevo(); },
   'qr'(el) { abrirQR(el.dataset.id); },
-  'soy'(el) { S.yo = el.dataset.n; ls.set('planes-yo', S.yo); S.listo = false; mostrarApp(); },
-  'cambiar-persona'() { S.yo = otro(); ls.set('planes-yo', S.yo); S.listo = false; cerrarHoja(); mostrarApp(); aviso('Ahora eres ' + S.yo); },
-  'cambiar-nombres'() { cerrarHoja(); pintarNombres(); },
+  'salir'() { salir(); },
   'borrar-prueba'() {
-    abrirConfirmar('Borrar los vales de prueba', 'Se borran todos los vales guardados en este navegador.', 'Borrar todo', async () => {
-      api.borrarTodo(); S.yo = null; ls.del('planes-yo'); S.listo = false; cerrarHoja(); mostrarApp();
+    abrirConfirmar('Borrar vales de prueba', 'Se borran todos los vales guardados en este navegador.', 'Borrar todo', async () => {
+      api.borrarTodo(); S.vales = []; cerrarHoja(); pintar(); aviso('Vales de prueba borrados');
     });
   },
-  'salir'() { cerrarHoja(); salir(); },
   'borrar'(el) {
     const v = vale(el.dataset.id);
     abrirConfirmar('Borrar vale', `Se borra «${esc(v.titulo)}» para los dos${v.estado === 'pendiente' ? ' y su QR deja de funcionar' : ''}.`, 'Borrar', async () => {
@@ -1002,8 +1035,8 @@ const ACCIONES = {
     if (!V || !V.sel) return;
     return ocupado(el, async () => {
       const r = await api.canjear(V.codigo, V.sel);
-      V.v = norm(r); V.sel = r.fecha; V.cambiando = false; CAL = null;
-      pintarVale(); window.scrollTo(0, 0);
+      V.v = norm(r); V.sel = r.fecha; V.cambiando = false; V.recien = true; CAL = null;
+      pintarVale(); window.scrollTo({ top: 0, behavior: 'smooth' });
       S.listo = false;
     });
   },
@@ -1023,25 +1056,16 @@ document.addEventListener('change', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarHoja(); });
 
 const FORMS = {
-  nombres() {
-    const a = $('#n1').value.trim(), b = $('#n2').value.trim();
-    if (!a || !b) return pintarNombres('Escribe los dos nombres.');
-    if (a.toLowerCase() === b.toLowerCase()) return pintarNombres('Los nombres tienen que ser distintos.');
-    const anteriores = api.nombresGuardados();
-    api.guardarNombres([a, b]); S.nombres = [a, b];
-    if (!anteriores || !anteriores.includes(S.yo)) { S.yo = a; ls.set('planes-yo', a); }
-    S.listo = false; mostrarApp();
-  },
-  async clave(f, btn) {
-    const c = $('#clave').value;
-    if (!c) return pintarClave('Escribe la clave.');
+  async entrar(f, btn) {
+    const nombre = (f.querySelector('input[name="yo"]:checked') || {}).value;
+    const clave = $('#clave').value;
+    if (!clave) return pintarEntrar('Escribe la contraseña.', nombre);
     await ocupado(btn, async () => {
       try {
-        const r = await api.entrar(c);
-        S.clave = c; ls.set('planes-clave', c);
-        S.nombres = r.nombres; ls.set('planes-nombres', JSON.stringify(r.nombres));
-        S.listo = false; mostrarApp();
-      } catch (e) { pintarClave(e.message); }
+        await api.entrar(nombre, clave);
+        S.yo = nombre; S.clave = clave; ls.set('planes-yo', nombre); ls.set('planes-clave', clave);
+        S.listo = false; await mostrarApp();
+      } catch (e) { pintarEntrar(e.message, nombre); }
     });
   },
   codigo(f) {
@@ -1060,7 +1084,7 @@ const FORMS = {
     if (desde && hasta && hasta < desde) return mal('«Hasta» tiene que ser después de «Desde».');
     err.hidden = true;
     await ocupado(btn, async () => {
-      const v = norm(await api.crear({ de: S.yo, para: otro(), titulo, detalles, fecha_min: desde, fecha_max: hasta }));
+      const v = norm(await api.crear({ titulo, detalles, fecha_min: desde, fecha_max: hasta }));
       S.vales.unshift(v); S.tab = 'mios'; ls.set('planes-tab', 'mios');
       pintar(); abrirQR(v.id);
     });
@@ -1073,7 +1097,7 @@ document.addEventListener('submit', e => {
   fn(f, e.submitter || f.querySelector('[type="submit"]') || (f.id && document.querySelector(`[form="${f.id}"]`)));
 });
 document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState !== 'visible' || VISTA !== 'app' || !S.listo || $('#hoja').hidden === false) return;
+  if (document.visibilityState !== 'visible' || VISTA !== 'app' || !S.listo || !$('#hoja').hidden) return;
   await recargar(); if (VISTA === 'app' && $('#hoja').hidden) pintar();
 });
 
@@ -1082,7 +1106,7 @@ document.addEventListener('visibilitychange', async () => {
 // ================================================================
 (async () => {
   try { await api.iniciar(); }
-  catch (e) { $('#app').innerHTML = `<div class="wrap pantalla">${marca()}<div class="bloque"><h1>No se puede conectar</h1><p>${esc(e.message)}</p></div></div>`; return; }
+  catch (e) { $('#app').innerHTML = `<div class="wrap entrar"><div class="entrar-caja">${marca()}<p>${esc(e.message)}</p></div></div>`; return; }
   enrutar();
 })();
 })();
