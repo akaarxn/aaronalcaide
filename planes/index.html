@@ -881,7 +881,7 @@ async function abrirQR(id) {
       <div class="imagen-vale" id="img-vale"><div class="esperando"></div></div>
       <p style="font-size:15px;color:var(--gris)">Imprímelo o mándaselo. Al escanear el QR, ${esc(v.para)} elige el día.</p>
       <div class="enlace-fila"><input id="url-vale" readonly value="${esc(url)}" aria-label="Enlace del vale"><button type="button" class="btn btn-borde btn-peq" data-a="copiar">Copiar</button></div>
-      ${CARTERA ? `<div class="cartera-fila" id="cartera-fila"><div><strong>Para su Cartera del iPhone</strong><span>Un enlace para mandárselo: al abrirlo en su iPhone, guarda el vale en Cartera, en blanco y con tulipanes.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="cartera-enlace">Crear enlace</button></div>` : ''}
+      ${CARTERA ? `<div class="cartera-fila" id="cartera-fila"><div><strong>Para su Cartera del iPhone</strong><span>Un enlace para mandárselo: al abrirlo en su iPhone, guarda el vale en su Cartera.</span></div><button type="button" class="btn btn-borde btn-peq" data-a="cartera-enlace">Crear enlace</button></div>` : ''}
     </div>`,
     `<button type="button" class="btn btn-borde" data-a="imprimir">Imprimir</button>
      <button type="button" class="btn btn-borde" data-a="descargar">Descargar</button>
@@ -998,7 +998,7 @@ function pintarVale() {
   } else {
     html += `<section class="bloque-v">
       <div><p class="fecha-v">${capital(fechaLarga(v.fecha))}</p><p class="cuenta-v" style="margin-top:10px">${cuenta(v.fecha)}</p></div>
-      ${CARTERA ? `<button type="button" class="btn-cartera" data-a="cartera"><span class="pila" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span><b>Añadir a Cartera</b><small>Apple Wallet · con tulipanes</small></span></button>` : ''}
+      ${CARTERA ? `<button type="button" class="btn-cartera" data-a="cartera"><span class="pila" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span><b>Añadir a Cartera</b><small>Apple Wallet</small></span></button>` : ''}
       <div class="botones-v">
         <a class="btn btn-negro" href="${esc(enlaceWhatsApp(v))}" target="_blank" rel="noopener">💬 Avisar a ${esc(v.de)} por WhatsApp</a>
         <button type="button" class="btn btn-borde" data-a="ics-vale">📅 Añadir al calendario</button>
